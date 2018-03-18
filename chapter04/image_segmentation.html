@@ -29,11 +29,6 @@ function loadRgbaDataFromCanvas(canvas) {
   return new Int32Array(imgData.data);
 }
 
-function renderImage(rootElem, img) {
-  rootElem.append(img);
-  return img;
-}
-
 function renderRgbaData(canvas, data, width, height, smooth) {
   canvas.width = width;
   canvas.height = height;
