@@ -1,0 +1,88 @@
+<body>
+<img crossOrigin="anonymous" src="https://storage.googleapis.com/learnjs-data/images/cat.jpeg" width="100" height="100" id="img"></img>
+
+<script>
+
+function loadImage(url) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.src = url;
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+  });
+}
+
+function loadRgbaDataFromImage(img) {
+  const canvas = document.createElement('canvas');
+  canvas.width = img.width;
+  canvas.height = img.height;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(img, 0, 0, img.width, img.height);
+  return loadRgbaDataFromCanvas(canvas);
+}
+
+function loadRgbaDataFromCanvas(canvas) {
+  const ctx = canvas.getContext('2d');
+  const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  return new Int32Array(imgData.data);
+}
+
+function renderImage(rootElem, img) {
+  rootElem.append(img);
+  return img;
+}
+
+function renderRgbaData(rootElem, data, width, height, smooth) {
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+
+  const ctx = canvas.getContext('2d');
+  const img = ctx.getImageData(0, 0, width, height);
+  ctx.imageSmoothingEnabled = Boolean(smooth);
+
+  const vals = new Uint8ClampedArray(data);
+  img.data.set(vals);
+  ctx.putImageData(img, 0, 0);
+
+  rootElem.append(canvas);
+  return canvas;
+}
+
+// load image data
+(async function(){
+
+  const img = document.getElementById('img');
+
+  img.onload = () => {
+    const data = loadRgbaDataFromImage(img);
+    console.log(data);
+  }
+
+}());
+
+// promise
+(async function(){
+  
+  const url = "data/cat.jpeg";
+  loadImage(url).then((img) => {
+    const data = loadRgbaDataFromImage(img);
+    console.log(data);
+  });
+  
+}());
+
+// async/await
+(async function(){
+  
+  const url = "data/cat.jpeg";
+  const img = await loadImage(url);
+  const data = loadRgbaDataFromImage(img);
+
+  renderImage(document.body, img);
+  renderRgbaData(document.body, data, img.width, img.height);
+}());
+
+</script>
+</body>
