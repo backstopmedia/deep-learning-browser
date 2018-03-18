@@ -1,7 +1,4 @@
-<body>
-
 <canvas id="scene"></canvas>
-
 <script>
 
 function loadImage(url) {
@@ -44,7 +41,7 @@ function renderRgbaData(canvas, data, width, height, smooth) {
   return canvas;
 }
 
-function overlayRgba(data0, data1, alpha, width, height, channels){
+function interpolateRgba(data0, data1, alpha, width, height, channels){
   const out = new Uint8ClampedArray(data0.length);
   const alpha0 = 1 - alpha;
   const alpha1 = alpha;
@@ -72,7 +69,7 @@ async function loadRgbaDataFromUrl(url) {
   const canvas = document.getElementById("scene");
   const pixels = await loadRgbaDataFromUrl("data/bike.jpg");
   const object = await loadRgbaDataFromUrl("data/bike_object.png");
-  const layover = overlayRgba(pixels, object, 0.5, width, height, channels);
+  const layover = interpolateRgba(pixels, object, 0.5, width, height, channels);
 
   renderRgbaData(canvas, pixels, width, height);
   
@@ -81,4 +78,3 @@ async function loadRgbaDataFromUrl(url) {
 }());
 
 </script>
-</body>
