@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Render to Texture : Conway game of life</title>
+		<script type='text/javascript' src='scriptGPU.js'></script>
+		<script type='text/javascript' src='scriptCPU.js'></script>
+		
+	</head>
+	<body onload='main_GPU()'>
+		<canvas id='myWebGLCanvas' height='512' width='512'></canvas><br/>
+		<button onclick='main_CPU()'>Do the same simulation on CPU</button><br/>
+		<a href='https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life' target='_blank'>About the Conway game of life</a><br/>
+		<p>
+		Open the web console to view the benchmarks.
+		</p>
+	</body>
+</html>
+
