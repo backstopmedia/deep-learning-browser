@@ -22,12 +22,7 @@ class Main {
     this.knn = new KNNImageClassifier(NUM_CLASSES, TOPK);
     
     // Create video element that will contain the webcam image
-    this.video = document.createElement('video');
-    this.video.setAttribute('autoplay', '');
-    this.video.setAttribute('playsinline', '');
-    
-    // Add video element to DOM
-    document.body.appendChild(this.video);
+    this.video = document.getElementById('cam-video');
     
     // Create training buttons and info texts    
     for(let i=0;i<NUM_CLASSES; i++){
@@ -52,12 +47,10 @@ class Main {
     }
 
     // Create button for starting a game
-    const div = document.createElement('div');
-    document.body.appendChild(div);
-    div.style.marginBottom = '10px';
-    const startButton = document.createElement('button');
-    startButton.innerText = "Start game";
-    div.appendChild(startButton);
+    const startButton = document.getElementById('start-game-button');
+
+    // Create countdown info
+    const countDownText = document.getElementById('start-game-span')
     
     // Setup webcam
     navigator.mediaDevices.getUserMedia({video: true, audio: false})
@@ -74,9 +67,9 @@ class Main {
     this.knn.load()
     .then(() => this.start()); 
 
-    this.countDownTimer = new CountDownTimer(10000, 20);
+    this.countDownTimer = new CountDownTimer(5000, 20);
     this.countDownTimer.addTickFn((msLeft) => {
-      console.log(msLeft/1000);
+      countDownText.innerText = " " + (msLeft/1000).toFixed(1);
     })
     this.countDownTimer.start();
   }
