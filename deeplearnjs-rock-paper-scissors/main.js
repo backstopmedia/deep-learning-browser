@@ -1,5 +1,6 @@
 import {KNNImageClassifier} from 'deeplearn-knn-image-classifier';
 import * as dl from 'deeplearn';
+import CountDownTimer from './countdown';
 
 // Number of classes to classify
 const NUM_CLASSES = 3;
@@ -8,6 +9,7 @@ const IMAGE_SIZE = 227;
 // K value for KNN
 const TOPK = 10;
 
+const moves = ['Rock', 'Paper', 'Scissors'];
 
 class Main {
   constructor(){
@@ -35,7 +37,7 @@ class Main {
 
       // Create training button
       const button = document.createElement('button')
-      button.innerText = "Train "+i;
+      button.innerText = "Train "+moves[i];
       div.appendChild(button);
 
       // Listen for mouse events when clicking the button
@@ -48,7 +50,14 @@ class Main {
       div.appendChild(infoText);
       this.infoTexts.push(infoText);
     }
-    
+
+    // Create button for starting a game
+    const div = document.createElement('div');
+    document.body.appendChild(div);
+    div.style.marginBottom = '10px';
+    const startButton = document.createElement('button');
+    startButton.innerText = "Start game";
+    div.appendChild(startButton);
     
     // Setup webcam
     navigator.mediaDevices.getUserMedia({video: true, audio: false})
@@ -64,6 +73,12 @@ class Main {
     // Load knn model
     this.knn.load()
     .then(() => this.start()); 
+
+    this.countDownTimer = new CountDownTimer(10000, 20);
+    this.countDownTimer.addTickFn((msLeft) => {
+      console.log(msLeft/1000);
+    })
+    this.countDownTimer.start();
   }
   
   start(){
