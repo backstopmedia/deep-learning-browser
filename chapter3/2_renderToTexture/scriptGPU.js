@@ -124,6 +124,16 @@ function main_GPU(){
 	for (var i=0; i<SETTINGS.simuSize*SETTINGS.simuSize; ++i){
 		data0[i*4]=(Math.random()>0.5)?255:0;
 	}
+	//uncomment this code chunk to get the illustration of the book :
+	//init a square of SETTINGS.simuSize/4 wide at the center of the texture with 1
+	/* data0=new Uint8Array(SETTINGS.simuSize*SETTINGS.simuSize*4); //reset all values to 0
+	var sMin=Math.round(SETTINGS.simuSize/2-SETTINGS.simuSize/4);
+	var sMax=Math.round(SETTINGS.simuSize/2+SETTINGS.simuSize/4);
+	for (var y=sMin; y<sMax; ++y){
+		for (var x=sMin; x<sMax; ++x){
+			data0[(y*SETTINGS.simuSize+x)*4]=255;
+		}
+	}*/
 
 	var dataTextures=[
 		create_rttTexture(SETTINGS.simuSize, SETTINGS.simuSize, data0),
@@ -137,7 +147,7 @@ function main_GPU(){
 	// the cell is alive if its RED component = 1, dead if = 0
 	// we look at the 8 neighboors of a cell (Moore neighborhood) :
 	//   * if there are exactly 3 alive cell among the neighbors, this cell is always alive (born)
-	//   * if there are 2 cells among the neightbors, its state is unchanged (survive)
+	//   * if there are 2 cells among the neighbors, its state is unchanged (survive)
     //   * otherwise it dies
 	var shaderFragmentSourceComputing="precision highp float;\n"
 	  +"uniform vec2 resolution;\n"
@@ -146,7 +156,7 @@ function main_GPU(){
 	  +"vec2 uv=gl_FragCoord.xy/resolution;\n"
 	  +"vec2 duv=1./resolution;\n" //distance between 2 texels
 	  +"float cellState=texture2D(samplerTexture, uv).r;\n"
-	  +"float nNeightborsAlive=texture2D(samplerTexture, uv+duv*vec2(-1.,-1.)).r\n"
+	  +"float nNeighborsAlive=texture2D(samplerTexture, uv+duv*vec2(-1.,-1.)).r\n"
 	  +"    + texture2D(samplerTexture, uv+duv*vec2(0.,-1.)).r\n"
 	  +"    + texture2D(samplerTexture, uv+duv*vec2(1.,-1.)).r\n"
 	  +"    + texture2D(samplerTexture, uv+duv*vec2(1.,0.)).r\n"
@@ -154,9 +164,9 @@ function main_GPU(){
 	  +"    + texture2D(samplerTexture, uv+duv*vec2(0.,1.)).r\n"
 	  +"    + texture2D(samplerTexture, uv+duv*vec2(-1.,1.)).r\n"
 	  +"    + texture2D(samplerTexture, uv+duv*vec2(-1.,0.)).r;\n"
-	  +"if (nNeightborsAlive==3.0){\n"
+	  +"if (nNeighborsAlive==3.0){\n"
 	  +"  cellState=1.0;\n" //born
-	  +"} else if (nNeightborsAlive<=1.0 || nNeightborsAlive>=4.0){\n"
+	  +"} else if (nNeighborsAlive<=1.0 || nNeighborsAlive>=4.0){\n"
 	  +"  cellState=0.0;\n" //die
 	  +"};\n"
 	  +"gl_FragColor=vec4(cellState, 0., 0.,1.);\n"
