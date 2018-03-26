@@ -9,9 +9,19 @@ function main(){
 
 	var r=new WGLMatrix.MatrixZero(4,4);
 
+	console.log('TEST READ MATRIX : A =', a.read()[0]);
+	console.log('TEST READ MATRIX : B =', b.read()[0]);
+
 	a.add(b,r);
-	//a.multiply(b, r); //do matrix operation A*B and put the result to R
+	console.log('TEST ADD MATRICES : A+B =', r.read()[0]);
 
+	a.multiply(b, r); //do matrix operation A*B and put the result to R
+	console.log('TEST MULTIPLY MATRICES : A*B =', r.read()[0]);
 
+	a.multiplyScalar(0.1, r);
+	console.log('TEST MULTIPLYSCALAR : A*0.1 =', r.read()[0]);
 
+	WGLMatrix.addFunction('y=cos(x);', 'COS');
+	a.apply('COS', r);
+	console.log('TEST APPLY : cos(A) =', r.read()[0]);
 } //end main()

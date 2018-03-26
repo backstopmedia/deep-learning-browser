@@ -1,5 +1,28 @@
-/*
-Linear algebra WebGL minimalist library
+/**
+* WGLMatrix
+* Linear algebra WebGL minimalist library
+*
+* This software is released under MIT licence : 
+*
+* Copyright (c) 2018 Xavier Bourry ( xavier@jeeliz.com )
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+* 
+* The above copyright notice and this permission notice shall be included in all
+* copies or substantial portions of the Software.
+* 
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+* SOFTWARE.
 */
 
 //closure :
@@ -9,7 +32,8 @@ var WGLMatrix=(function(){
 	var GL, //webgl context
 		FLOATPIXELTYPE, //GL.FLOAT or HALF_FLOAT
 		ISWEBGL2, //boolean, if WebGL1 or 2
-		SHADERPROGRAMSDICT={},
+		RTTFBO, //FBO used for render to texture
+		SHADERPROGRAMSDICT={}, //dictionnary with all shaderPrograms
 		ISINITIALIZED=false; //shader program dictionnary
 
 	//private functions :
@@ -181,7 +205,7 @@ var WGLMatrix=(function(){
 	};
 
 	//specific shaders for matrix computation 
-	function build_matrixShaderProgram(shaderSourceArray, id, nInputMatrices){
+	function build_matrixShaderProgram(shaderSourceArray, id, nInputMatrices, uniformsGLSLnames){
 		var shaderSourceHeaderArray=['precision highp float;', 'uniform vec2 resolution;'];
 		for (var i=0; i<nInputMatrices; ++i){
 			shaderSourceHeaderArray.push('uniform sampler2D samplerTexture'+i.toString()+';');
@@ -199,16 +223,22 @@ var WGLMatrix=(function(){
 		}
 
 		//link uniforms
-		var uniformsInputMatrices=[];
-		for (var i=0; i<nInputMatrices; ++i){
+		for (var i=0, uniformsInputMatrices=[]; i<nInputMatrices; ++i){
 			 uniformsInputMatrices.push(GL.getUniformLocation(glShaderProgram, 'samplerTexture'+i.toString()));
+		}
+		uniformsDict={};
+		if (uniformsGLSLnames){ //uniforms other than inputMatrix and resolution
+			uniformsGLSLnames.forEach(function(uniformGLSLname){
+				uniformsDict[uniformGLSLname]=GL.getUniformLocation(glShaderProgram, uniformGLSLname);
+			});
 		}
 
 		//save the shader program to the dictionnary
 		SHADERPROGRAMSDICT[id]={
 			uniformResolution: GL.getUniformLocation(glShaderProgram, 'resolution'),
 			uniformsInputMatrices: uniformsInputMatrices,
-			shaderProgram: glShaderProgram
+			shaderProgram: glShaderProgram,
+			uniforms: uniformsDict
 		};
 
 		//affect texture samplers channel indices
@@ -222,18 +252,35 @@ var WGLMatrix=(function(){
 		return (typeof(SHADERPROGRAMSDICT[id])!=='undefined');
 	}
 
-	function process_matrixOperation(shaderProgramId, matrixOperators, matrixResult){
+	//used for hidden (RTT) matrix operations : ADD, MULTIPLY, ...
+	function process_matrixOperation(shaderProgramId, matrixOperators, matrixResult, onBeforeRender){
 		GL.framebufferTexture2D(GL.FRAMEBUFFER, GL.COLOR_ATTACHMENT0, GL.TEXTURE_2D, matrixResult._glTexture, 0);
-		GL.useProgram(SHADERPROGRAMSDICT[shaderProgramId].shaderProgram);
 		GL.viewport(0,0,matrixResult.shape[1],matrixResult.shape[0]);
-		GL.uniform2f(SHADERPROGRAMSDICT[shaderProgramId].uniformResolution, matrixResult.shape[1], matrixResult.shape[0]);
+		prepare_matrixOperation(shaderProgramId, matrixOperators, matrixResult.shape[1], matrixResult.shape[0]);
+		if (onBeforeRender){
+			onBeforeRender();
+		}
+		fill_viewport();
+		return matrixResult; //to be chainable
+	};
+
+	//used both by process_matrixOperation and READ matrix (render on default FBO + readPixels() ):
+	function prepare_matrixOperation(shaderProgramId, matrixOperators, width, height){
+		GL.useProgram(SHADERPROGRAMSDICT[shaderProgramId].shaderProgram);
+		GL.uniform2f(SHADERPROGRAMSDICT[shaderProgramId].uniformResolution, width, height);
 		matrixOperators.forEach(function(mo, moIndex){
 			GL.activeTexture([GL.TEXTURE0, GL.TEXTURE1, GL.TEXTURE2, GL.TEXTURE3][moIndex]);
 			GL.bindTexture(GL.TEXTURE_2D, mo._glTexture);
 		});
+	}
+
+	function get_shaderUniform(shaderProgramId, uniformGLSLname){
+		return SHADERPROGRAMSDICT[shaderProgramId].uniforms[uniformGLSLname];
+	}
+
+	function fill_viewport(){ //2 triangles VBOs are bound once and for all. Only have to drawElements
 		GL.drawElements(GL.TRIANGLES, 6, GL.UNSIGNED_SHORT, 0);
-		return matrixResult; //to be chainable
-	};
+	}
 
 	function compile_matrixAddShaderProgram(){
 		var shaderSource=[
@@ -247,13 +294,106 @@ var WGLMatrix=(function(){
 	};
 
 	function compile_matrixReadShaderProgram(){
+		//Renders the channel of a float texture into an unsigned byte RGBA color
+		//which can be read using GL.readPixels()
+		//shader from :
+		//http://stackoverflow.com/questions/17981163/webgl-read-pixels-from-floating-point-render-target
 		var shaderSource=[
-		
+			'uniform vec4 colorChannelMask;',
+
+			'float shift_right (float v, float amt) {',
+			'    v = floor(v) + 0.5;',
+			'    return floor(v / exp2(amt));',
+			'}',
+			'float shift_left (float v, float amt) {',
+			'    return floor(v * exp2(amt) + 0.5);', 
+			'}',
+			'float mask_last (float v, float bits) {', 
+			'    return mod(v, shift_left(1.0, bits));',
+			'}',
+			'float extract_bits (float num, float from, float to) {',
+			'    from = floor(from + 0.5); to = floor(to + 0.5);',
+			'    return mask_last(shift_right(num, from), to - from);', 
+			'}',
+
+			'vec4 encode_float (float val) {',
+			'    if (val == 0.0) return vec4(0.0, 0.0, 0.0, 0.0);',
+			'    float sign = val > 0.0 ? 0.0 : 1.0;',
+			'    val = abs(val);',
+			'    float exponent = floor(log2(val));',
+			'    float biased_exponent = exponent + 127.0;',
+			'    float fraction = ((val / exp2(exponent)) - 1.0) * 8388608.0;',
+			'    float t = biased_exponent / 2.0;',
+			'    float last_bit_of_biased_exponent = fract(t) * 2.0;',
+			'    float remaining_bits_of_biased_exponent = floor(t);',
+			'    float byte4 = extract_bits(fraction, 0.0, 8.0) / 255.0;', 
+			'    float byte3 = extract_bits(fraction, 8.0, 16.0) / 255.0;',
+			'    float byte2 = (last_bit_of_biased_exponent * 128.0 + extract_bits(fraction, 16.0, 23.0)) / 255.0;',
+			'    float byte1 = (sign * 128.0 + remaining_bits_of_biased_exponent) / 255.0;',
+			'    return vec4(byte4, byte3, byte2, byte1);',
+			'}',
+
+			'void main(void) {',
+			'	vec2 uv=gl_FragCoord.xy/resolution;',
+			'    float a=dot(texture2D(samplerTexture0, uv), colorChannelMask);',
+			'    gl_FragColor=encode_float(a);',
+			'}'
 		];
-		build_matrixShaderProgram(shaderSource, 'READ', 1);
+		build_matrixShaderProgram(shaderSource, 'READ', 1, ['colorChannelMask']);
 	};
 
-	//PUBLIC STATIC METHODS :
+	function compile_matrixTransposeShaderProgram(){
+		var shaderSource=[
+		'void main(void){',
+		'vec2 uv=gl_FragCoord.xy/resolution;',
+  		'gl_FragColor=texture2D(samplerTexture0, uv.yx);',
+  		'}'];
+		build_matrixShaderProgram(shaderSource, 'TRANSPOSE', 1);
+	}
+
+	function compile_matrixMultiplyShaderProgram(commonDim){
+		var shaderSourcePrefix=[
+		'void main(void){',
+		'  vec2 uv=gl_FragCoord.xy/resolution;',
+		'  vec2 du=vec2(1./resolution.x, 0.);', //horizontal distance between 2 consecutive pixels
+		'  vec2 dv=vec2(0., 1./resolution.y);', //vertical distance between 2 consecutive pixels
+		  
+		'  vec4 result=vec4(0.,0.,0.,0.);',
+		'  for (float i=0.0; i<'+commonDim.toFixed(1)+'; i++){',
+		'    result+=texture2D(samplerTexture0, uv+i*du)*texture2D(samplerTexture1, uv+i*dv);',
+		'  }'];
+
+		var shaderSourceSuffix=[
+		'  gl_FragColor=result;',
+		'}'];
+
+		var shaderSourceMult=shaderSourcePrefix.concat(shaderSourceSuffix);
+		var shaderSourceFMA=shaderSourcePrefix.concat(['result+=texture2D(samplerTexture2, uv);'], shaderSourceSuffix);
+		build_matrixShaderProgram(shaderSourceMult, 'MULTIPLY'+commonDim.toString(), 2);
+		build_matrixShaderProgram(shaderSourceFMA, 'FMA'+commonDim.toString(), 3);
+	}
+
+	function compile_matrixMultiplyScalarShaderProgram(){
+		var shaderSource=[
+		'uniform float scalar;',
+		'void main(void){',
+		'vec2 uv=gl_FragCoord.xy/resolution;',
+  		'gl_FragColor=texture2D(samplerTexture0, uv)*scalar;',
+  		'}'];
+		build_matrixShaderProgram(shaderSource, 'MULTIPLYSCALAR', 1, ['scalar']);
+	}
+
+	function compile_matrixCopyShaderProgram(){
+		var shaderSource=[
+		'void main(void){',
+		'vec2 uv=gl_FragCoord.xy/resolution;',
+  		'gl_FragColor=texture2D(samplerTexture0, uv);',
+  		'}'];
+		build_matrixShaderProgram(shaderSource, 'COPY', 1);
+	}
+
+
+	//PUBLIC STATIC METHODS AND INTANTIABLES OBJECTS :
 	var that={
 		init: function(){
 			if (ISINITIALIZED){
@@ -300,25 +440,30 @@ var WGLMatrix=(function(){
 			//ADD SHADERPROGRAMS
 			compile_matrixAddShaderProgram();
 			compile_matrixReadShaderProgram();
+			compile_matrixTransposeShaderProgram();
+			compile_matrixMultiplyScalarShaderProgram();
+			compile_matrixCopyShaderProgram();
 
 			//RENDER TO TEXTURE INITIALIZATION :
-			var rttFbo=GL.createFramebuffer();
-			GL.bindFramebuffer(GL.FRAMEBUFFER, rttFbo);
+			RTTFBO=GL.createFramebuffer();
+			GL.bindFramebuffer(GL.FRAMEBUFFER, RTTFBO);
 
-			/*
-			//come back to the default FBO (displayed on the canvas) :
-			GL.bindFramebuffer(GL.FRAMEBUFFER, null); 
-			GL.useProgram(shaderProgramRendering);
-			GL.uniform1i(_samplerTextureRenderingUniform, 0);
-			GL.viewport(0,0,myCanvas.width, myCanvas.height);
-			GL.uniform2f(_resolutionRenderingUniform, myCanvas.width, myCanvas.height);
-			//trigger the rendering :
-			GL.drawElements(GL.TRIANGLES, 6, GL.UNSIGNED_SHORT, 0);
-			GL.flush();*/
 			ISINITIALIZED=true;
 			return true;
 		},//end init()
 
+		addFunction: function(glslCode, funcName){
+			var shaderId='FUNC'+funcName;
+			var shaderSource=[
+			'void main(void){',
+			'vec2 uv=gl_FragCoord.xy/resolution;',
+	  		'vec4 x=texture2D(samplerTexture0, uv);',
+	  		'vec4 y;',
+	  		glslCode,
+	  		'gl_FragColor=y;',
+	  		'}'];
+			build_matrixShaderProgram(shaderSource, shaderId, 1);
+		},
 
 		Matrix: function(nRows, nCols, flattenDataR, flattenDataG, flattenDataB, flattenDataA){
 			if (!ISINITIALIZED){
@@ -327,21 +472,25 @@ var WGLMatrix=(function(){
 				};
 			}
 
+			//duplicate GBA channels from RED channel if not provided
 			if (!flattenDataG) var flattenDataG=flattenDataR;
 			if (!flattenDataB) var flattenDataB=flattenDataR;
 			if (!flattenDataA) var flattenDataA=flattenDataR;
 			
-			var flattenDataRGBA=new Float32Array(nRows*nCols*4);
+			//format matrix data to initialize the texture :
+			var nElts=nRows*nCols;
+			var flattenDataRGBA=new Float32Array(nElts*4);
 			var x,y,n;
 			for (y=0; y<nRows; ++y){
 				for (x=0; x<nCols; ++x){
 					n=y*nCols+x;
-					flattenDataRGBA[n*4]=flattenDataR[n]; //red
-					flattenDataRGBA[n*4]=flattenDataG[n]; //green
-					flattenDataRGBA[n*4]=flattenDataB[n]; //blue
-					flattenDataRGBA[n*4]=flattenDataA[n]; //alpha
+					flattenDataRGBA[n*4]  =flattenDataR[n]; //red
+					flattenDataRGBA[n*4+1]=flattenDataG[n]; //green
+					flattenDataRGBA[n*4+2]=flattenDataB[n]; //blue
+					flattenDataRGBA[n*4+3]=flattenDataA[n]; //alpha
 				}
 			}
+			var self=this;
 
 			//DYNAMIC ATTRIBUTES :
 			this._glTexture=create_matrixTexture(nCols, nRows, flattenDataRGBA);
@@ -350,31 +499,90 @@ var WGLMatrix=(function(){
 			//DYNAMIC METHODS :
 			//add matrixB to this and store result into matrixR
 			this.add=function(matrixB, matrixR){
-				return process_matrixOperation('ADD', [matrixB], matrixR);
+				return process_matrixOperation('ADD', [self, matrixB], matrixR);
 			}
 
-			var buffers=[];
-			for (var i=0; i<4; ++i){ //loop on RGBA channels
-				buffers.push(new Float32Array(nRows*nCols));
+			//instantiate buffers required by this.read() :
+			var n=nElts*4;
+			var buffersByte=[new Uint8Array(n), new Uint8Array(n), new Uint8Array(n), new Uint8Array(n)];
+
+			for (var i=0, buffersFloat=[]; i<4; ++i){ //loop on RGBA channels
+				buffersFloat.push(new Float32Array(buffersByte[i].buffer));
 			}
 			this.read=function(){
+				//come back to the default FBO (displayed on the canvas) :
+				GL.bindFramebuffer(GL.FRAMEBUFFER, null); 
+				prepare_matrixOperation('READ', [self], nCols, nRows);
 
+				var colorChannelMasks=[
+					[1,0,0,0], //red
+					[0,1,0,0], //green
+					[0,0,1,0], //blue
+					[0,0,0,1]  //alpha
+				];
+
+				//render each color channel (RGBA) into a separate viewport
+				//for example the RED channel is rendered on a specific viewport and each RED value is packed into 4 RGBA 8bits components
+				for (var i=0; i<4; ++i){ //loop over RGBA color channels
+					GL.viewport(0, nRows * i, nCols, nRows);
+					GL.uniform4fv(get_shaderUniform('READ', 'colorChannelMask'), colorChannelMasks[i]);
+					fill_viewport();
+				}
+
+				//read the rendered viewports :
+				buffersByte.forEach(function(bufferByte, i){
+                    GL.readPixels(0, nRows*i, nCols, nRows, GL.RGBA, GL.UNSIGNED_BYTE, bufferByte);
+                });   
+
+				//restore RTT fb
+				GL.bindFramebuffer(GL.FRAMEBUFFER, RTTFBO);
+
+				return buffersFloat;
 			}
 
 			this.transpose=function(matrixR){
-
+				return process_matrixOperation('TRANSPOSE', [self], matrixR);
 			}
 
 			this.multiply=function(matrixB, matrixR){
+				if (nCols!==matrixB.shape[0]){
+					throw 'cannot multiply : dimensions mismatch';
+				}
+				var shaderId='MULTIPLY'+nCols.toString();
+				if (!is_matrixShaderProgram(shaderId)){
+					compile_matrixMultiplyShaderProgram(nCols);
+				}
 
+				return process_matrixOperation(shaderId, [self, matrixB], matrixR);
 			}
 
 			this.fma=function(matrixB, matrixC, matrixR){
+				if (nCols!==matrixB.shape[0]){
+					throw 'cannot fma : dimensions mismatch';
+				}
+				var shaderId='FMA'+nCols.toString();
+				if (!is_matrixShaderProgram(shaderId)){
+					compile_matrixMultiplyShaderProgram(nCols);
+				}
+				return process_matrixOperation(shaderId, [self, matrixB, matrixC], matrixR);
+			}
 
+			this.multiplyScalar=function(scalar, matrixR){
+				return process_matrixOperation('MULTIPLYSCALAR', [self], matrixR, function(){
+					GL.uniform1f(get_shaderUniform('MULTIPLYSCALAR', 'scalar'), scalar);
+				});
 			}
 
 			this.apply=function(funcName, matrixR){
+				var shaderId='FUNC'+funcName;
+				if (!is_matrixShaderProgram(shaderId)){
+					throw 'Cannot find function '+funcName+' . Plz add it using WGLMatrix.addFunction(...)';
+				}
+				return process_matrixOperation(shaderId, [self], matrixR);
+			}
 
+			this.copy=function(matrixR){
+				return process_matrixOperation('COPY', [self], matrixR);
 			}
 		}, //end Matrix constructor
 
@@ -384,8 +592,7 @@ var WGLMatrix=(function(){
 		},
 
 		MatrixIdentity: function(nRows){
-			var flattenData=new Float32Array(nRows*nRows);
-			for (var i=0; i<nRows; ++i){
+			for (var i=0, flattenData=new Float32Array(nRows*nRows); i<nRows; ++i){
 				flattenData[i*nRows+i]=1.0;
 			}
 			return new that.Matrix(nRows, nRows, flattenData);
@@ -393,5 +600,4 @@ var WGLMatrix=(function(){
 	} //end that
 
 	return that;
-
 })(); //end WGLMatrix closure
