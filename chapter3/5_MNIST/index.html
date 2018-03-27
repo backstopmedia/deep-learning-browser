@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>MNIST learning demo</title>
+		<!-- our WebGL linear algebra library : -->
+		<script type='text/javascript' src='WGLMatrix.js'></script>
+
+		<!-- equivalent of network.py : implements deep learning specific matrix operations -->
+		<script type='text/javascript' src='network.js'></script>
+
+		<!-- loader for specific MNIST dataset -->
+		<script type='text/javascript' src='mnist_loader.js'></script>
+
+		<!-- declaration of MNIST output labels -->
+		<script type='text/javascript' src='data/mnist_labels.js'></script>
+
+		<!-- script with the main() entry point : -->
+		<script type='text/javascript' src='script.js'></script>
+		
+	</head>
+	<body onload='main()'>
+		<h1>WebGL MNIST learning</h1>
+		<p>
+		We have transcoded a simple neuron network learning MNIST dataset from python to WebGL. We use our <i>WGLMatrix</i> library to process all linear algebra computations.
+		</p>
+		<h2>Learning benchmark :</h2>
+
+
+		<h2>References :</h2>
+		<ul>
+			<li><a href='http://neuralnetworksanddeeplearning.com/chap1.html' target='_blank'>Chapter 1 (Using neural nets to recognize handwritten digits) of Michael Nielsen's online book, Neural networks and deep learning</a> : It explains the neural network used,
+			<li><a href='https://github.com/mnielsen/neural-networks-and-deep-learning/archive/master.zip' target='_blank'>Direct download link to the MNIST neural network written with Python/Numpy on which this example is based (MIT license).</a>
+			<li><a href='ConvnetJS repository' target='_blank'>We use JSON converted MNIST data from ConvnetJS repository (MIT license)</a>
+		</ul>
+	</body>
+</html>
+
