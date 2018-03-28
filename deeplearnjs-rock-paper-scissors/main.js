@@ -9,12 +9,15 @@ const IMAGE_SIZE = 227;
 // K value for KNN
 const TOPK = 10;
 
-const moves = ['Rock', 'Paper', 'Scissors'];
+const Moves = Object.freeze({
+  ROCK: 0,
+  PAPER: 1,
+  SCISSORS: 2,
+});
 
 class Main {
   constructor(){
     // Initiate variables
-    this.infoTexts = [];
     this.training = -1; // -1 when no class is being trained
     this.videoPlaying = false;
     
@@ -23,34 +26,38 @@ class Main {
     
     // Create video element that will contain the webcam image
     this.video = document.getElementById('cam-video');
-    
-    // Create training buttons and info texts    
-    for(let i=0;i<NUM_CLASSES; i++){
-      const div = document.createElement('div');
-      document.body.appendChild(div);
-      div.style.marginBottom = '10px';
 
-      // Create training button
-      const button = document.createElement('button')
-      button.innerText = "Train "+moves[i];
-      div.appendChild(button);
+    this.buttons = {};
+    this.infoTexts = {};
+    this.buttons[Moves.ROCK] = document.getElementById('train-rock-button');
+    this.buttons[Moves.ROCK].addEventListener(
+      'mousedown', () => this.training = Moves.ROCK);
+    this.buttons[Moves.ROCK].addEventListener(
+      'mouseup', () => this.training = -1);
+      this.infoTexts[Moves.ROCK] = document.getElementById('train-rock-span');
 
-      // Listen for mouse events when clicking the button
-      button.addEventListener('mousedown', () => this.training = i);
-      button.addEventListener('mouseup', () => this.training = -1);
-      
-      // Create info text
-      const infoText = document.createElement('span')
-      infoText.innerText = " No examples added";
-      div.appendChild(infoText);
-      this.infoTexts.push(infoText);
-    }
+    this.buttons[Moves.PAPER] = document.getElementById('train-paper-button');
+    this.buttons[Moves.PAPER].addEventListener(
+      'mousedown', () => this.training = Moves.PAPER);
+    this.buttons[Moves.PAPER].addEventListener(
+      'mouseup', () => this.training = -1);
+      this.infoTexts[Moves.PAPER] = document.getElementById('train-paper-span');
+
+    this.buttons[Moves.SCISSORS] = document.getElementById('train-scissors-button');
+    this.buttons[Moves.SCISSORS].addEventListener(
+      'mousedown', () => this.training = Moves.SCISSORS);
+    this.buttons[Moves.SCISSORS].addEventListener(
+      'mouseup', () => this.training = -1);
+      this.infoTexts[Moves.SCISSORS] = document.getElementById('train-scissors-span');
 
     // Create button for starting a game
-    const startButton = document.getElementById('start-game-button');
+    this.startButton = document.getElementById('start-game-button');
+    this.startButton.onclick = () => {
+      this.startGame();
+    }
 
     // Create countdown info
-    const countDownText = document.getElementById('start-game-span')
+    this.countDownText = document.getElementById('start-game-span')
     
     // Setup webcam
     navigator.mediaDevices.getUserMedia({video: true, audio: false})
@@ -65,12 +72,21 @@ class Main {
     
     // Load knn model
     this.knn.load()
-    .then(() => this.start()); 
+    .then(() => this.start());
+  }
 
+  startGame() {
+    if (this.startButton.disabled) {
+      return;
+    }
+    this.startButton.disabled = true;
     this.countDownTimer = new CountDownTimer(5000, 20);
     this.countDownTimer.addTickFn((msLeft) => {
-      countDownText.innerText = " " + (msLeft/1000).toFixed(1);
-    })
+      this.countDownText.innerText = " " + (msLeft/1000).toFixed(1);
+      if (msLeft == 0) {
+        this.startButton.disabled = false;
+      }
+    });
     this.countDownTimer.start();
   }
   
