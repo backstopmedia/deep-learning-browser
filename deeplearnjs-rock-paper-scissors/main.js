@@ -9,16 +9,23 @@ const IMAGE_SIZE = 227;
 // K value for KNN
 const TOPK = 10;
 
-const Moves = Object.freeze({
-  ROCK: 0,
-  PAPER: 1,
-  SCISSORS: 2,
-});
+const trainButtonElements = [
+  'train-rock-button',
+  'train-paper-button',
+  'train-scissors-button'
+]
+
+const trainSpanElements = [
+  'train-rock-span',
+  'train-paper-span',
+  'train-scissors-span'
+]
 
 class Main {
   constructor(){
     // Initiate variables
     this.training = -1; // -1 when no class is being trained
+    this.infoTexts = [];
     this.videoPlaying = false;
     
     // Initiate deeplearn.js math and knn classifier objects
@@ -27,28 +34,12 @@ class Main {
     // Create video element that will contain the webcam image
     this.video = document.getElementById('cam-video');
 
-    this.buttons = {};
-    this.infoTexts = {};
-    this.buttons[Moves.ROCK] = document.getElementById('train-rock-button');
-    this.buttons[Moves.ROCK].addEventListener(
-      'mousedown', () => this.training = Moves.ROCK);
-    this.buttons[Moves.ROCK].addEventListener(
-      'mouseup', () => this.training = -1);
-      this.infoTexts[Moves.ROCK] = document.getElementById('train-rock-span');
-
-    this.buttons[Moves.PAPER] = document.getElementById('train-paper-button');
-    this.buttons[Moves.PAPER].addEventListener(
-      'mousedown', () => this.training = Moves.PAPER);
-    this.buttons[Moves.PAPER].addEventListener(
-      'mouseup', () => this.training = -1);
-      this.infoTexts[Moves.PAPER] = document.getElementById('train-paper-span');
-
-    this.buttons[Moves.SCISSORS] = document.getElementById('train-scissors-button');
-    this.buttons[Moves.SCISSORS].addEventListener(
-      'mousedown', () => this.training = Moves.SCISSORS);
-    this.buttons[Moves.SCISSORS].addEventListener(
-      'mouseup', () => this.training = -1);
-      this.infoTexts[Moves.SCISSORS] = document.getElementById('train-scissors-span');
+    for (let i = 0; i < NUM_CLASSES; i++) {
+      let button = document.getElementById(trainButtonElements[i]);
+      button.addEventListener('mousedown', () => this.training = i);
+      button.addEventListener('mouseup', () => this.training = -1);
+      this.infoTexts.push(document.getElementById(trainSpanElements[i]));
+    }
 
     // Create button for starting a game
     this.startButton = document.getElementById('start-game-button');
