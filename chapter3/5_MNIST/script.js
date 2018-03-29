@@ -28,10 +28,10 @@ function start(){
 	var net = new network.Network([784, 30, 10]);
 
 	var tStart=performance.now();
-	//net.SGD(data.training_data, 30/*epochs*/, 10/*mini_batch_size*/, 3.0/*eta*/, data.test_data);
+	net.SGD(data.training_data, 30/*epochs*/, 10/*mini_batch_size*/, 3.0/*eta*/, data.test_data);
 	
 	//smaller training for profiling :
-	net.SGD(data.training_data, 1/*epochs*/, 5/*mini_batch_size*/, 3.0/*eta*/, data.test_data);
+	//net.SGD(data.training_data, 1/*epochs*/, 5/*mini_batch_size*/, 3.0/*eta*/, data.test_data);
 	
 	var tEnd=performance.now();
 	console.log('INFO : training duration = '+((tEnd-tStart)/1000).toString()+'seconds');

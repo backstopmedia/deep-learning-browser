@@ -18,21 +18,51 @@
 
 		<!-- script with the main() entry point : -->
 		<script type='text/javascript' src='script.js'></script>
+
+		<style type='text/css'>
+			body {
+				background-color: background: linear-gradient(to right, #667db6, #0082c8, #0082c8, #667db6);
+			}
+			.content {
+				width: 960px;
+				margin-left: auto;
+				margin-right: auto;				
+			}
+			label {
+				float: left; size: 150px;	
+			}
+
+		</style>
 	</head>
 	<body onload='main()'>
-		<h1>WebGL MNIST learning</h1>
-		<p>
-		We have transcoded a simple neuron network learning MNIST dataset from python to WebGL. We use our <i>WGLMatrix</i> library to process all linear algebra computations.
-		</p>
-		<h2>Learning benchmark :</h2>
+		<div class='content'>
+			<h1>WebGL MNIST learning</h1>
+			<p>
+			We have transcoded a simple neuron network learning MNIST dataset from python to WebGL. We use our <i>WGLMatrix</i> library to process all linear algebra computations.
+			</p>
+
+			<p>
+			The full learning may take a few tens of minutes.
+			</p>
+
+			<h2>Learning parameters :</h2>
+			<label>number of epoches :</label> 30
+			<label>minibatch size :</label> 10
+			<label>eta :</label>3
+
+			<h2>Learning benchmark :</h2>
+			<textarea>
+
+			</textarea>
 
 
-		<h2>References :</h2>
-		<ul>
-			<li><a href='http://neuralnetworksanddeeplearning.com/chap1.html' target='_blank'>Chapter 1 (Using neural nets to recognize handwritten digits) of Michael Nielsen's online book, Neural networks and deep learning</a> : It explains the neural network used,
-			<li><a href='https://github.com/mnielsen/neural-networks-and-deep-learning/archive/master.zip' target='_blank'>Direct download link to the MNIST neural network written with Python/Numpy on which this example is based (MIT license).</a>
-			<li><a href='ConvnetJS repository' target='_blank'>We use JSON converted MNIST data from ConvnetJS repository (MIT license)</a>
-		</ul>
+			<h2>References :</h2>
+			<ul>
+				<li><a href='http://neuralnetworksanddeeplearning.com/chap1.html' target='_blank'>Chapter 1 (Using neural nets to recognize handwritten digits) of Michael Nielsen's online book, Neural networks and deep learning</a> : It explains the neural network used,
+				<li><a href='https://github.com/mnielsen/neural-networks-and-deep-learning/archive/master.zip' target='_blank'>Direct download link to the MNIST neural network written with Python/Numpy on which this example is based (MIT license).</a>
+				<li><a href='ConvnetJS repository' target='_blank'>We use JSON converted MNIST data from ConvnetJS repository (MIT license)</a>
+			</ul>
+		</div>
 	</body>
 </html>
 
