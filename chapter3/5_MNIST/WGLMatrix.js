@@ -1,5 +1,5 @@
 /**
-* WGLMatrix
+* WGLMatrix v0.2
 * Linear algebra WebGL minimalist library
 *
 * This software is released under MIT licence : 
@@ -26,9 +26,8 @@
 */
 
 /*
-This the previous example (simple test of Matrix operation)
-We have add few simple methods to implement easier our MNIST example
-like random matrix initialization.
+This is based on the previous example (simple test of Matrix operations)
+We have added few simple methods to implement the MNIST learning demo
 */
 
 //closure :
@@ -121,32 +120,31 @@ var WGLMatrix=(function(){
 
 	function create_andBindVBOs(positionAttributePointer){
 		// CREATE THE VERTEX BUFFER OBJECTS :
-		//declare vertices and indices of a quad :
-		var quadVertices = new Float32Array([
-		  -1, -1, //bottom left corner -> indice 0
-		  -1, 1,  //top left corner    -> indice 1
-		  1, 1,   //top right corner   -> indice 2
-		  1, -1  //bottom right corner -> indice 3
+		//declare vertices and indices of a triangle
+		//which fill the whole viewport and overflows
+		var triVertices = new Float32Array([
+		  -1,-1,
+		  3,-1,
+		  -1,3
 		]);
-		var quadIndices = new Uint16Array([
-		  0,1,2, //first triangle if made with points of indices 0,1,2
-		  0,2,3  //second triangle
+		var triIndices = new Uint16Array([
+		  0,1,2 //first triangle
 		]);
 
 		//send vertices to the GPU :
-		var quadVerticesVBO= GL.createBuffer();
-		GL.bindBuffer(GL.ARRAY_BUFFER, quadVerticesVBO);
-		GL.bufferData(GL.ARRAY_BUFFER, quadVertices, GL.STATIC_DRAW);
+		var triVerticesVBO= GL.createBuffer();
+		GL.bindBuffer(GL.ARRAY_BUFFER, triVerticesVBO);
+		GL.bufferData(GL.ARRAY_BUFFER, triVertices, GL.STATIC_DRAW);
 
 		//send indices to the GPU :
-		var quadIndicesVBO= GL.createBuffer();
-		GL.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, quadIndicesVBO);
-		GL.bufferData(GL.ELEMENT_ARRAY_BUFFER, quadIndices, GL.STATIC_DRAW);
+		var triIndicesVBO= GL.createBuffer();
+		GL.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, triIndicesVBO);
+		GL.bufferData(GL.ELEMENT_ARRAY_BUFFER, triIndices, GL.STATIC_DRAW);
 
 		//BIND VBOs
-		GL.bindBuffer(GL.ARRAY_BUFFER, quadVerticesVBO);
+		GL.bindBuffer(GL.ARRAY_BUFFER, triVerticesVBO);
 		GL.vertexAttribPointer(positionAttributePointer, 2, GL.FLOAT, false, 8,0);
-		GL.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, quadIndicesVBO);	
+		GL.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, triIndicesVBO);	
 	}
 
 	//helper function to create a texture
@@ -295,7 +293,7 @@ var WGLMatrix=(function(){
 	}
 
 	function fill_viewport(){ //2 triangles VBOs are bound once and for all. Only have to drawElements
-		GL.drawElements(GL.TRIANGLES, 6, GL.UNSIGNED_SHORT, 0);
+		GL.drawElements(GL.TRIANGLES, 3, GL.UNSIGNED_SHORT, 0);
 	}
 
 	function compile_matrixElementWise2ShaderProgram(glslOperatorCode, id){
@@ -368,15 +366,17 @@ var WGLMatrix=(function(){
 	}
 
 	function compile_matrixMultiplyShaderProgram(commonDim){
+		var commonDimFloat=commonDim.toFixed(1);
 		var shaderSourcePrefix=[
+		'const vec2 DU=vec2(1./'+commonDimFloat+', 0.);', //vector between 2 consecutive texels of first factor
+		'const vec2 DV=vec2(0., 1./'+commonDimFloat+');', //vector between 2 consecutive texels of second factor
 		'void main(void){',
 		'  vec2 uv=gl_FragCoord.xy/resolution;',
-		'  vec2 du=vec2(1./resolution.x, 0.);', //horizontal distance between 2 consecutive pixels
-		'  vec2 dv=vec2(0., 1./resolution.y);', //vertical distance between 2 consecutive pixels
-		  
+	    '  vec2 uvu=uv*vec2(1.,0.);',
+		'  vec2 uvv=uv*vec2(0.,1.);',
 		'  vec4 result=vec4(0.,0.,0.,0.);',
-		'  for (float i=0.0; i<'+commonDim.toFixed(1)+'; i++){',
-		'    result+=texture2D(samplerTexture0, uv+i*du)*texture2D(samplerTexture1, uv+i*dv);',
+		'  for (float i=0.0; i<'+commonDimFloat+'; i+=1.0){',
+		'    result+=texture2D(samplerTexture0, uvv+(i+0.5)*DU) * texture2D(samplerTexture1, uvu+(i+0.5)*DV);',
 		'  }'];
 
 		var shaderSourceSuffix=[
@@ -406,6 +406,15 @@ var WGLMatrix=(function(){
   		'gl_FragColor=texture2D(samplerTexture0, uv);',
   		'}'];
 		build_matrixShaderProgram(shaderSource, 'COPY', 1);
+	}
+
+	function compile_matrixSetShaderProgram(){
+		var shaderSource=[
+		'uniform float val;',
+		'void main(void){',
+		'gl_FragColor=vec4(1.,1.,1.,1.)*val;',
+  		'}'];
+		build_matrixShaderProgram(shaderSource, 'SET', 0, ['val']);
 	}
 
 
@@ -453,6 +462,8 @@ var WGLMatrix=(function(){
 			  }
 			}
 
+			GL.disable(GL.DITHER);
+
 			//ADD SHADERPROGRAMS
 			compile_matrixElementWise2ShaderProgram('+', 'ADD');
 			compile_matrixElementWise2ShaderProgram('-', 'SUB');
@@ -461,6 +472,7 @@ var WGLMatrix=(function(){
 			compile_matrixTransposeShaderProgram();
 			compile_matrixMultiplyScalarShaderProgram();
 			compile_matrixCopyShaderProgram();
+			compile_matrixSetShaderProgram();
 
 			//RENDER TO TEXTURE INITIALIZATION :
 			RTTFBO=GL.createFramebuffer();
@@ -514,16 +526,30 @@ var WGLMatrix=(function(){
 			//DYNAMIC ATTRIBUTES :
 			this._glTexture=create_matrixTexture(nCols, nRows, flattenDataRGBA);
 			this.shape=[nRows, nCols];
+			this.data0=[flattenDataR, flattenDataG, flattenDataB, flattenDataA];
+
+			this.shapeEquals=function(matrixB){
+				return (self.shape[0]===matrixB.shape[0] && self.shape[1]===matrixB.shape[1]);
+			}
 
 			//DYNAMIC METHODS :
 			//add matrixB to this and store result into matrixR
 			this.add=function(matrixB, matrixR){
+				if (!self.shapeEquals(matrixB) || !self.shapeEquals(matrixR)){
+					throw 'cannot add : dimensions mismatch';
+				}
 				return process_matrixOperation('ADD', [self, matrixB], matrixR);
 			}
 			this.sub=function(matrixB, matrixR){
+				if (!self.shapeEquals(matrixB) || !self.shapeEquals(matrixR)){
+					throw 'cannot sub : dimensions mismatch';
+				}
 				return process_matrixOperation('SUB', [self, matrixB], matrixR);
 			}
 			this.hadamard=function(matrixB, matrixR){
+				if (!self.shapeEquals(matrixB) || !self.shapeEquals(matrixR)){
+					throw 'cannot hadamard : dimensions mismatch';
+				}
 				return process_matrixOperation('HADAMARD', [self, matrixB], matrixR);
 			}
 
@@ -565,7 +591,16 @@ var WGLMatrix=(function(){
 				return buffersFloat;
 			}
 
+			this.setValue=function(val){
+				return process_matrixOperation('SET', [], self, function(){
+					GL.uniform1f(get_shaderUniform('SET', 'val'), val);
+				});
+			}
+
 			this.transpose=function(matrixR){
+				if (nRows!==matrixR.shape[1] || nCols!==matrixR.shape[0]){
+					throw 'cannot transpose : dimensions mismatch';
+				}
 				return process_matrixOperation('TRANSPOSE', [self], matrixR);
 			}
 
@@ -582,7 +617,7 @@ var WGLMatrix=(function(){
 			}
 
 			this.fma=function(matrixB, matrixC, matrixR){
-				if (nCols!==matrixB.shape[0]){
+				if (nCols!==matrixB.shape[0] || !matrixC.shapeEquals(matrixR)){
 					throw 'cannot fma : dimensions mismatch';
 				}
 				var shaderId='FMA'+nCols.toString();
@@ -593,6 +628,9 @@ var WGLMatrix=(function(){
 			}
 
 			this.multiplyScalar=function(scalar, matrixR){
+				if (!self.shapeEquals(matrixR)){
+					throw 'Cannot multiplyScalar : dimension mismatch';
+				}
 				return process_matrixOperation('MULTIPLYSCALAR', [self], matrixR, function(){
 					GL.uniform1f(get_shaderUniform('MULTIPLYSCALAR', 'scalar'), scalar);
 				});
@@ -603,13 +641,27 @@ var WGLMatrix=(function(){
 				if (!is_matrixShaderProgram(shaderId)){
 					throw 'Cannot find function '+funcName+' . Plz add it using WGLMatrix.addFunction(...)';
 				}
+				if (!self.shapeEquals(matrixR)){
+					throw 'Cannot apply function : dimension mismatch';
+				}
 				return process_matrixOperation(shaderId, [self], matrixR);
 			}
 
 			this.copy=function(matrixR){
+				if (!self.shapeEquals(matrixR)){
+					throw 'Cannot copy : dimension mismatch';
+				}
 				return process_matrixOperation('COPY', [self], matrixR);
 			}
 		}, //end Matrix constructor
+
+		MatrixConstant: function(nRows, nCols, value){
+			var flattenData=new Float32Array(nRows*nCols);
+			for (var i=0; i<flattenData.length; ++i){
+				flattenData[i]=value;
+			}
+			return new that.Matrix(nRows, nCols, flattenData);
+		},
 
 		MatrixZero: function(nRows, nCols){
 			var flattenData=new Float32Array(nRows*nCols);
@@ -626,11 +678,16 @@ var WGLMatrix=(function(){
 		//fill a matrix with normal distribution law (sigma=1, mu=0)
 		//analog to numpy.random.randn(nRows, nCols)
 		MatrixRandN: function(nRows, nCols){
-			var nElts=nRows*nRows*4;
+			var nElts=nRows*nCols*4;
 			for (var i=0, flattenData=new Float32Array(nElts); i<nElts; ++i){
 				flattenData[i]=get_randomNormal();
 			}
-			return new that.Matrix(nRows, nRows, flattenData);
+			return new that.Matrix(nRows, nCols, flattenData);
+		},
+
+		//make sure all GPU operations are finished (before a breakpoint for example)
+		finish: function(){
+			GL.finish();
 		}
 	} //end that
 

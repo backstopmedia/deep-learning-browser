@@ -9,7 +9,8 @@ and written by Michael Nielsen
 //closure :
 var network=(function(){
 	// transcode some numpy/python functions :
-	function shuffleArray(a) { //shuffle array a
+	//shuffle an array :
+	function shuffleArray(a) {
 	    var j, x, i;
 	    for (i = a.length - 1; i > 0; i--) {
 	        j = Math.floor(Math.random() * (i + 1));
@@ -17,6 +18,16 @@ var network=(function(){
 	        a[i] = a[j];
 	        a[j] = x;
 	    }
+	}
+	// get index of the max value in an array :
+	function argmax(arr) {
+	    for (var i = 1, max = arr[0], maxIndex=0; i < arr.length; ++i) {
+	        if (arr[i] > max) {
+	            maxIndex = i;
+	            max = arr[i];
+	        }
+		}
+	    return maxIndex;
 	}
 
 
@@ -40,16 +51,28 @@ var network=(function(){
 
 	        self._nConnections = sizes.length-1;
 	        for (i=0, self.biases=[], self.weights=[],
+	        	self._weightsTransposed=[], self._weightsUpdated=[], self._biasesUpdated=[],
+	        	self._delta_biases=[], self._delta_weights=[],
 	        	self._z=[], self._y=[],
 	        	self._nabla_b=[], self._nabla_w=[], self._delta_nabla_b=[], self._delta_nabla_w=[],
-	        	self._sigmoidPrimeZ=[], self._delta=[], self._activationTransposed=[];
+	        	self._nabla_bUpdated=[], self._nabla_wUpdated=[],
+	        	self._actFuncPrimeZ=[], self._preDelta=[], self._delta=[];
 	        	i<self._nConnections; ++i){
 
 	        	//go from input layer to output layer
 	        	var sizeFrom=sizes[i];
 	        	var sizeTo=sizes[i+1];
+
+	        	// allocate once and for all ALL matrices and vectors computed GPU side
+	        	// no dynamic allocation on runtime
 	        	self.biases.push(new WGLMatrix.MatrixRandN(sizeTo, 1));
 	        	self.weights.push(new WGLMatrix.MatrixRandN(sizeTo, sizeFrom));
+	        	
+	        	self._biasesUpdated.push(new WGLMatrix.MatrixZero(sizeTo, 1));
+	        	self._weightsUpdated.push(new WGLMatrix.MatrixZero(sizeTo, sizeFrom));
+	        	self._weightsTransposed.push(new WGLMatrix.MatrixZero(sizeFrom, sizeTo));
+	        	self._delta_biases.push(new WGLMatrix.MatrixZero(sizeTo, 1));
+	        	self._delta_weights.push(new WGLMatrix.MatrixZero(sizeTo, sizeFrom));
 
 	        	//initialize matrices which will store intermediate computations
 	        	self._z.push(new WGLMatrix.MatrixZero(sizeTo, 1)); //store Z=WX+B
@@ -57,23 +80,32 @@ var network=(function(){
 	        	
 	        	self._nabla_b.push(new WGLMatrix.MatrixZero(sizeTo, 1));
 	        	self._nabla_w.push(new WGLMatrix.MatrixZero(sizeTo, sizeFrom));
+	        	self._nabla_bUpdated.push(new WGLMatrix.MatrixZero(sizeTo, 1));
+	        	self._nabla_wUpdated.push(new WGLMatrix.MatrixZero(sizeTo, sizeFrom));
 	        	self._delta_nabla_b.push(new WGLMatrix.MatrixZero(sizeTo, 1));
 	        	self._delta_nabla_w.push(new WGLMatrix.MatrixZero(sizeTo, sizeFrom));
 	        	
 	        	self._delta.push(new WGLMatrix.MatrixZero(sizeTo, 1));
-	       	    self._sigmoidPrimeZ.push(new WGLMatrix.MatrixZero(sizeTo, 1));
-	       	    self._activationTransposed.push(new WGLMatrix.MatrixZero(1, sizeFrom));
+	        	self._preDelta.push(new WGLMatrix.MatrixZero(sizeTo, 1));
+	       	    self._actFuncPrimeZ.push(new WGLMatrix.MatrixZero(sizeTo, 1));
+	        }
+	        for (i=0, self._activationTransposed=[];
+	        	i<self.num_layers; ++i){
+	        	var size=sizes[i];
+	        	self._activationTransposed.push(new WGLMatrix.MatrixZero(1, size));
 	        }
 
 	        var outputSize=sizes[sizes.length-1];
 	        self._cost_derivative=new WGLMatrix.MatrixZero(outputSize, 1);
 
-
-	        //add shader applying the sigmoid function :
-	        WGLMatrix.addFunction('y=1./(ONE+exp(-x));', 'SIGMOID');
-	        //add shader applying derivative of the sigmoid function
-	        WGLMatrix.addFunction('vec4 a=(ONE+exp(-x)); y=exp(-x)/(a*a);', 'SIGMOIDPRIME');
-
+	        
+	        //add shader applying the activation function :
+	        WGLMatrix.addFunction('y=1./(ONE+exp(-x));', 'ACTIVATION'); //sigmoid
+	        
+	        //add shader applying derivative of the actFunc function
+	        //for sigmoid we have to majorate x to avoid a NaN floating point special if :
+	        //exp(-x)=Infinite => y=Infinite/Infinite = NaN
+	        WGLMatrix.addFunction('vec4 xMaj=max(x, -15.*ONE); vec4 a=(ONE+exp(-xMaj)); y=exp(-xMaj)/(a*a);', 'ACTIVATIONPRIME'); //sigmoidPrime
 	        
 	        //public dynamic methods :
 	        self.feedforward=function(a){
@@ -82,8 +114,8 @@ var network=(function(){
 	        		//from input to output layer
 	        		self.weights[i].fma(inp, self.biases[i], self._z[i]); //do WI+B and store result to _z
 
-	        		//apply sigmoid to _z and store result to _y
-	        		self._z[i].apply('SIGMOID', self._y[i]);
+	        		//apply actFunc to _z and store result to _y
+	        		self._z[i].apply('ACTIVATION', self._y[i]);
 
 	        		//set input for the next iteration
 	        		inp=self._y[i];
@@ -113,7 +145,7 @@ var network=(function(){
 		        	});
 		        	if (test_data){
 		        		var result=self.evaluate(test_data);
-		        		console.log("Epoch "+result[0].toString()+": "+result[1].toString()+" / "+n_test.toString());
+		        		console.log("Epoch "+j+": "+result.toString()+" / "+n_test.toString());
 		        	} else {
 		        		console.log("Epoch "+j.toString()+" complete");
 		        	}
@@ -126,13 +158,34 @@ var network=(function(){
 		        gradient descent using backpropagation to a single mini batch.
 		        The ``mini_batch`` is a list of tuples ``(x, y)``, and ``eta``
 		        is the learning rate.*/
+		        for (var i=0; i<self._nConnections; ++i){
+		        	self._nabla_b[i].setValue(0);
+		        	self._nabla_w[i].setValue(0);
+		        }
+
+		        //average gradient over all minibatches :
 		        mini_batch.forEach(function(xy){
-		        	delta_nabla_bw = self.backprop(xy[0], xy[1]);
+		        	var delta_nabla_bw = self.backprop(xy[0], xy[1]);
 
+		        	for (var i=0; i<self._nConnections; ++i){
+		        		self._nabla_b[i].add(delta_nabla_bw[0][i], self._nabla_bUpdated[i]);
+		        		self._nabla_w[i].add(delta_nabla_bw[1][i], self._nabla_wUpdated[i]);
+		        		self._nabla_bUpdated[i].copy(self._nabla_b[i]);
+		        		self._nabla_wUpdated[i].copy(self._nabla_w[i]);
+		        	}
 		        });
+		        var learningRate=eta/mini_batch.length;
+		        //update bias and weights using learning rate :
+		        for (var i=0; i<self._nConnections; ++i){
+		        	self._nabla_b[i].multiplyScalar(-learningRate, self._delta_biases[i]);
+		        	self._nabla_w[i].multiplyScalar(-learningRate, self._delta_weights[i]);
 
-		        //self.weights
+					self.biases[i].add(self._delta_biases[i], self._biasesUpdated[i]);
+		        	self.weights[i].add(self._delta_weights[i], self._weightsUpdated[i]);
 
+		        	self._biasesUpdated[i].copy(self.biases[i]);
+		        	self._weightsUpdated[i].copy(self.weights[i]);
+		        }
 			}
 
 			self.backprop=function(x,y){
@@ -144,37 +197,41 @@ var network=(function(){
 		        // feedforward
 		        x.transpose(self._activationTransposed[0]); //list to store all the activations, layer by layer
 		        var zs=[]; //list to store all the z vectors, layer by layer
-		        for (var i=0, activation=x; i<self._nConnections; ++i){
+		        for (var i=0, activation=x, activations=[x]; i<self._nConnections; ++i){
 		        	self.weights[i].fma(activation, self.biases[i], self._z[i]); //do WI+B and store result to _z
 		        	zs.push(self._z[i]);
-		        	self._z[i].apply('SIGMOID', self._y[i]);
+		        	self._z[i].apply('ACTIVATION', self._y[i]);
 		        	activation=self._y[i];
+		        	activations.push(activation);
 		        	activation.transpose(self._activationTransposed[i+1]);
 		        }
 
 		        // backward pass
-		        var outputLayerIndex=activations.length-1;
+		        var outputLayerIndex=self.num_layers-1;
 		        var costDerivative=self.cost_derivative(activations[outputLayerIndex], y);
-		        //compute sigmoid_prime(zs[-1]) :
-		        zs[outputLayerIndex].apply('SIGMOIDPRIME', self._sigmoidPrimeZ[outputLayerIndex]);
+		        //compute actFunc_prime(zs[-1]) :
+		        zs[outputLayerIndex-1].apply('ACTIVATIONPRIME', self._actFuncPrimeZ[outputLayerIndex-1]);
 				//compute output layer delta :
-				var delta=costDerivative.hadamard(_sigmoidPrimeZ[outputLayerIndex], self._delta[outputLayerIndex]);
-				delta.copy(self.nabla_b[outputLayerIndex]);
-				delta.multiply(self._activationTransposed[outputLayerIndex-1],self.nabla_w[outputLayerIndex]);
-
+				var delta=costDerivative.hadamard(self._actFuncPrimeZ[outputLayerIndex-1], self._delta[outputLayerIndex-1]);
+				
+				delta.copy(self._delta_nabla_b[outputLayerIndex-1]);
+				delta.multiply(self._activationTransposed[outputLayerIndex-1],self._delta_nabla_w[outputLayerIndex-1]);
+				
 				/*# Note that the variable l in the loop below is used a little
 		        # differently to the notation in Chapter 2 of the book.  Here,
 		        # l = 1 means the last layer of neurons, l = 2 is the
 		        # second-last layer, and so on.  It's a renumbering of the
 		        # scheme in the book, used here to take advantage of the fact
 		        # that Python can use negative indices in lists.*/
-		        for (var l=0; l<self.num_layers; ++l){
-		        	var z=zs[zs.length-l]
-		        	z.apply('SIGMOIDPRIME', self._sigmoidPrimeZ[zs.length-1]);
-		        	debugger;
-				
+		        for (var l=2; l<self.num_layers; ++l){
+		        	var z=zs[zs.length-l];
+		        	var sp=z.apply('ACTIVATIONPRIME', self._actFuncPrimeZ[zs.length-l]);
+		        	self.weights[self.weights.length-l+1].transpose(self._weightsTransposed[self.weights.length-l+1]);
+		        	delta=self._weightsTransposed[self.weights.length-l+1].multiply(delta, self._preDelta[self._delta.length-l]);
+		        	delta=delta.hadamard(sp, self._delta[self._delta.length-l]);
+		        	delta.copy(self._delta_nabla_b[self._delta_nabla_b.length-l]);
+		        	delta.multiply(self._activationTransposed[self._activationTransposed.length-l-1], self._delta_nabla_w[self._delta_nabla_w.length-l]);
 		        }
-
 
 		        return [self._delta_nabla_b, self._delta_nabla_w];
 			}
@@ -184,14 +241,21 @@ var network=(function(){
 		        network outputs the correct result. Note that the neural
 		        network's output is assumed to be the index of whichever
 		        neuron in the final layer has the highest activation.*/
-
+		        var nSuccess=0;
+		        test_data.forEach(function(xy){
+		        	var result=self.feedforward(xy[0]).read();
+		        	//only take account of red channel
+		        	var resultNumber=argmax(result[0]); //number got between 0 and 9 included
+		        	var expectedNumber=argmax(xy[1].data0[0]); //expected number
+		        	if (resultNumber===expectedNumber) ++nSuccess;
+		        });
+		        return nSuccess;
 			}
 
 			self.cost_derivative=function(output_activations, y){
 				/*Return the vector of partial derivatives \partial C_x /
         		\partial a for the output activations.*/
-        		output_activations.sub(y, self._cost_derivative);
-        		return self._cost_derivative;
+        		return output_activations.sub(y, self._cost_derivative);
 			}
 		} //end Network constructor
 	}; //end that

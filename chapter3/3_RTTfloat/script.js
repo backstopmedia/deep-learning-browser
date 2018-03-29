@@ -240,6 +240,9 @@ function main(){
 
 	}
 
+	//disable dithering :
+	GL.disable(GL.DITHER);
+
 	//CREATE THE RENDERING SHADER PROGRAM :
 	//declare shader sources as string
 	var shaderVertexSource="attribute vec2 position;\n"

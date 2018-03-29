@@ -46,7 +46,7 @@ var mnist_loader=(function(){
 			var learningOutputVector=new Float32Array(10);
 			var expectedOutput=mnist_labels[_dataCounter];
 			learningOutputVector[expectedOutput]=1;
-
+			
 			targetData.push([
 				new WGLMatrix.Matrix(784, 1, learningInputVector),  //X
 				new WGLMatrix.Matrix(10,  1, learningOutputVector)  //Y

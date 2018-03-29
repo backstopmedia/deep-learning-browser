@@ -1,5 +1,5 @@
 /**
-* WGLMatrix
+* WGLMatrix v0.1
 * Linear algebra WebGL minimalist library
 *
 * This software is released under MIT licence : 
@@ -268,6 +268,7 @@ var WGLMatrix=(function(){
 	function prepare_matrixOperation(shaderProgramId, matrixOperators, width, height){
 		GL.useProgram(SHADERPROGRAMSDICT[shaderProgramId].shaderProgram);
 		GL.uniform2f(SHADERPROGRAMSDICT[shaderProgramId].uniformResolution, width, height);
+
 		matrixOperators.forEach(function(mo, moIndex){
 			GL.activeTexture([GL.TEXTURE0, GL.TEXTURE1, GL.TEXTURE2, GL.TEXTURE3][moIndex]);
 			GL.bindTexture(GL.TEXTURE_2D, mo._glTexture);
@@ -352,15 +353,17 @@ var WGLMatrix=(function(){
 	}
 
 	function compile_matrixMultiplyShaderProgram(commonDim){
+		var commonDimFloat=commonDim.toFixed(1);
 		var shaderSourcePrefix=[
+		'const vec2 DU=vec2(1./'+commonDimFloat+', 0.);', //vector between 2 consecutive texels of first factor
+		'const vec2 DV=vec2(0., 1./'+commonDimFloat+');', //vector between 2 consecutive texels of second factor
 		'void main(void){',
 		'  vec2 uv=gl_FragCoord.xy/resolution;',
-		'  vec2 du=vec2(1./resolution.x, 0.);', //horizontal distance between 2 consecutive pixels
-		'  vec2 dv=vec2(0., 1./resolution.y);', //vertical distance between 2 consecutive pixels
-		  
+		'  vec2 uvu=uv*vec2(1.,0.);',
+		'  vec2 uvv=uv*vec2(0.,1.);',
 		'  vec4 result=vec4(0.,0.,0.,0.);',
-		'  for (float i=0.0; i<'+commonDim.toFixed(1)+'; i++){',
-		'    result+=texture2D(samplerTexture0, uv+i*du)*texture2D(samplerTexture1, uv+i*dv);',
+		'  for (float i=0.0; i<'+commonDimFloat+'; i+=1.0){',
+		'    result+=texture2D(samplerTexture0, uvv+(i+0.5)*DU) * texture2D(samplerTexture1, uvu+(i+0.5)*DV);',
 		'  }'];
 
 		var shaderSourceSuffix=[
@@ -436,6 +439,8 @@ var WGLMatrix=(function(){
 			  	return false;
 			  }
 			}
+
+			GL.disable(GL.DITHER);
 
 			//ADD SHADERPROGRAMS
 			compile_matrixAddShaderProgram();
