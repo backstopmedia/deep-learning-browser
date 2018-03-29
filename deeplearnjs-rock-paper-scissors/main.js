@@ -9,6 +9,12 @@ const IMAGE_SIZE = 227;
 // K value for KNN
 const TOPK = 10;
 
+const MOVES = [
+  'Rock',
+  'Paper',
+  'Scissors',
+];
+
 const trainButtonElements = [
   'train-rock-button',
   'train-paper-button',
@@ -19,6 +25,12 @@ const trainSpanElements = [
   'train-rock-span',
   'train-paper-span',
   'train-scissors-span',
+];
+
+const winnerMatrix = [
+  [0, 1, -1],
+  [-1, 0, 1],
+  [1, -1, 0],
 ];
 
 /**
@@ -34,6 +46,9 @@ class Main {
     this.training = -1; // -1 when no class is being trained
     this.infoTexts = [];
     this.videoPlaying = false;
+    this.currentMove = -1;
+    this.firstExampleTrained = false;
+
 
     // Initiate deeplearn.js math and knn classifier objects
     this.knn = new KNNImageClassifier(NUM_CLASSES, TOPK);
@@ -54,8 +69,7 @@ class Main {
       this.startGame();
     };
 
-    // Create countdown info
-    this.countDownText = document.getElementById('start-game-span');
+    this.gameStatus = document.getElementById('game-status');
 
     // Setup webcam
     navigator.mediaDevices.getUserMedia({video: true, audio: false})
@@ -83,12 +97,34 @@ class Main {
     this.startButton.disabled = true;
     this.countDownTimer = new CountDownTimer(5000, 20);
     this.countDownTimer.addTickFn((msLeft) => {
-      this.countDownText.innerText = ' ' + (msLeft/1000).toFixed(1);
+      this.gameStatus.innerText = (msLeft/1000).toFixed(1) +
+      ' seconds left. Prepare your move!';
       if (msLeft == 0) {
-        this.startButton.disabled = false;
+        this.resolveGame();
       }
     });
     this.countDownTimer.start();
+  }
+
+  /**
+   * Resolve the game
+   */
+  resolveGame() {
+    let computerMove = Math.floor(Math.random()*3);
+    let innerText = `You picked ${MOVES[this.currentMove]}.` +
+    `The computer picked ${MOVES[computerMove]}. `;
+    let result = winnerMatrix[computerMove][this.currentMove];
+    switch (result) {
+      case -1:
+      this.gameStatus.innerText = innerText + 'You lose. Try again!';
+      break;
+      case 0:
+      this.gameStatus.innerText = innerText + `It's a draw! Try again.`;
+      break;
+      case 1:
+      this.gameStatus.innerText = innerText + 'You win. Yay!';
+    }
+    this.startButton.disabled = false;
   }
 
   /**
@@ -118,6 +154,7 @@ class Main {
       if (Math.max(...exampleCount) > 0) {
         this.knn.predictClass(image)
         .then((res)=>{
+          this.currentMove = res.classIndex;
           for (let i=0; i<NUM_CLASSES; i++) {
             // Make the predicted class bold
             if (res.classIndex == i) {
@@ -131,6 +168,10 @@ class Main {
               this.infoTexts[i].innerText =
               ` ${exampleCount[i]} examples - ${res.confidences[i]*100}%`;
             }
+          }
+          if (!this.firstExampleTrained) {
+            this.firstExampleTrained = true;
+            this.startButton.disabled = false;
           }
         })
         // Dispose image when done
