@@ -1,5 +1,5 @@
 /**
-* WGLMatrix v0.2
+* WGLMatrix v0.3
 * Linear algebra WebGL minimalist library
 *
 * This software is released under MIT licence : 
@@ -419,6 +419,15 @@ var WGLMatrix=(function(){
 		build_matrixShaderProgram(shaderSource, 'SET', 0, ['val']);
 	}
 
+	function compile_matrixMultiplexRGBAShaderProgram(){
+		var shaderSource=[
+		'void main(void){',
+		'vec2 uv=gl_FragCoord.xy/resolution;',
+  		'gl_FragColor=texture2D(samplerTexture0, uv)*scalar;',
+  		'}'];
+  		TODO
+		build_matrixShaderProgram(shaderSource, 'MULTIPLEXRGBA', 4);
+	}
 
 	//PUBLIC STATIC METHODS AND INTANTIABLES OBJECTS :
 	var that={
@@ -476,6 +485,7 @@ var WGLMatrix=(function(){
 			compile_matrixMultiplyScalarShaderProgram();
 			compile_matrixCopyShaderProgram();
 			compile_matrixSetShaderProgram();
+			compile_matrixMultiplexRGBAShaderProgram();
 
 			//RENDER TO TEXTURE INITIALIZATION :
 			RTTFBO=GL.createFramebuffer();
@@ -667,6 +677,10 @@ var WGLMatrix=(function(){
 				}
 				return process_matrixOperation('COPY', [self], matrixR);
 			}
+
+			this.multiplexRGBA=function(matrixGreen, matrixBlue, matrixAlpha, matrixR){ //this is the matrixRed
+				return process_matrixOperation('MULTIPLEXRGBA', [self, matrixGreen, matrixBlue, matrixAlpha], matrixR);
+			}
 		}, //end Matrix constructor
 
 		MatrixConstant: function(nRows, nCols, value){
@@ -679,6 +693,11 @@ var WGLMatrix=(function(){
 
 		MatrixZero: function(nRows, nCols){
 			var flattenData=new Float32Array(nRows*nCols);
+			return new that.Matrix(nRows, nCols, flattenData);
+		},
+
+		MatrixZero8bits: function(nRows, nCols){
+			var flattenData=new Uint8Array(nRows*nCols);
 			return new that.Matrix(nRows, nCols, flattenData);
 		},
 

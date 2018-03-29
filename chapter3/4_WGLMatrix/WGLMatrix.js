@@ -403,6 +403,7 @@ var WGLMatrix=(function(){
 				console.log('ERROR : already initialized');
 				return false;
 			}
+			console.log('INFO : Init WGLMatrix...');
 
 			//create the canvas (will be hidden and inserted to the DOM)
 			var myCanvas=document.createElement('canvas');

@@ -48,6 +48,9 @@ var network=(function(){
 
 	        self.num_layers = sizes.length;
 	        self.sizes=sizes;
+	        self.inputSize=sizes[0];
+	        self.outputSize=sizes[sizes.length-1];
+
 	        self._nConnections = sizes.length-1;
 	        
 	        for (i=0, self.biases=[], self.weights=[],
@@ -95,8 +98,7 @@ var network=(function(){
 	        	self._activationTransposed.push(new WGLMatrix.MatrixZero(1, size));
 	        }
 
-	        var outputSize=sizes[sizes.length-1];
-	        self._cost_derivative=new WGLMatrix.MatrixZero(outputSize, 1);
+	        self._cost_derivative=new WGLMatrix.MatrixZero(self.outputSize, 1);
 
 	        
 	        //add shader applying the activation function :
@@ -135,6 +137,16 @@ var network=(function(){
 		        var n_test = test_data.length;
 		        var n=training_data.length;
 		        var j=0; //epochs counter
+
+		        //pre initilialise I/O for RGBA multiplexing :
+		        var i;
+		        if (mini_batch_size/4!==Math.floor(mini_batch_size/4)) throw 'mini_batch_size should be a multiple of 4 for RGBA multiplexing !';
+	        	for (i=0, self._mini_batchRGBAMultiplexed=[]; i<mini_batch_size/4; ++i){
+	        		self._mini_batchRGBAMultiplexed.push([
+	        			new WGLMatrix.MatrixZero8bits(self.inputSize, 1), //X
+	        			new WGLMatrix.MatrixZero8bits(self.outputSize, 1) //Y
+	        		]);
+	        	}
 		        
 		        var runEpoch=function(){
 		        	shuffleArray(training_data);
@@ -180,8 +192,19 @@ var network=(function(){
 		        	self._nabla_w[i].setValue(0);
 		        }
 
+		        //multiplex over RGBA channels
+		        self._mini_batchRGBAMultiplexed.forEach(function(xyMultiplexed, ind){
+		        	var xy_r=mini_batch[4*ind],
+		        		xy_g=mini_batch[4*ind+1],
+		        		xy_b=mini_batch[4*ind+2],
+		        		xy_a=mini_batch[4*ind+3];
+		        	
+		        	xy_r[0].multiplexRGBA(xy_g[0], xy_b[0], xy_a[0], xyMultiplexed[0]); //multiplex input
+		        	xy_r[1].multiplexRGBA(xy_g[1], xy_b[1], xy_a[1], xyMultiplexed[0]); //multiplex output
+		        });
+
 		        //average gradient over all minibatches :
-		        mini_batch.forEach(function(xy){
+		        self._mini_batchRGBAMultiplexed.forEach(function(xy){
 		        	var delta_nabla_bw = self.backprop(xy[0], xy[1]);
 
 		        	for (var i=0; i<self._nConnections; ++i){
