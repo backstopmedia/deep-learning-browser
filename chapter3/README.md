@@ -22,7 +22,7 @@ We transforms the thermal simulation demonstration to a minimalist linear algebr
 We use a slightly improved version of *WGLMatrix* to train a shallow neural network over the MNIST dataset.
 
 #### 6_MNISTimproved
-We improve the previous neural network to better use the GPU, and we add a live test widget.
+We improve the previous example to better use the GPU, and we run it with a larger and deeper neural network.
 
 
 ## Hosting
@@ -30,11 +30,11 @@ You only need a local HTTP server to host these demonstrations.
 
 
 ## Troubleshootings
-You should run these demonstration :
+You should run these demonstrations :
 * With a desktop computer (they are not fitted for mobile devices),
 * With a WebGL compatible computer. Last version of Chrome or Firefox is recommanded.
 
-You can test your webgl compatibility [here](http://get.webgl.org). If it does not work, maybe you should update your graphic card drivers. With chrome you can see GPU acceleration settings by entering in the URL bar : *chrome://gpu-settings*
+You can test your webgl compatibility [here](http://get.webgl.org). If it does not work, maybe you should update your graphic card drivers. With Chrome you can see GPU acceleration settings by entering in the URL bar : *chrome://gpu-settings*
 
 
 ## License
