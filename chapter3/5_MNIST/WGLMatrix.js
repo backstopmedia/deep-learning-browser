@@ -242,7 +242,7 @@ var WGLMatrix=(function(){
 		for (var i=0, uniformsInputMatrices=[]; i<nInputMatrices; ++i){
 			 uniformsInputMatrices.push(GL.getUniformLocation(glShaderProgram, 'samplerTexture'+i.toString()));
 		}
-		uniformsDict={};
+		var uniformsDict={};
 		if (uniformsGLSLnames){ //uniforms other than inputMatrix and resolution
 			uniformsGLSLnames.forEach(function(uniformGLSLname){
 				uniformsDict[uniformGLSLname]=GL.getUniformLocation(glShaderProgram, uniformGLSLname);
@@ -316,6 +316,7 @@ var WGLMatrix=(function(){
 		//http://stackoverflow.com/questions/17981163/webgl-read-pixels-from-floating-point-render-target
 		var shaderSource=[
 			'uniform vec4 colorChannelMask;',
+			'uniform vec2 uvOffset;',
 
 			'float shift_right (float v, float amt) {',
 			'    v = floor(v) + 0.5;',
@@ -350,12 +351,12 @@ var WGLMatrix=(function(){
 			'}',
 
 			'void main(void) {',
-			'	vec2 uv=gl_FragCoord.xy/resolution;',
+			'	vec2 uv=(gl_FragCoord.xy+uvOffset)/resolution;',
 			'    float a=dot(texture2D(samplerTexture0, uv), colorChannelMask);',
 			'    gl_FragColor=encode_float(a);',
 			'}'
 		];
-		build_matrixShaderProgram(shaderSource, 'READ', 1, ['colorChannelMask']);
+		build_matrixShaderProgram(shaderSource, 'READ', 1, ['colorChannelMask', 'uvOffset']);
 	};
 
 	function compile_matrixTransposeShaderProgram(){
@@ -591,13 +592,10 @@ var WGLMatrix=(function(){
 				for (var i=0; i<4; ++i){ //loop over RGBA color channels
 					GL.viewport(0, nRows * i, nCols, nRows);
 					GL.uniform4fv(get_shaderUniform('READ', 'colorChannelMask'), colorChannelMasks[i]);
+					GL.uniform2f(get_shaderUniform('READ', 'uvOffset'), 0, -nRows * i);
 					fill_viewport();
+					GL.readPixels(0, nRows * i, nCols, nRows, GL.RGBA, GL.UNSIGNED_BYTE, buffersByte[i]);
 				}
-
-				//read the rendered viewports :
-				buffersByte.forEach(function(bufferByte, i){
-                    GL.readPixels(0, nRows*i, nCols, nRows, GL.RGBA, GL.UNSIGNED_BYTE, bufferByte);
-                });   
 
 				//restore RTT fb
 				GL.bindFramebuffer(GL.FRAMEBUFFER, RTTFBO);

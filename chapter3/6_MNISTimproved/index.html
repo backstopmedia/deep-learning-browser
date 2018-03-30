@@ -50,7 +50,7 @@
 	</head>
 	<body onload='main()'>
 		<div class='content'>
-			<h1>WebGL MNIST learning</h1>
+			<h1>WebGL MNIST learning improved</h1>
 			<p>
 			We have improved the previous MNIST implementation in order to make this implementation faster than the Python/Numpy one. We still use our <i>WGLMatrix</i> library to process all linear algebra computations.
 			</p>
@@ -63,7 +63,7 @@
 			<label>layers :</label><div class='val'>
 					<ul>
 						<li>Input layer : 784 neurons (28x28 pixel digit image)
-						<li>Hidden layer : 30 neurons
+						<li>Hidden layers : 256, 128 neurons
 						<li>Output layer : 10 neurons (1 per digit)
 					</ul>
 				</div>
@@ -74,9 +74,9 @@
 			<h2><br/>Learning parameters :</h2>
 			<label>number of samples for training :</label><div class='val'>50000</div>
 			<label>number of samples for testing :</label><div class='val'>10000</div>
-			<label>number of epochs :</label><div class='val'>30</div>
+			<label>number of epochs :</label><div class='val'>10</div>
 			<label>minibatch size :</label><div class='val'>8</div>
-			<label>eta :</label><div class='val'>3.0</div>
+			<label>eta :</label><div class='val'>0.5</div>
 
 
 			<h2><br/>Monitoring :</h2>

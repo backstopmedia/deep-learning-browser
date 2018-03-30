@@ -5,6 +5,8 @@ except we load original MNIST data instead of python wrapped MNIST data
 We do not load validation data (not used for the first example)
 */
 
+"use strict";
+
 //closure
 var mnist_loader=(function(){
 	var _data={

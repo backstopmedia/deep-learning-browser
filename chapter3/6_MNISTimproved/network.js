@@ -6,6 +6,8 @@ code explanation comments have been copied from network.py
 and written by Michael Nielsen
 */ 
 
+"use strict";
+
 //closure :
 var network=(function(){
 	// transcode some numpy/python functions :
@@ -138,7 +140,7 @@ var network=(function(){
 		        var n=training_data.length;
 		        var j=0; //epochs counter
 
-		        //pre initilialise I/O for RGBA multiplexing :
+		        //pre initilialise I/O for training RGBA multiplexing :
 		        var i;
 		        if (mini_batch_size/4!==Math.floor(mini_batch_size/4)) throw 'mini_batch_size should be a multiple of 4 for RGBA multiplexing !';
 	        	for (i=0, self._mini_batchRGBAMultiplexed=[]; i<mini_batch_size/4; ++i){
@@ -147,11 +149,46 @@ var network=(function(){
 	        			new WGLMatrix.MatrixZero8bits(self.outputSize, 1) //Y
 	        		]);
 	        	}
+
+	        	//multiplex test_data :
+	        	if (test_data.length/4!==Math.floor(test_data.length/4)) throw 'test data length should be a multiple of 4 for RGBA multiplexing !';
+	        	var test_dataRGBAMultiplexed=[];
+		        for (i=0; i<test_data.length/4; ++i){
+		        	//initialize input and output RGBA multiplexed :
+		        	var inputRGBAMultiplexed=new WGLMatrix.MatrixZero8bits(self.inputSize, 1);
+		        	var outputRGBAMultiplexed=new WGLMatrix.MatrixZero8bits(self.outputSize, 1);
+
+		        	test_data[4*i][0].multiplexRGBA(test_data[4*i+1][0], test_data[4*i+2][0], test_data[4*i+3][0], inputRGBAMultiplexed);
+		        	test_data[4*i][1].multiplexRGBA(test_data[4*i+1][1], test_data[4*i+2][1], test_data[4*i+3][1], outputRGBAMultiplexed);
+
+		        	outputRGBAMultiplexed.encodedOutputValue=[
+		        		argmax(test_data[4*i][1].data0[0]),
+		        		argmax(test_data[4*i+1][1].data0[0]),
+		        		argmax(test_data[4*i+2][1].data0[0]),
+		        		argmax(test_data[4*i+3][1].data0[0])
+		        	];
+
+		        	//delete previous test_data to save VRAM
+		        	test_data[4*i][0].remove();
+		        	test_data[4*i+1][0].remove();
+		        	test_data[4*i+2][0].remove();
+		        	test_data[4*i+3][0].remove();
+		        	test_data[4*i][1].remove();
+		        	test_data[4*i+1][1].remove();
+		        	test_data[4*i+2][1].remove();
+		        	test_data[4*i+3][1].remove();
+		        	
+		        	test_dataRGBAMultiplexed.push([inputRGBAMultiplexed, outputRGBAMultiplexed]);
+		        }
+		        test_data=null;
 		        
+
 		        var runEpoch=function(){
 		        	shuffleArray(training_data);
-		        	for (var k=0, mini_batches=[]; k<n; k+=mini_batch_size){
-		        		mini_batches.push(training_data.slice(k, k+mini_batch_size));
+		        	for (var k=0, mb, mini_batches=[]; k<n; k+=mini_batch_size){
+		        		mb=training_data.slice(k, k+mini_batch_size);
+		        		if (mb.length!==mini_batch_size) continue;
+		        		mini_batches.push(mb);
 		        	}
 		        	mini_batches.forEach(function(mini_batch){
 		        		self.update_mini_batch(mini_batch, eta);
@@ -164,7 +201,7 @@ var network=(function(){
 		        };
 
 		        var runTest=function(){
-		        	var result=self.evaluate(test_data);
+		        	var result=self.evaluate(test_dataRGBAMultiplexed);
 	        		printLog("Epoch "+j+": "+result.toString()+" / "+n_test.toString());
 	        	
 		        	if (++j===epochs){
@@ -198,9 +235,8 @@ var network=(function(){
 		        		xy_g=mini_batch[4*ind+1],
 		        		xy_b=mini_batch[4*ind+2],
 		        		xy_a=mini_batch[4*ind+3];
-		        	
 		        	xy_r[0].multiplexRGBA(xy_g[0], xy_b[0], xy_a[0], xyMultiplexed[0]); //multiplex input
-		        	xy_r[1].multiplexRGBA(xy_g[1], xy_b[1], xy_a[1], xyMultiplexed[0]); //multiplex output
+		        	xy_r[1].multiplexRGBA(xy_g[1], xy_b[1], xy_a[1], xyMultiplexed[1]); //multiplex output
 		        });
 
 		        //average gradient over all minibatches :
@@ -210,8 +246,8 @@ var network=(function(){
 		        	for (var i=0; i<self._nConnections; ++i){
 		        		self._nabla_b[i].add(delta_nabla_bw[0][i], self._nabla_bUpdated[i]);
 		        		self._nabla_w[i].add(delta_nabla_bw[1][i], self._nabla_wUpdated[i]);
-		        		self._nabla_bUpdated[i].copy(self._nabla_b[i]);
-		        		self._nabla_wUpdated[i].copy(self._nabla_w[i]);
+		        		self._nabla_bUpdated[i].sumRGBA(self._nabla_b[i]);
+		        		self._nabla_wUpdated[i].sumRGBA(self._nabla_w[i]);
 		        	}
 		        });
 		        var learningRate=eta/mini_batch.length;
@@ -276,18 +312,20 @@ var network=(function(){
 		        return [self._delta_nabla_b, self._delta_nabla_w];
 			}
 
-			self.evaluate=function(test_data){
+			self.evaluate=function(test_dataRGBAMultiplexed){
 				/*Return the number of test inputs for which the neural
 		        network outputs the correct result. Note that the neural
 		        network's output is assumed to be the index of whichever
 		        neuron in the final layer has the highest activation.*/
 		        var nSuccess=0;
-		        test_data.forEach(function(xy){
+		        test_dataRGBAMultiplexed.forEach(function(xy){
 		        	var result=self.feedforward(xy[0]).read();
-		        	//only take account of red channel
-		        	var resultNumber=argmax(result[0]); //number got between 0 and 9 included
-		        	var expectedNumber=argmax(xy[1].data0[0]); //expected number
-		        	if (resultNumber===expectedNumber) ++nSuccess;
+		        	//take account of the 4 RGBA channels :
+		        	for (var i=0; i<4; ++i){ //i is the RGBA channel indice
+		        		var resultNumber=argmax(result[i]); //number got between 0 and 9 included
+		        		var expectedNumber=xy[1].encodedOutputValue[i]; //expected number
+		        		if (resultNumber===expectedNumber) ++nSuccess;
+		        	}
 		        });
 		        return nSuccess;
 			}

@@ -30,6 +30,9 @@ This is based on the previous example (simple test of Matrix operations)
 We have added few simple methods to implement the MNIST learning demo
 */
 
+//strict mode : there is no small optimization !
+"use strict";
+
 //closure :
 var WGLMatrix=(function(){
 
@@ -221,8 +224,9 @@ var WGLMatrix=(function(){
 
 	//GPU MATRIX COMPUTATION SPECIFIC FUNCTIONS :
 	//specific shaders for matrix computation 
-	function build_matrixShaderProgram(shaderSourceArray, id, nInputMatrices, uniformsGLSLnames){
-		var shaderSourceHeaderArray=['precision highp float;', 'uniform vec2 resolution;'];
+	function build_matrixShaderProgram(shaderSourceArray, id, nInputMatrices, uniformsGLSLnames, precision){
+		var precision=(precision)?precision:'highp';
+		var shaderSourceHeaderArray=['precision '+precision+' float;', 'uniform vec2 resolution;'];
 		for (var i=0; i<nInputMatrices; ++i){
 			shaderSourceHeaderArray.push('uniform sampler2D samplerTexture'+i.toString()+';');
 		}
@@ -234,7 +238,6 @@ var WGLMatrix=(function(){
 		if (Object.keys(SHADERPROGRAMSDICT).length===0){
 			var positionAttributePointer = GL.getAttribLocation(glShaderProgram, 'position');
 			GL.enableVertexAttribArray(positionAttributePointer);
-
 			create_andBindVBOs(positionAttributePointer);
 		}
 
@@ -242,7 +245,7 @@ var WGLMatrix=(function(){
 		for (var i=0, uniformsInputMatrices=[]; i<nInputMatrices; ++i){
 			 uniformsInputMatrices.push(GL.getUniformLocation(glShaderProgram, 'samplerTexture'+i.toString()));
 		}
-		uniformsDict={};
+		var uniformsDict={};
 		if (uniformsGLSLnames){ //uniforms other than inputMatrix and resolution
 			uniformsGLSLnames.forEach(function(uniformGLSLname){
 				uniformsDict[uniformGLSLname]=GL.getUniformLocation(glShaderProgram, uniformGLSLname);
@@ -316,6 +319,7 @@ var WGLMatrix=(function(){
 		//http://stackoverflow.com/questions/17981163/webgl-read-pixels-from-floating-point-render-target
 		var shaderSource=[
 			'uniform vec4 colorChannelMask;',
+			'uniform vec2 uvOffset;',
 
 			'float shift_right (float v, float amt) {',
 			'    v = floor(v) + 0.5;',
@@ -350,12 +354,12 @@ var WGLMatrix=(function(){
 			'}',
 
 			'void main(void) {',
-			'	vec2 uv=gl_FragCoord.xy/resolution;',
+			'	vec2 uv=(gl_FragCoord.xy+uvOffset)/resolution;',
 			'    float a=dot(texture2D(samplerTexture0, uv), colorChannelMask);',
 			'    gl_FragColor=encode_float(a);',
 			'}'
 		];
-		build_matrixShaderProgram(shaderSource, 'READ', 1, ['colorChannelMask']);
+		build_matrixShaderProgram(shaderSource, 'READ', 1, ['colorChannelMask', 'uvOffset']);
 	};
 
 	function compile_matrixTransposeShaderProgram(){
@@ -423,10 +427,20 @@ var WGLMatrix=(function(){
 		var shaderSource=[
 		'void main(void){',
 		'vec2 uv=gl_FragCoord.xy/resolution;',
-  		'gl_FragColor=texture2D(samplerTexture0, uv)*scalar;',
+  		'gl_FragColor=vec4(texture2D(samplerTexture0, uv).r, texture2D(samplerTexture1, uv).r, texture2D(samplerTexture2, uv).r, texture2D(samplerTexture3, uv).r);',
   		'}'];
-  		TODO
-		build_matrixShaderProgram(shaderSource, 'MULTIPLEXRGBA', 4);
+  		build_matrixShaderProgram(shaderSource, 'MULTIPLEXRGBA', 4, [], 'lowp');
+	}
+
+	function compile_matrixSumRGBAShaderProgram(){
+		var shaderSource=[
+		'const vec4 ONE4=vec4(1.,1.,1.,1.);',
+		'void main(void){',
+		'vec2 uv=gl_FragCoord.xy/resolution;',
+		'float sumRGBA=dot(texture2D(samplerTexture0, uv), ONE4);',
+  		'gl_FragColor=sumRGBA*ONE4;',
+  		'}'];
+  		build_matrixShaderProgram(shaderSource, 'SUMRGBA', 1);
 	}
 
 	//PUBLIC STATIC METHODS AND INTANTIABLES OBJECTS :
@@ -486,6 +500,7 @@ var WGLMatrix=(function(){
 			compile_matrixCopyShaderProgram();
 			compile_matrixSetShaderProgram();
 			compile_matrixMultiplexRGBAShaderProgram();
+			compile_matrixSumRGBAShaderProgram();
 
 			//RENDER TO TEXTURE INITIALIZATION :
 			RTTFBO=GL.createFramebuffer();
@@ -601,13 +616,10 @@ var WGLMatrix=(function(){
 				for (var i=0; i<4; ++i){ //loop over RGBA color channels
 					GL.viewport(0, nRows * i, nCols, nRows);
 					GL.uniform4fv(get_shaderUniform('READ', 'colorChannelMask'), colorChannelMasks[i]);
+					GL.uniform2f(get_shaderUniform('READ', 'uvOffset'), 0, -nRows * i);
 					fill_viewport();
+					GL.readPixels(0, nRows * i, nCols, nRows, GL.RGBA, GL.UNSIGNED_BYTE, buffersByte[i]);
 				}
-
-				//read the rendered viewports :
-				buffersByte.forEach(function(bufferByte, i){
-                    GL.readPixels(0, nRows*i, nCols, nRows, GL.RGBA, GL.UNSIGNED_BYTE, bufferByte);
-                });   
 
 				//restore RTT fb
 				GL.bindFramebuffer(GL.FRAMEBUFFER, RTTFBO);
@@ -680,6 +692,13 @@ var WGLMatrix=(function(){
 
 			this.multiplexRGBA=function(matrixGreen, matrixBlue, matrixAlpha, matrixR){ //this is the matrixRed
 				return process_matrixOperation('MULTIPLEXRGBA', [self, matrixGreen, matrixBlue, matrixAlpha], matrixR);
+			}
+			this.sumRGBA=function(matrixR){
+				return process_matrixOperation('SUMRGBA', [self], matrixR);
+			}
+			this.remove=function(){
+				GL.deleteTexture(self._glTexture);
+				self=null;
 			}
 		}, //end Matrix constructor
 

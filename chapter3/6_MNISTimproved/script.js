@@ -13,6 +13,8 @@ This is the equivalent of this code in python :
 	net.SGD(training_data, 30, 10, 3.0, test_data=test_data)
 */
 
+"use strict";
+
 //entry point
 function main(){
 	//return;
@@ -29,10 +31,10 @@ function main(){
 }
 
 function start(data){
-	var net = new network.Network([784, 30, 10]);
+	var net = new network.Network([784, 256, 128, 10]);
 
 	var tStart=performance.now();
-	net.SGD(data.training_data, 30/*epochs*/, 8/*mini_batch_size*/, 3.0/*eta*/, data.test_data,
+	net.SGD(data.training_data, 10/*epochs*/, 8/*mini_batch_size*/, 0.5/*eta*/, data.test_data,
 			function(){ //callback function launched when learning is finished
 				var tEnd=performance.now();
 				printLog('INFO : training duration = '+((tEnd-tStart)/1000).toString()+' seconds');

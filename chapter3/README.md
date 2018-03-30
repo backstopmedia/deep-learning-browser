@@ -6,7 +6,7 @@
 #### 0_webglFirstRendering
 This our the first WebGL rendering. It draws a color gradient filling the viewport. It helps to understand basics of WebGL workflow.
 
-#### 1_mandlBrot
+#### 1_mandelBrot
 We have just changed a few lines to the previous demonstration to draw a beautiful Mandelbrot fractal. It helps to apprehend the power of WebGL, where complicated pixel color computation can be done in parallel on the GPU.
 
 #### 2_renderToTexture
