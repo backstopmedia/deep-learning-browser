@@ -5,32 +5,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Teachable Machine Boilerplate</title>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
+    <link rel="stylesheet" href="//cdn.rawgit.com/necolas/normalize.css/master/normalize.css">
+    <link rel="stylesheet" href="//cdn.rawgit.com/milligram/milligram/master/dist/milligram.min.css">
 
     <script src="dist/build.js"></script>
 </head>
 <body>
-    <div>
-        <video id="cam-video" autoplay=""></video>
-    </div>
-    <div id="train-buttons-div">
-        <div>
-            <button id="train-rock-button">Train Rock</button>
-            <span id="train-rock-span"> No examples added</span>
+    <div class="container">
+        <div class="row" style="display: inline-block; padding-top: 50px">
+            <h3 class="title" style="text-align: center">Train your gestures here!</h3>
+        </div>
+        <div class="row">
+            <div class="column clearfix">
+                <div class="float-right">
+                    <video id="cam-video" autoplay=""></video>
+                </div>
+            </div>
+            <div class="column" style="padding-top: 50px">
+                <div>
+                    <button id="train-rock-button" class="button button-outline">Train Rock</button>
+                    <span id="train-rock-span"> No examples added</span>
+                </div>
+                <div>
+                    <button id="train-paper-button" class="button button-outline">Train Paper</button>
+                    <span id="train-paper-span"> No examples added</span>
+                </div>
+                <div class="">
+                    <button id="train-scissors-button" class="button button-outline">Train Scissors</button>
+                    <span id="train-scissors-span"> No examples added</span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="column column-70 column-offset-25">
+                <button id="start-game-button" disabled>Start game</button>
+            </div>
         </div>
         <div>
-            <button id="train-paper-button">Train Paper</button>
-            <span id="train-paper-span"> No examples added</span>
+            <span id="game-status">Start a game!</span>
         </div>
-        <div>
-            <button id="train-scissors-button">Train Scissors</button>
-            <span id="train-scissors-span"> No examples added</span>
-        </div>
-    </div>
-    <div>
-        <button id="start-game-button" disabled>Start game</button>
-    </div>
-    <div>
-        <span id="game-status">Start a game!</span>
     </div>
 
 </body>
