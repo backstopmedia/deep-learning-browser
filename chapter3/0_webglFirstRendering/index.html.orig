@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>WebGL first rendering</title>
+		<meta charset='utf-8'/>
+		<script type='text/javascript' src='script.js'></script>
+	</head>
+	<body onload='main()'>
+		<canvas id='myWebGLCanvas' height='512' width='512'></canvas>
+	</body>
+</html>
+
