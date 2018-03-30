@@ -3,10 +3,37 @@
     <head>
         <title>Mandelbrot fractal</title>
         <meta charset='utf-8'/>
+
         <script type='text/javascript' src='script.js'></script>
+
+        <style type='text/css'>
+            body {
+                background: linear-gradient(to right, #667db6, #0082c8, #0082c8, #667db6);
+            }
+            .content {
+                width: 960px;
+                margin-left: auto;
+                margin-right: auto;        
+                background: #eee;
+                padding: 1em;
+            }
+            canvas {
+                display: block;
+                margin-left: auto; margin-right: auto;
+            }
+        </style>
     </head>
     <body onload='main()'>
-        <canvas id='myWebGLCanvas' height='1024' width='1024'></canvas>
+        <div class='content'>
+        	<h1>Mandelbrot fractal</h1>
+        	<p>
+        	By changing a few lines from the previous example, we draw this beautiful Mandelbrot fractal. All pixels are computed in parallel, which is particularly interesting if their computation is not trivial like in this example. It illustrates the power of GPU acceleration.
+        	</p>
+            <canvas id='myWebGLCanvas' height='960' width='960'></canvas>
+
+            <a href='https://en.wikipedia.org/wiki/Mandelbrot_set' target='_blank'>About the Mandelbrot fractal</a><br/>
+            <a href='https://www.shadertoy.com/view/MsycWh'>View on shadertoy.com</a>
+        </div>
     </body>
 </html>
 

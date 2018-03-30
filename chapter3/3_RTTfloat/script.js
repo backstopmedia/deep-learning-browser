@@ -28,13 +28,13 @@
 2D Thermal simulation of a square of iron heated at 100°C
 The square is 2.56 meters large
 The total area of the simulation is 2.56 meters
-The duration of the simulation is 1000 seconds
+The duration of the simulation is 3000 seconds
 */
 
 //parameters. Physical parameters are in the computing fragment shader
 var SETTINGS={
     simuSize: 256,
-    nIterations: 000 //time step is 1 seconds. So the total duration of the simulation is nIterations seconds 
+    nIterations: 3000 //time step is 1 seconds. So the total duration of the simulation is nIterations seconds 
 };
 
 //global variables
