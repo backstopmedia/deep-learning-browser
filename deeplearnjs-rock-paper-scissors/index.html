@@ -11,6 +11,20 @@
 
     <script src="dist/build.js"></script>
 </head>
+<style>
+.button-large {
+  font-size: 1.4rem;
+  height: 4.5rem;
+  line-height: 4.5rem;
+  padding: 0 20rem;
+}
+
+.flip {
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
+}
+
+</style>
 <body>
     <div class="container">
         <div class="row" style="display: inline-block; padding-top: 50px">
@@ -25,7 +39,7 @@
             <div class="column" style="padding-top: 50px">
                 <div>
                     <button id="train-rock-button" class="button button-outline">Train Rock</button>
-                    <span id="train-rock-span"> No examples added</span>
+                    <span id="train-rock-span">No examples added</span>
                 </div>
                 <div>
                     <button id="train-paper-button" class="button button-outline">Train Paper</button>
@@ -37,13 +51,24 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="column column-70 column-offset-25">
-                <button id="start-game-button" disabled>Start game</button>
-            </div>
+        <div class="row" style="display: flex; justify-content: center; padding-top: 15px;">
+            <button class="button-large" id="start-game-button" disabled>Start a game</button>
         </div>
-        <div>
-            <span id="game-status">Start a game!</span>
+        <div class="row" style="display: flex; justify-content: center;">
+            <span id="game-status">Train your gestures above then start a game!</span>
+        </div>
+        <div class="row">
+            <div class="column clearfix">
+                <img id="rock-you" src="images/rock.png" class="flip float-right" hidden>
+                <img id="paper-you" src="images/paper.png" class="float-right" hidden>
+                <img id="scissors-you" src="images/scissors.png" class="float-right" hidden>
+                <img id="you" class="float-right" hidden>
+            </div>
+            <div class="column">
+                <img id="rock-cpu" src="images/rock.png" hidden>
+                <img id="paper-cpu" src="images/paper.png" class="flip" hidden>
+                <img id="scissors-cpu" src="images/scissors.png" class="flip" hidden>
+            </div>
         </div>
     </div>
 

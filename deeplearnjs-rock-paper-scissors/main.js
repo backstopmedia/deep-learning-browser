@@ -15,17 +15,29 @@ const MOVES = [
   'Scissors',
 ];
 
-const trainButtonElements = [
+const trainButtonIds = [
   'train-rock-button',
   'train-paper-button',
   'train-scissors-button',
 ];
 
-const trainSpanElements = [
+const trainSpanIds = [
   'train-rock-span',
   'train-paper-span',
   'train-scissors-span',
 ];
+
+const gestureYouIds = [
+  'rock-you',
+  'paper-you',
+  'scissors-you',
+]
+
+const gestureCpuIds = [
+  'rock-cpu',
+  'paper-cpu',
+  'scissors-cpu',
+]
 
 const winnerMatrix = [
   [0, 1, -1],
@@ -48,7 +60,7 @@ class Main {
     this.videoPlaying = false;
     this.currentMove = -1;
     this.firstExampleTrained = false;
-
+    this.gaming = false;
 
     // Initiate deeplearn.js math and knn classifier objects
     this.knn = new KNNImageClassifier(NUM_CLASSES, TOPK);
@@ -57,10 +69,10 @@ class Main {
     this.video = document.getElementById('cam-video');
 
     for (let i = 0; i < NUM_CLASSES; i++) {
-      let button = document.getElementById(trainButtonElements[i]);
+      let button = document.getElementById(trainButtonIds[i]);
       button.addEventListener('mousedown', () => this.training = i);
       button.addEventListener('mouseup', () => this.training = -1);
-      this.infoTexts.push(document.getElementById(trainSpanElements[i]));
+      this.infoTexts.push(document.getElementById(trainSpanIds[i]));
     }
 
     // Create button for starting a game
@@ -70,6 +82,14 @@ class Main {
     };
 
     this.gameStatus = document.getElementById('game-status');
+
+    this.gestureYouImages = gestureYouIds.map((val) => {
+      return document.getElementById(val);
+    });
+
+    this.gestureCpuImages = gestureCpuIds.map((val) => {
+      return document.getElementById(val);
+    })
 
     // Setup webcam
     navigator.mediaDevices.getUserMedia({video: true, audio: false})
@@ -94,11 +114,16 @@ class Main {
     if (this.startButton.disabled) {
       return;
     }
+    this.gaming = true;
     this.startButton.disabled = true;
     this.countDownTimer = new CountDownTimer(5000, 20);
     this.countDownTimer.addTickFn((msLeft) => {
       this.gameStatus.innerText = (msLeft/1000).toFixed(1) +
       ' seconds left. Prepare your move!';
+      let computerMove = Math.floor(Math.random()*3);
+      for (let i = 0; i < 3; i++) {
+        this.gestureCpuImages[i].hidden = (i !== computerMove);
+      }
       if (msLeft == 0) {
         this.resolveGame();
       }
@@ -111,20 +136,22 @@ class Main {
    */
   resolveGame() {
     let computerMove = Math.floor(Math.random()*3);
-    let innerText = `You picked ${MOVES[this.currentMove]}.` +
-    `The computer picked ${MOVES[computerMove]}. `;
     let result = winnerMatrix[computerMove][this.currentMove];
     switch (result) {
       case -1:
-      this.gameStatus.innerText = innerText + 'You lose. Try again!';
+      this.gameStatus.innerText = 'You lose. Try again!';
       break;
       case 0:
-      this.gameStatus.innerText = innerText + `It's a draw! Try again.`;
+      this.gameStatus.innerText = `It's a draw! Try again.`;
       break;
       case 1:
-      this.gameStatus.innerText = innerText + 'You win. Yay!';
+      this.gameStatus.innerText = 'You win. Yay!';
+    }
+    for (let i = 0; i < 3; i++) {
+      this.gestureCpuImages[i].hidden = (i !== computerMove);
     }
     this.startButton.disabled = false;
+    this.gaming = false;
   }
 
   /**
@@ -161,6 +188,15 @@ class Main {
               this.infoTexts[i].style.fontWeight = 'bold';
             } else {
               this.infoTexts[i].style.fontWeight = 'normal';
+            }
+
+            // Update img if in game
+            if (this.gaming) {
+              if (res.classIndex == i) {
+                this.gestureYouImages[i].hidden = false;
+              } else {
+                this.gestureYouImages[i].hidden = true;
+              }
             }
 
             // Update info text
