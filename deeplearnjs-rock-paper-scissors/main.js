@@ -9,12 +9,6 @@ const IMAGE_SIZE = 227;
 // K value for KNN
 const TOPK = 10;
 
-const MOVES = [
-  'Rock',
-  'Paper',
-  'Scissors',
-];
-
 const trainButtonIds = [
   'train-rock-button',
   'train-paper-button',
@@ -31,13 +25,13 @@ const gestureYouIds = [
   'rock-you',
   'paper-you',
   'scissors-you',
-]
+];
 
 const gestureCpuIds = [
   'rock-cpu',
   'paper-cpu',
   'scissors-cpu',
-]
+];
 
 const winnerMatrix = [
   [0, 1, -1],
@@ -89,10 +83,10 @@ class Main {
 
     this.gestureCpuImages = gestureCpuIds.map((val) => {
       return document.getElementById(val);
-    })
+    });
 
     this.youImg = document.getElementById('you');
-    this.hiddenCanvas = document.createElement("canvas");
+    this.hiddenCanvas = document.createElement('canvas');
     this.hiddenCanvas.width = IMAGE_SIZE;
     this.hiddenCanvas.height = IMAGE_SIZE;
 
@@ -158,7 +152,8 @@ class Main {
       this.gestureYouImages[i].hidden = true;
     }
     this.startButton.disabled = false;
-    this.hiddenCanvas.getContext('2d').drawImage(this.video, 0, 0, IMAGE_SIZE, IMAGE_SIZE);
+    this.hiddenCanvas.getContext('2d').drawImage(
+      this.video, 0, 0, IMAGE_SIZE, IMAGE_SIZE);
     this.youImg.src = this.hiddenCanvas.toDataURL();
     this.youImg.hidden = false;
   }
