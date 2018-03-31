@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Teachable Machine Boilerplate</title>
+    <title>Rock Paper Scissors with TensorFlow.js</title>
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
     <link rel="stylesheet" href="//cdn.rawgit.com/necolas/normalize.css/master/normalize.css">
     <link rel="stylesheet" href="//cdn.rawgit.com/milligram/milligram/master/dist/milligram.min.css">
@@ -24,11 +24,21 @@
     transform: scaleX(-1);
 }
 
+.footer {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 1rem;
+  background-color: #efefef;
+  text-align: center;
+}
 </style>
 <body>
     <div class="container">
         <div class="row" style="display: inline-block; padding-top: 50px">
-            <h3 class="title" style="text-align: center">Train your gestures here!</h3>
+            <h3 class="title" style="text-align: center">Play Rock Paper Scissors with your browser!</h3>
+            <h5 class="title" style="text-align: center">Hold down the buttons to have your browser learn your gestures.</h4>
         </div>
         <div class="row">
             <div class="column clearfix">
@@ -71,6 +81,6 @@
             </div>
         </div>
     </div>
-
+    <p class="footer"><em>This demo was built by Reiichiro Nakano as part of the book <a href="#">Deep Learning in the Browser</a>. You can check out the full source code <a href="https://github.com/backstopmedia/deep-learning-browser/tree/master/chapter6">here</a>.</em></p>
 </body>
 </html>

@@ -91,6 +91,11 @@ class Main {
       return document.getElementById(val);
     })
 
+    this.youImg = document.getElementById('you');
+    this.hiddenCanvas = document.createElement("canvas");
+    this.hiddenCanvas.width = IMAGE_SIZE;
+    this.hiddenCanvas.height = IMAGE_SIZE;
+
     // Setup webcam
     navigator.mediaDevices.getUserMedia({video: true, audio: false})
     .then((stream) => {
@@ -135,6 +140,7 @@ class Main {
    * Resolve the game
    */
   resolveGame() {
+    this.gaming = false;
     let computerMove = Math.floor(Math.random()*3);
     let result = winnerMatrix[computerMove][this.currentMove];
     switch (result) {
@@ -149,9 +155,12 @@ class Main {
     }
     for (let i = 0; i < 3; i++) {
       this.gestureCpuImages[i].hidden = (i !== computerMove);
+      this.gestureYouImages[i].hidden = true;
     }
     this.startButton.disabled = false;
-    this.gaming = false;
+    this.hiddenCanvas.getContext('2d').drawImage(this.video, 0, 0, IMAGE_SIZE, IMAGE_SIZE);
+    this.youImg.src = this.hiddenCanvas.toDataURL();
+    this.youImg.hidden = false;
   }
 
   /**
@@ -192,6 +201,7 @@ class Main {
 
             // Update img if in game
             if (this.gaming) {
+              this.youImg.hidden = true;
               if (res.classIndex == i) {
                 this.gestureYouImages[i].hidden = false;
               } else {
