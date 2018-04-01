@@ -9,7 +9,7 @@
     "milligram": "^1.3.0"
   },
   "scripts": {
-    "start": "budo main.js:dist/build.js --live --host localhost",
+    "start": "budo main.js:dist/bundle.js --live --host localhost",
     "watch": "watchify main.js -v --debug -o dist/bundle.js",
     "prep": "yarn && mkdirp dist",
     "build": "browserify main.js -o dist/bundle.js",
