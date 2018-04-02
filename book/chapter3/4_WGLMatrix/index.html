@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>WGLMatrix : Linear algebra library with WebGL</title>
+        <meta charset='utf-8'/>
+        
+        <script type='text/javascript' src='WGLMatrix.js'></script>
+        <script type='text/javascript' src='script.js'></script>
+        
+        <style type='text/css'>
+            body {
+                background: linear-gradient(to right, #667db6, #0082c8, #0082c8, #667db6);
+            }
+            .content {
+                width: 960px;
+                margin-left: auto;
+                margin-right: auto;        
+                background: #eee;
+                padding: 1em;
+            }
+            #logArea {
+                width: calc(100% - 0.5em);
+                min-height: 600px;
+                font-family: monospace;
+            }
+        </style>
+    </head>
+    <body onload='main()'>
+        <div class='content'>
+            <h1>WGLMatrix</h1>
+            <p>
+            Test the mythical <i>WGLMatrix</i> library :
+            <textarea id='logArea'></textarea>
+            </p>
+        </div>
+    </body>
+</html>
+

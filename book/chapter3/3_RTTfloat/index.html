@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Render on floating point texture : heat simulation</title>
+        <meta charset='utf-8' />
+
+        <script type='text/javascript' src='script.js'></script>
+
+        <style type='text/css'>
+            body {
+                background: linear-gradient(to right, #667db6, #0082c8, #0082c8, #667db6);
+            }
+            .content {
+                width: 960px;
+                margin-left: auto;
+                margin-right: auto;        
+                background: #eee;
+                padding: 1em;
+            }
+        </style>
+    </head>
+    <body onload='main()'>
+        <div class='content'>
+        	<h1>Heat equation simulation</h1>
+        	<p>
+        	We start from the previous example (the Conway game of life) to implement a continuous simulation. We simulate the thermal diffusion in a steel block using the head equation in 2D. Unlike the Conway game of life, the state is represented by floating point parameters (the heat and the heat gradients). So we need to implement render to floating point texture.
+        	</p>
+
+        	<p>
+            The total area of the simulation is a square of 2.56 meters wide. The initial state is a square area of 1.28 meters wide at 100°C. The steel around is at 0°C. The simulation lasts 3000 seconds. We show the heat using the <i>IDL_Rainbow color map</i> calibrated from 0°C (black) to 100°C (red). This is the color map :
+             <img src='IDL_Rainbow.png' />
+            </p>
+
+            <p>
+            On the left : initial state, on the right : result of the simulation<br/>
+            <img src='initialState.png' style='display: block; float: left; width: 479px;'/>
+            <canvas id='myWebGLCanvas' height='512' width='512' style='display: block; float: right; width: 479px; margin-left: 1px'></canvas>
+            </p>
+
+            <a href='https://en.wikipedia.org/wiki/Heat_equation' target='_blank'>About the heat equation</a><br/>
+            <a href='https://github.com/kbinani/glsl-colormap' target='_blank'>About the colorMap</a>
+        </div>
+    </body>
+</html>
+

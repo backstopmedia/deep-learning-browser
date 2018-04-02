@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>MNIST learning improved</title>
+        <meta charset='utf-8'/>
+
+        <!-- our WebGL linear algebra library : -->
+        <script type='text/javascript' src='WGLMatrix.js'></script>
+
+        <!-- equivalent of network.py : implements deep learning specific matrix operations -->
+        <script type='text/javascript' src='network.js'></script>
+
+        <!-- loader for specific MNIST dataset -->
+        <script type='text/javascript' src='mnist_loader.js'></script>
+
+        <!-- declaration of MNIST output labels -->
+        <script type='text/javascript' src='data/mnist_labels.js'></script>
+
+        <!-- script with the main() entry point : -->
+        <script type='text/javascript' src='script.js'></script>
+
+        <style type='text/css'>
+            body {
+                background: linear-gradient(to right, #667db6, #0082c8, #0082c8, #667db6);
+            }
+            .content {
+                width: 960px;
+                margin-left: auto;
+                margin-right: auto;        
+                background: #eee;
+                padding: 1em;
+            }
+            label {
+                float: left; width: 240px;
+                clear: left;
+            }
+            #logArea {
+                width: calc(100% - 0.5em);
+                min-height: 600px;
+                font-family: monospace;
+            }
+            .val {
+                float: left;
+            }
+            #status {
+                width: 300px;
+            }
+            h2 {clear: both;}
+            button {
+                font-weight: bold;
+                width: 50%;
+                margin: 1em;
+                padding: 1em;
+                cursor: pointer;
+            }
+        </style>
+    </head>
+    <body>
+        <div class='content'>
+            <h1>WebGL MNIST learning improved</h1>
+            <p>
+            We have improved the previous MNIST implementation in order to make this implementation faster than the Python/Numpy one. We still use our <i>WGLMatrix</i> library to process all linear algebra computations.
+            </p>
+
+            <p>
+            The full learning may take a few tens of minutes.
+            </p>
+
+
+            <h2>Controls :</h2>
+            <p>The whole dataset may be too large for you graphic card memory. If it overflows, the WebGL context is killed. You need to refresh this webpage and to try again with a reduced version of the dataset.
+            </p>
+
+            <button onclick='main(1)'>START WITH THE WHOLE DATASET (50000|10000)</button>
+            <button onclick='main(2)'>START WITH THE HALF DATASET (25000|5000)</button>
+            <button onclick='main(4)'>START WITH THE QUARTER DATASET (12500|2500)</button>
+
+
+            <h2>Network hyperparameters :</h2>
+            <label>layers :</label><div class='val'>
+                    <ul>
+                        <li>Input layer : 784 neurons (28x28 pixel digit image)
+                        <li>Hidden layers : 256, 64 neurons
+                        <li>Output layer : 10 neurons (1 per digit)
+                    </ul>
+                </div>
+            <label>activation function :</label><div class='val'>SIGMOID</div>
+            <label>connectivity :</label><div class='val'>fully connected</div>
+
+
+            <h2><br/>Learning parameters :</h2>
+            <label>number of samples for training :</label><div class='val'>50000</div>
+            <label>number of samples for testing :</label><div class='val'>10000</div>
+            <label>number of epochs :</label><div class='val'>20</div>
+            <label>minibatch size :</label><div class='val'>8</div>
+            <label>eta :</label><div class='val'>1.0</div>
+
+
+            <h2><br/>Monitoring :</h2>
+            <label>Status :</label><input id='status' type='text'/><br/>
+
+            Logging console :
+            <textarea id='logArea'></textarea>
+
+
+            <h2>References :</h2>
+            <ul>
+                <li><a href='http://neuralnetworksanddeeplearning.com/chap1.html' target='_blank'>Chapter 1 (Using neural nets to recognize handwritten digits) of Michael Nielsen's online book, Neural networks and deep learning</a> : It details the neural network used,
+                <li><a href='https://github.com/mnielsen/neural-networks-and-deep-learning/archive/master.zip' target='_blank'>Direct download link to the MNIST neural network written with Python/Numpy on which this example is based (MIT license).</a>
+                <li>We use JSON converted MNIST data from <a href='ConvnetJS repository' target='_blank'>ConvnetJS repository (MIT license)</a>
+            </ul>
+        </div>
+    </body>
+</html>
+
