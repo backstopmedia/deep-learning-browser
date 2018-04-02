@@ -51,9 +51,10 @@ function main_CPU(){
 
     //output the visualisation in a canvas2D
     var canvas=document.createElement('canvas');
-    document.body.appendChild(canvas);
+    document.getElementById('content').appendChild(canvas);
     canvas.setAttribute('width', SETTINGS.simuSize);
     canvas.setAttribute('height', SETTINGS.simuSize);
+    canvas.setAttribute('style', 'image-rendering: pixelated; width: 512px');
     var ctx=canvas.getContext('2d');
 
     var iData=ctx.createImageData(SETTINGS.simuSize, SETTINGS.simuSize);
