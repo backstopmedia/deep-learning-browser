@@ -1,3 +1,6 @@
 [submodule "tfjs-rock-paper-scissors"]
 	path = chapter6/tfjs-rock-paper-scissors
 	url = https://github.com/reiinakano/tfjs-rock-paper-scissors
+[submodule "tfjs-lstm-text-generation"]
+	path = tfjs-lstm-text-generation
+	url = https://github.com/reiinakano/tfjs-lstm-text-generation
