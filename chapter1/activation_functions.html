@@ -1,0 +1,78 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+<script src="https://d3js.org/d3-array.v1.min.js"></script>
+
+<div id="chart-container"></div>
+
+<style>
+#chart-container {
+  width: 600px;
+}
+</style>
+
+<script>
+const container = document.getElementById('chart-container');
+
+function createChart(label, data, style) {
+  const canvas = document.createElement('canvas');
+  container.append(canvas);
+
+  style = style || {};
+
+  return new Chart(canvas.getContext('2d'), {
+      type: 'line',
+      responsive: true,
+      maintainAspectRatio: false,
+      data: {
+          labels: data[0],
+          datasets: [Object.assign({
+              lineTension: 0.5,
+              backgroundColor: 'rgb(255, 255, 255)',
+              borderColor: 'rgb(8, 119, 189, 0.75)',
+              fill: false,
+              radius: 0,
+              data: data[1],
+          }, style)]
+      },
+      options: {
+        title: { display: true, text: label },
+        legend: { display: false },
+        tooltips: { enabled: false },
+        scales: {
+          xAxes: [{
+            ticks: {
+              max: 5,
+              min: -5,
+              beginAtZero: true,
+              callback: (value, index, values) => {
+                return [0, 5, -5].indexOf(value) !== -1 ? value : '';
+              }
+            }
+          }],
+          yAxes: [{
+            ticks: {
+              maxTicksLimit: 3,
+              beginAtZero: true
+            }
+          }]
+        }
+      }
+  });
+}
+
+function evaluate(fn, step, start, stop) {
+  start = start || -5.0;
+  stop = stop || 5.0;
+  step = step || 1;
+  const range = d3.range(start, stop + step, step);
+  return [range, range.map(x => fn(x, range))];
+}
+
+createChart("Rect", evaluate(x => Math.sign(x)), {lineTension: 0});
+createChart("Tanh", evaluate(x => Math.tanh(x)));
+createChart("Sigmoid", evaluate(x => Math.exp(x) / (1 + Math.exp(x))));
+createChart("ReLU", evaluate(x => Math.max(0, x)), {lineTension: 0});
+createChart("Leaky ReLU", evaluate(x => Math.max(0.1 * x, x)), {lineTension: 0});
+createChart("ELU", evaluate(x => x < 0 ? 1 * Math.exp(x) - 1 : x));
+createChart("Softmax", evaluate((x, a) => Math.exp(x) / a.map(Math.exp).reduce((a, b) => a + b, 0)));
+
+</script>
