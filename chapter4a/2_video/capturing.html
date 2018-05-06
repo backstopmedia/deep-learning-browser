@@ -1,0 +1,46 @@
+<button id="capture" style="display: block;">Capture</button>
+
+<script>
+const player = document.createElement('video');
+const btn = document.getElementById('capture');
+
+function loadRgbaDataFromImage(img, width, height) {
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(img, 0, 0, width, height);
+  const imgData = ctx.getImageData(0, 0, width, height);
+  return new Int32Array(imgData.data);
+}
+
+function renderRgbaData(rootElem, data, width, height, smooth) {
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+
+  const ctx = canvas.getContext('2d');
+  const img = ctx.getImageData(0, 0, width, height);
+  ctx.imageSmoothingEnabled = Boolean(smooth);
+
+  const vals = new Uint8ClampedArray(data);
+  img.data.set(vals);
+  ctx.putImageData(img, 0, 0);
+
+  rootElem.append(canvas);
+  return canvas;
+}
+
+btn.addEventListener('click', () => {
+  const width = 240;
+  const height = 160;
+  const data = loadRgbaDataFromImage(player, width, height);
+  console.log(data);
+
+  renderRgbaData(document.body, data, width, height);
+});
+
+navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+  .then((stream) => { player.srcObject = stream; });
+
+</script>

@@ -1,0 +1,31 @@
+<script>
+const audioContext = new AudioContext();
+
+const bufferSize = 4096; // 256, 512, 1024, 2048, 4096, 8192, 16384
+const numInputChannels = 1;
+const numOutputChannels = 1;
+
+function onProcess(e) {
+  // Float32Array(bufferSize)
+  const data = e.inputBuffer.getChannelData(0);
+
+  console.log(e.inputBuffer, data);
+}
+
+function onStream(stream) {
+  const source = audioContext.createMediaStreamSource(stream);
+  const processor = audioContext.createScriptProcessor(bufferSize, numInputChannels, numOutputChannels);
+  
+  // connect the processor to the source
+  source.connect(processor);
+
+  // connect the output to the processor
+  processor.connect(audioContext.destination);
+  
+  processor.onaudioprocess = onProcess;
+};
+
+navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+  .then(onStream);
+
+</script>

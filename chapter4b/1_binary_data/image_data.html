@@ -1,0 +1,74 @@
+<body>
+<script>
+
+async function loadBinaryDataFromUrl(url) {
+  const req = new Request(url);
+  const res = await fetch(req);
+  if (!res.ok) {
+    throw Error(res.statusText);
+  }
+  return res.arrayBuffer();
+}
+
+function renderData(rootElem, data, width, height, smooth) {
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+
+  const ctx = canvas.getContext('2d');
+  ctx.imageSmoothingEnabled = false;
+  const img = ctx.getImageData(0, 0, width, height);
+  
+  const len = data.length * 4;
+  const vals = new Uint8ClampedArray(len);
+
+  for (let x = 0; x < width; ++x) {
+    for (let y = 0; y < height; ++y) {
+      let ix0 = (y*width + x);
+      let ix1 = ix0 * 4;
+      let val = (1 - data[ix0]) * 255;
+
+      vals[ix1 + 0] = val;
+      vals[ix1 + 1] = val;
+      vals[ix1 + 2] = val;
+      vals[ix1 + 3] = 255;
+    }
+  }
+
+  img.data.set(vals);
+  ctx.putImageData(img, 0, 0);
+
+  rootElem.append(canvas);
+  return canvas;
+}
+
+// render custom data
+(async function(){
+  
+  const size = 8;
+  const data = new Int32Array([
+    0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0,
+    1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1,
+    0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0,
+  ]);
+
+  renderData(document.body, data, size, size, false);
+}());
+
+// render binary data
+(async function(){
+  
+  const size = 100;
+  const buf = await loadBinaryDataFromUrl('data/rand.bin');
+  const data = new Float32Array(buf);
+
+  renderData(document.body, data, size, size, true);
+}());
+
+</script>
+</body>

@@ -1,0 +1,35 @@
+<script src="//cdn.rawgit.com/dcodeIO/protobuf.js/6.8.6/dist/protobuf.js"></script>
+
+<script>
+  async function loadBinaryDataFromUrl(url) {
+    const req = new Request(url);
+    const res = await fetch(req);
+    if (!res.ok) {
+      throw Error(res.statusText);
+    }
+    return res.arrayBuffer();
+  }
+
+  async function loadTextDataFromUrl(url) {
+    const req = new Request(url);
+    const res = await fetch(req);
+    if (!res.ok) {
+      throw Error(res.statusText);
+    }
+    return res.text();
+  }
+
+  // tensorflow
+  (async function(){
+
+    const bundle = await loadTextDataFromUrl('proto/tf.json');
+    const root = protobuf.Root.fromJSON(JSON.parse(bundle));
+    const graphDef = root.nested.tensorflow.GraphDef;
+
+    const url = "data/frozen_inference_graph.pb";
+    const data = await loadBinaryDataFromUrl(url);
+    const graph = graphDef.decode(new Uint8Array(data));
+    console.log(graph);
+  }());
+
+</script>

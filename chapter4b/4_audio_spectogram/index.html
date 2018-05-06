@@ -1,0 +1,78 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+
+<div id="chart-container">
+  <canvas id="canvas"></canvas>
+</div>
+
+<style>
+#chart-container {
+  width: 480px;
+}
+</style>
+
+<script>
+
+const worker = new Worker('worker.js');
+const audioContext = new AudioContext();
+
+// 256, 512, 1024, 2048, 4096, 8192, 16384
+const bufferSize = 4096;
+
+const canvas = document.getElementById('canvas');
+const chart = createChart(canvas)
+
+function createChart(canvas) {
+  var ctx = canvas.getContext('2d');
+  return new Chart(ctx, {
+      type: 'bar',
+      responsive: true,
+      maintainAspectRatio: false,
+      data: {
+          labels: new Int32Array(512).map((d,i) => i),
+          datasets: [{
+              label: "FFT",
+              backgroundColor: 'steelblue',
+              borderColor: 'steelblue',
+              data: [],
+          }]
+      },
+      options: {
+        tooltips: { enabled: false },
+        scales: {
+            yAxes: [{
+                type: 'logarithmic', ticks: { min: 5e-6, max: 1e0 }
+            }]
+        }
+      }
+  });
+}
+
+function updateChart(chart, data) {
+  chart.data.datasets[0].data = data;
+  chart.update();
+}
+
+function onStream(stream) {
+  const source = audioContext.createMediaStreamSource(stream);
+  const processor = audioContext.createScriptProcessor(bufferSize, 1, 1);
+
+  source.connect(processor);
+  processor.connect(audioContext.destination);
+
+  processor.onaudioprocess = (e) => {
+    const audioBuffer = e.inputBuffer;
+    const length = audioBuffer.length;
+    const sampleRate = audioBuffer.sampleRate
+    const data = audioBuffer.getChannelData(0);
+    worker.postMessage({length: length, sampleRate:sampleRate, data: data});
+  }
+};
+
+navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+  .then(onStream);
+
+worker.addEventListener('message', function(e) {
+  updateChart(chart, e.data);
+}, false);
+
+</script>
