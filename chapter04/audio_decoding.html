@@ -1,0 +1,43 @@
+<script>
+// create an audio context
+const context = new AudioContext();
+
+async function loadBinaryDataFromUrl(url) {
+  const req = new Request(url);
+  const res = await fetch(req);
+  if (!res.ok) {
+    throw Error(res.statusText);
+  }
+  return res.arrayBuffer();
+}
+
+function decodeAudio(data) {
+  return new Promise((resolve, reject) => {
+    // decode the array buffer using supported audio formats
+    context.decodeAudioData(data, (buffer) => resolve(buffer));
+  }); 
+}
+
+function playSound(buffer) {
+  // creates a sound source
+  var source = context.createBufferSource();
+  // tell the source which sound to play
+  source.buffer = buffer;
+  // connect the source to the context's destination (the speakers)
+  source.connect(context.destination);
+  // play the source now
+  source.start(0);
+}
+
+// load image data
+(async function(){
+
+  const url = "data/Large-dog-barks.mp3";
+  const data = await loadBinaryDataFromUrl(url);
+  const audio = await decodeAudio(data);
+
+  playSound(audio);
+
+}());
+
+</script>
