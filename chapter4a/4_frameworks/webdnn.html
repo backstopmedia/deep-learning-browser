@@ -1,0 +1,54 @@
+<script src="https://rawgit.com/mil-tokyo/webdnn/v1.2.2/dist/webdnn.js"></script>
+<body>
+<script>
+
+function createCanvas(rootElem, width, height) {
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  rootElem.append(canvas);
+  return canvas;
+}
+
+async function loadBinaryDataFromUrl(url) {
+  const req = new Request(url);
+  const res = await fetch(req);
+  if (!res.ok) {
+    throw Error(res.statusText);
+  }
+  return res.arrayBuffer();
+}
+
+// load image data
+(async function(){
+  
+  const url = "data/cat.jpeg";
+  const img = await WebDNN.Image.getImageArray(url, { dstW: 256, dstH: 256 });
+
+  const canvas01 = createCanvas(document.body, 256, 256);
+  WebDNN.Image.setImageArrayToCanvas(img, 256, 256, canvas01)
+
+  const canvas02 = createCanvas(document.body, 100, 100);
+  WebDNN.Image.setImageArrayToCanvas(img, 256, 256, canvas02, { dstW: 100, dstH: 100 });
+}());
+
+// load binary data
+(async function(){
+  
+  const size = 100;
+  const buf = await loadBinaryDataFromUrl('data/rand.bin');
+  const img = new Float32Array(buf);
+
+  const canvas01 = createCanvas(document.body, 100, 100);
+  WebDNN.Image.setImageArrayToCanvas(img, 100, 100, canvas01, {
+    color: WebDNN.Image.Color.GREY, dstW: 100, dstH: 100, scale: [255], bias: [-1]
+  });
+
+  const canvas02 = createCanvas(document.body, 256, 256);
+  WebDNN.Image.setImageArrayToCanvas(img, 100, 100, canvas02, {
+    color: WebDNN.Image.Color.GREY, dstW: 256, dstH: 256, scale: [255], bias: [-1]
+  });
+}());
+
+</script>
+</body>

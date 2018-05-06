@@ -1,0 +1,65 @@
+<body>
+<canvas width="480" height="320" id="draw"></canvas>
+
+<style>
+
+#draw {
+  border: 1px dashed black;
+  cursor: crosshair;
+}
+
+</style>
+
+<script>
+
+function makeDrawable(canvas) {
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = "#000";
+  ctx.lineWidth = 10;
+  ctx.lineCap = "round";
+  ctx.imageSmoothingEnabled = true;
+
+  let isDrawing = false;
+  let prevPos = null;
+
+  function draw(event) {
+    if (isDrawing) {
+      drawLineTo(getCursorPos(event));
+    }
+  }
+
+  function getCursorPos(event) {
+    return [event.offsetX, event.offsetY];
+  }
+
+  function drawLineTo(pos) {
+    if (prevPos) {
+      ctx.beginPath();
+      ctx.moveTo(prevPos[0], prevPos[1]);
+      ctx.lineTo(pos[0], pos[1]);
+      ctx.stroke();
+    }
+    prevPos = pos;
+  }
+
+  const size = 10;
+  function drawPixel(pos) {
+    ctx.fillRect(pos[0], pos[1], size, size);
+  }
+
+  canvas.onmousedown = () => isDrawing = true;
+  canvas.onmouseup = () => {
+    isDrawing = false;
+    prevPos = null;
+  }
+
+  return {
+    start: () => canvas.onmousemove = draw,
+    stop: () => canvas.onmousemove = null
+  }
+}
+
+makeDrawable(document.getElementById('draw')).start();
+
+</script>
+</body>

@@ -1,0 +1,1740 @@
+{
+  "options": {
+    "cc_enable_arenas": true,
+    "java_outer_classname": "TensorShapeProtos",
+    "java_multiple_files": true,
+    "java_package": "org.tensorflow.framework"
+  },
+  "nested": {
+    "tensorflow": {
+      "options": {
+        "cc_enable_arenas": true,
+        "java_outer_classname": "NamedTensorProtos",
+        "java_multiple_files": true,
+        "java_package": "org.tensorflow.framework"
+      },
+      "nested": {
+        "CreateSessionRequest": {
+          "fields": {
+            "graphDef": {
+              "type": "GraphDef",
+              "id": 1
+            },
+            "config": {
+              "type": "ConfigProto",
+              "id": 2
+            },
+            "target": {
+              "type": "string",
+              "id": 3
+            }
+          }
+        },
+        "CreateSessionResponse": {
+          "fields": {
+            "sessionHandle": {
+              "type": "string",
+              "id": 1
+            },
+            "graphVersion": {
+              "type": "int64",
+              "id": 2
+            }
+          }
+        },
+        "ExtendSessionRequest": {
+          "fields": {
+            "sessionHandle": {
+              "type": "string",
+              "id": 1
+            },
+            "graphDef": {
+              "type": "GraphDef",
+              "id": 2
+            },
+            "currentGraphVersion": {
+              "type": "int64",
+              "id": 3
+            }
+          }
+        },
+        "ExtendSessionResponse": {
+          "fields": {
+            "newGraphVersion": {
+              "type": "int64",
+              "id": 4
+            }
+          }
+        },
+        "RunStepRequest": {
+          "fields": {
+            "sessionHandle": {
+              "type": "string",
+              "id": 1
+            },
+            "feed": {
+              "rule": "repeated",
+              "type": "NamedTensorProto",
+              "id": 2
+            },
+            "fetch": {
+              "rule": "repeated",
+              "type": "string",
+              "id": 3
+            },
+            "target": {
+              "rule": "repeated",
+              "type": "string",
+              "id": 4
+            },
+            "options": {
+              "type": "RunOptions",
+              "id": 5
+            },
+            "partialRunHandle": {
+              "type": "string",
+              "id": 6
+            },
+            "storeErrorsInResponseBody": {
+              "type": "bool",
+              "id": 7
+            }
+          }
+        },
+        "RunStepResponse": {
+          "fields": {
+            "tensor": {
+              "rule": "repeated",
+              "type": "NamedTensorProto",
+              "id": 1
+            },
+            "metadata": {
+              "type": "RunMetadata",
+              "id": 2
+            },
+            "statusCode": {
+              "type": "error.Code",
+              "id": 3
+            },
+            "statusErrorMessage": {
+              "type": "string",
+              "id": 4
+            }
+          }
+        },
+        "PartialRunSetupRequest": {
+          "fields": {
+            "sessionHandle": {
+              "type": "string",
+              "id": 1
+            },
+            "feed": {
+              "rule": "repeated",
+              "type": "string",
+              "id": 2
+            },
+            "fetch": {
+              "rule": "repeated",
+              "type": "string",
+              "id": 3
+            },
+            "target": {
+              "rule": "repeated",
+              "type": "string",
+              "id": 4
+            }
+          }
+        },
+        "PartialRunSetupResponse": {
+          "fields": {
+            "partialRunHandle": {
+              "type": "string",
+              "id": 1
+            }
+          }
+        },
+        "CloseSessionRequest": {
+          "fields": {
+            "sessionHandle": {
+              "type": "string",
+              "id": 1
+            }
+          }
+        },
+        "CloseSessionResponse": {
+          "fields": {}
+        },
+        "ResetRequest": {
+          "fields": {
+            "container": {
+              "rule": "repeated",
+              "type": "string",
+              "id": 1
+            },
+            "deviceFilters": {
+              "rule": "repeated",
+              "type": "string",
+              "id": 2
+            }
+          }
+        },
+        "ResetResponse": {
+          "fields": {}
+        },
+        "ListDevicesRequest": {
+          "fields": {
+            "sessionHandle": {
+              "type": "string",
+              "id": 1
+            }
+          }
+        },
+        "ListDevicesResponse": {
+          "fields": {
+            "localDevice": {
+              "rule": "repeated",
+              "type": "DeviceAttributes",
+              "id": 1
+            },
+            "remoteDevice": {
+              "rule": "repeated",
+              "type": "DeviceAttributes",
+              "id": 2
+            }
+          }
+        },
+        "InterconnectLink": {
+          "fields": {
+            "deviceId": {
+              "type": "int32",
+              "id": 1
+            },
+            "type": {
+              "type": "string",
+              "id": 2
+            },
+            "strength": {
+              "type": "int32",
+              "id": 3
+            }
+          }
+        },
+        "LocalLinks": {
+          "fields": {
+            "link": {
+              "rule": "repeated",
+              "type": "InterconnectLink",
+              "id": 1
+            }
+          }
+        },
+        "DeviceLocality": {
+          "fields": {
+            "busId": {
+              "type": "int32",
+              "id": 1
+            },
+            "numaNode": {
+              "type": "int32",
+              "id": 2
+            },
+            "links": {
+              "type": "LocalLinks",
+              "id": 3
+            }
+          }
+        },
+        "DeviceAttributes": {
+          "fields": {
+            "name": {
+              "type": "string",
+              "id": 1
+            },
+            "deviceType": {
+              "type": "string",
+              "id": 2
+            },
+            "memoryLimit": {
+              "type": "int64",
+              "id": 4
+            },
+            "locality": {
+              "type": "DeviceLocality",
+              "id": 5
+            },
+            "incarnation": {
+              "type": "fixed64",
+              "id": 6
+            },
+            "physicalDeviceDesc": {
+              "type": "string",
+              "id": 7
+            }
+          }
+        },
+        "GraphDef": {
+          "fields": {
+            "node": {
+              "rule": "repeated",
+              "type": "NodeDef",
+              "id": 1
+            },
+            "versions": {
+              "type": "VersionDef",
+              "id": 4
+            },
+            "version": {
+              "type": "int32",
+              "id": 3,
+              "options": {
+                "deprecated": true
+              }
+            },
+            "library": {
+              "type": "FunctionDefLibrary",
+              "id": 2
+            }
+          }
+        },
+        "NodeDef": {
+          "fields": {
+            "name": {
+              "type": "string",
+              "id": 1
+            },
+            "op": {
+              "type": "string",
+              "id": 2
+            },
+            "input": {
+              "rule": "repeated",
+              "type": "string",
+              "id": 3
+            },
+            "device": {
+              "type": "string",
+              "id": 4
+            },
+            "attr": {
+              "keyType": "string",
+              "type": "AttrValue",
+              "id": 5
+            }
+          }
+        },
+        "AttrValue": {
+          "oneofs": {
+            "value": {
+              "oneof": [
+                "s",
+                "i",
+                "f",
+                "b",
+                "type",
+                "shape",
+                "tensor",
+                "list",
+                "func",
+                "placeholder"
+              ]
+            }
+          },
+          "fields": {
+            "s": {
+              "type": "bytes",
+              "id": 2
+            },
+            "i": {
+              "type": "int64",
+              "id": 3
+            },
+            "f": {
+              "type": "float",
+              "id": 4
+            },
+            "b": {
+              "type": "bool",
+              "id": 5
+            },
+            "type": {
+              "type": "DataType",
+              "id": 6
+            },
+            "shape": {
+              "type": "TensorShapeProto",
+              "id": 7
+            },
+            "tensor": {
+              "type": "TensorProto",
+              "id": 8
+            },
+            "list": {
+              "type": "ListValue",
+              "id": 1
+            },
+            "func": {
+              "type": "NameAttrList",
+              "id": 10
+            },
+            "placeholder": {
+              "type": "string",
+              "id": 9
+            }
+          },
+          "nested": {
+            "ListValue": {
+              "fields": {
+                "s": {
+                  "rule": "repeated",
+                  "type": "bytes",
+                  "id": 2
+                },
+                "i": {
+                  "rule": "repeated",
+                  "type": "int64",
+                  "id": 3
+                },
+                "f": {
+                  "rule": "repeated",
+                  "type": "float",
+                  "id": 4
+                },
+                "b": {
+                  "rule": "repeated",
+                  "type": "bool",
+                  "id": 5
+                },
+                "type": {
+                  "rule": "repeated",
+                  "type": "DataType",
+                  "id": 6
+                },
+                "shape": {
+                  "rule": "repeated",
+                  "type": "TensorShapeProto",
+                  "id": 7
+                },
+                "tensor": {
+                  "rule": "repeated",
+                  "type": "TensorProto",
+                  "id": 8
+                },
+                "func": {
+                  "rule": "repeated",
+                  "type": "NameAttrList",
+                  "id": 9
+                }
+              }
+            }
+          }
+        },
+        "NameAttrList": {
+          "fields": {
+            "name": {
+              "type": "string",
+              "id": 1
+            },
+            "attr": {
+              "keyType": "string",
+              "type": "AttrValue",
+              "id": 2
+            }
+          }
+        },
+        "TensorProto": {
+          "fields": {
+            "dtype": {
+              "type": "DataType",
+              "id": 1
+            },
+            "tensorShape": {
+              "type": "TensorShapeProto",
+              "id": 2
+            },
+            "versionNumber": {
+              "type": "int32",
+              "id": 3
+            },
+            "tensorContent": {
+              "type": "bytes",
+              "id": 4
+            },
+            "halfVal": {
+              "rule": "repeated",
+              "type": "int32",
+              "id": 13
+            },
+            "floatVal": {
+              "rule": "repeated",
+              "type": "float",
+              "id": 5
+            },
+            "doubleVal": {
+              "rule": "repeated",
+              "type": "double",
+              "id": 6
+            },
+            "intVal": {
+              "rule": "repeated",
+              "type": "int32",
+              "id": 7
+            },
+            "stringVal": {
+              "rule": "repeated",
+              "type": "bytes",
+              "id": 8
+            },
+            "scomplexVal": {
+              "rule": "repeated",
+              "type": "float",
+              "id": 9
+            },
+            "int64Val": {
+              "rule": "repeated",
+              "type": "int64",
+              "id": 10
+            },
+            "boolVal": {
+              "rule": "repeated",
+              "type": "bool",
+              "id": 11
+            },
+            "dcomplexVal": {
+              "rule": "repeated",
+              "type": "double",
+              "id": 12
+            },
+            "resourceHandleVal": {
+              "rule": "repeated",
+              "type": "ResourceHandleProto",
+              "id": 14
+            },
+            "variantVal": {
+              "rule": "repeated",
+              "type": "VariantTensorDataProto",
+              "id": 15
+            },
+            "uint32Val": {
+              "rule": "repeated",
+              "type": "uint32",
+              "id": 16
+            },
+            "uint64Val": {
+              "rule": "repeated",
+              "type": "uint64",
+              "id": 17
+            }
+          }
+        },
+        "VariantTensorDataProto": {
+          "fields": {
+            "typeName": {
+              "type": "string",
+              "id": 1
+            },
+            "metadata": {
+              "type": "bytes",
+              "id": 2
+            },
+            "tensors": {
+              "rule": "repeated",
+              "type": "TensorProto",
+              "id": 3
+            }
+          }
+        },
+        "ResourceHandleProto": {
+          "fields": {
+            "device": {
+              "type": "string",
+              "id": 1
+            },
+            "container": {
+              "type": "string",
+              "id": 2
+            },
+            "name": {
+              "type": "string",
+              "id": 3
+            },
+            "hashCode": {
+              "type": "uint64",
+              "id": 4
+            },
+            "maybeTypeName": {
+              "type": "string",
+              "id": 5
+            }
+          }
+        },
+        "TensorShapeProto": {
+          "fields": {
+            "dim": {
+              "rule": "repeated",
+              "type": "Dim",
+              "id": 2
+            },
+            "unknownRank": {
+              "type": "bool",
+              "id": 3
+            }
+          },
+          "nested": {
+            "Dim": {
+              "fields": {
+                "size": {
+                  "type": "int64",
+                  "id": 1
+                },
+                "name": {
+                  "type": "string",
+                  "id": 2
+                }
+              }
+            }
+          }
+        },
+        "DataType": {
+          "values": {
+            "DT_INVALID": 0,
+            "DT_FLOAT": 1,
+            "DT_DOUBLE": 2,
+            "DT_INT32": 3,
+            "DT_UINT8": 4,
+            "DT_INT16": 5,
+            "DT_INT8": 6,
+            "DT_STRING": 7,
+            "DT_COMPLEX64": 8,
+            "DT_INT64": 9,
+            "DT_BOOL": 10,
+            "DT_QINT8": 11,
+            "DT_QUINT8": 12,
+            "DT_QINT32": 13,
+            "DT_BFLOAT16": 14,
+            "DT_QINT16": 15,
+            "DT_QUINT16": 16,
+            "DT_UINT16": 17,
+            "DT_COMPLEX128": 18,
+            "DT_HALF": 19,
+            "DT_RESOURCE": 20,
+            "DT_VARIANT": 21,
+            "DT_UINT32": 22,
+            "DT_UINT64": 23,
+            "DT_FLOAT_REF": 101,
+            "DT_DOUBLE_REF": 102,
+            "DT_INT32_REF": 103,
+            "DT_UINT8_REF": 104,
+            "DT_INT16_REF": 105,
+            "DT_INT8_REF": 106,
+            "DT_STRING_REF": 107,
+            "DT_COMPLEX64_REF": 108,
+            "DT_INT64_REF": 109,
+            "DT_BOOL_REF": 110,
+            "DT_QINT8_REF": 111,
+            "DT_QUINT8_REF": 112,
+            "DT_QINT32_REF": 113,
+            "DT_BFLOAT16_REF": 114,
+            "DT_QINT16_REF": 115,
+            "DT_QUINT16_REF": 116,
+            "DT_UINT16_REF": 117,
+            "DT_COMPLEX128_REF": 118,
+            "DT_HALF_REF": 119,
+            "DT_RESOURCE_REF": 120,
+            "DT_VARIANT_REF": 121,
+            "DT_UINT32_REF": 122,
+            "DT_UINT64_REF": 123
+          }
+        },
+        "FunctionDefLibrary": {
+          "fields": {
+            "function": {
+              "rule": "repeated",
+              "type": "FunctionDef",
+              "id": 1
+            },
+            "gradient": {
+              "rule": "repeated",
+              "type": "GradientDef",
+              "id": 2
+            }
+          }
+        },
+        "FunctionDef": {
+          "fields": {
+            "signature": {
+              "type": "OpDef",
+              "id": 1
+            },
+            "attr": {
+              "keyType": "string",
+              "type": "AttrValue",
+              "id": 5
+            },
+            "nodeDef": {
+              "rule": "repeated",
+              "type": "NodeDef",
+              "id": 3
+            },
+            "ret": {
+              "keyType": "string",
+              "type": "string",
+              "id": 4
+            }
+          },
+          "reserved": [
+            [
+              2,
+              2
+            ]
+          ]
+        },
+        "GradientDef": {
+          "fields": {
+            "functionName": {
+              "type": "string",
+              "id": 1
+            },
+            "gradientFunc": {
+              "type": "string",
+              "id": 2
+            }
+          }
+        },
+        "OpDef": {
+          "fields": {
+            "name": {
+              "type": "string",
+              "id": 1
+            },
+            "inputArg": {
+              "rule": "repeated",
+              "type": "ArgDef",
+              "id": 2
+            },
+            "outputArg": {
+              "rule": "repeated",
+              "type": "ArgDef",
+              "id": 3
+            },
+            "attr": {
+              "rule": "repeated",
+              "type": "AttrDef",
+              "id": 4
+            },
+            "deprecation": {
+              "type": "OpDeprecation",
+              "id": 8
+            },
+            "summary": {
+              "type": "string",
+              "id": 5
+            },
+            "description": {
+              "type": "string",
+              "id": 6
+            },
+            "isCommutative": {
+              "type": "bool",
+              "id": 18
+            },
+            "isAggregate": {
+              "type": "bool",
+              "id": 16
+            },
+            "isStateful": {
+              "type": "bool",
+              "id": 17
+            },
+            "allowsUninitializedInput": {
+              "type": "bool",
+              "id": 19
+            }
+          },
+          "nested": {
+            "ArgDef": {
+              "fields": {
+                "name": {
+                  "type": "string",
+                  "id": 1
+                },
+                "description": {
+                  "type": "string",
+                  "id": 2
+                },
+                "type": {
+                  "type": "DataType",
+                  "id": 3
+                },
+                "typeAttr": {
+                  "type": "string",
+                  "id": 4
+                },
+                "numberAttr": {
+                  "type": "string",
+                  "id": 5
+                },
+                "typeListAttr": {
+                  "type": "string",
+                  "id": 6
+                },
+                "isRef": {
+                  "type": "bool",
+                  "id": 16
+                }
+              }
+            },
+            "AttrDef": {
+              "fields": {
+                "name": {
+                  "type": "string",
+                  "id": 1
+                },
+                "type": {
+                  "type": "string",
+                  "id": 2
+                },
+                "defaultValue": {
+                  "type": "AttrValue",
+                  "id": 3
+                },
+                "description": {
+                  "type": "string",
+                  "id": 4
+                },
+                "hasMinimum": {
+                  "type": "bool",
+                  "id": 5
+                },
+                "minimum": {
+                  "type": "int64",
+                  "id": 6
+                },
+                "allowedValues": {
+                  "type": "AttrValue",
+                  "id": 7
+                }
+              }
+            }
+          }
+        },
+        "OpDeprecation": {
+          "fields": {
+            "version": {
+              "type": "int32",
+              "id": 1
+            },
+            "explanation": {
+              "type": "string",
+              "id": 2
+            }
+          }
+        },
+        "OpList": {
+          "fields": {
+            "op": {
+              "rule": "repeated",
+              "type": "OpDef",
+              "id": 1
+            }
+          }
+        },
+        "VersionDef": {
+          "fields": {
+            "producer": {
+              "type": "int32",
+              "id": 1
+            },
+            "minConsumer": {
+              "type": "int32",
+              "id": 2
+            },
+            "badConsumers": {
+              "rule": "repeated",
+              "type": "int32",
+              "id": 3
+            }
+          }
+        },
+        "error": {
+          "options": {
+            "cc_enable_arenas": true,
+            "java_outer_classname": "ErrorCodesProtos",
+            "java_multiple_files": true,
+            "java_package": "org.tensorflow.framework"
+          },
+          "nested": {
+            "Code": {
+              "values": {
+                "OK": 0,
+                "CANCELLED": 1,
+                "UNKNOWN": 2,
+                "INVALID_ARGUMENT": 3,
+                "DEADLINE_EXCEEDED": 4,
+                "NOT_FOUND": 5,
+                "ALREADY_EXISTS": 6,
+                "PERMISSION_DENIED": 7,
+                "UNAUTHENTICATED": 16,
+                "RESOURCE_EXHAUSTED": 8,
+                "FAILED_PRECONDITION": 9,
+                "ABORTED": 10,
+                "OUT_OF_RANGE": 11,
+                "UNIMPLEMENTED": 12,
+                "INTERNAL": 13,
+                "UNAVAILABLE": 14,
+                "DATA_LOSS": 15,
+                "DO_NOT_USE_RESERVED_FOR_FUTURE_EXPANSION_USE_DEFAULT_IN_SWITCH_INSTEAD_": 20
+              }
+            }
+          }
+        },
+        "GPUOptions": {
+          "fields": {
+            "perProcessGpuMemoryFraction": {
+              "type": "double",
+              "id": 1
+            },
+            "allocatorType": {
+              "type": "string",
+              "id": 2
+            },
+            "deferredDeletionBytes": {
+              "type": "int64",
+              "id": 3
+            },
+            "allowGrowth": {
+              "type": "bool",
+              "id": 4
+            },
+            "visibleDeviceList": {
+              "type": "string",
+              "id": 5
+            },
+            "pollingActiveDelayUsecs": {
+              "type": "int32",
+              "id": 6
+            },
+            "pollingInactiveDelayMsecs": {
+              "type": "int32",
+              "id": 7
+            },
+            "forceGpuCompatible": {
+              "type": "bool",
+              "id": 8
+            },
+            "experimental": {
+              "type": "Experimental",
+              "id": 9
+            }
+          },
+          "nested": {
+            "Experimental": {
+              "fields": {
+                "virtualDevices": {
+                  "rule": "repeated",
+                  "type": "VirtualDevices",
+                  "id": 1
+                }
+              },
+              "nested": {
+                "VirtualDevices": {
+                  "fields": {
+                    "memoryLimitMb": {
+                      "rule": "repeated",
+                      "type": "float",
+                      "id": 1
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "OptimizerOptions": {
+          "fields": {
+            "doCommonSubexpressionElimination": {
+              "type": "bool",
+              "id": 1
+            },
+            "doConstantFolding": {
+              "type": "bool",
+              "id": 2
+            },
+            "maxFoldedConstantInBytes": {
+              "type": "int64",
+              "id": 6
+            },
+            "doFunctionInlining": {
+              "type": "bool",
+              "id": 4
+            },
+            "optLevel": {
+              "type": "Level",
+              "id": 3
+            },
+            "globalJitLevel": {
+              "type": "GlobalJitLevel",
+              "id": 5
+            }
+          },
+          "nested": {
+            "Level": {
+              "values": {
+                "L1": 0,
+                "L0": -1
+              }
+            },
+            "GlobalJitLevel": {
+              "values": {
+                "DEFAULT": 0,
+                "OFF": -1,
+                "ON_1": 1,
+                "ON_2": 2
+              }
+            }
+          }
+        },
+        "GraphOptions": {
+          "fields": {
+            "enableRecvScheduling": {
+              "type": "bool",
+              "id": 2
+            },
+            "optimizerOptions": {
+              "type": "OptimizerOptions",
+              "id": 3
+            },
+            "buildCostModel": {
+              "type": "int64",
+              "id": 4
+            },
+            "buildCostModelAfter": {
+              "type": "int64",
+              "id": 9
+            },
+            "inferShapes": {
+              "type": "bool",
+              "id": 5
+            },
+            "placePrunedGraph": {
+              "type": "bool",
+              "id": 6
+            },
+            "enableBfloat16Sendrecv": {
+              "type": "bool",
+              "id": 7
+            },
+            "timelineStep": {
+              "type": "int32",
+              "id": 8
+            },
+            "rewriteOptions": {
+              "type": "RewriterConfig",
+              "id": 10
+            }
+          },
+          "reserved": [
+            "skip_common_subexpression_elimination",
+            [
+              1,
+              1
+            ]
+          ]
+        },
+        "ThreadPoolOptionProto": {
+          "fields": {
+            "numThreads": {
+              "type": "int32",
+              "id": 1
+            },
+            "globalName": {
+              "type": "string",
+              "id": 2
+            }
+          }
+        },
+        "RPCOptions": {
+          "fields": {
+            "useRpcForInprocessMaster": {
+              "type": "bool",
+              "id": 1
+            }
+          }
+        },
+        "ConfigProto": {
+          "fields": {
+            "deviceCount": {
+              "keyType": "string",
+              "type": "int32",
+              "id": 1
+            },
+            "intraOpParallelismThreads": {
+              "type": "int32",
+              "id": 2
+            },
+            "interOpParallelismThreads": {
+              "type": "int32",
+              "id": 5
+            },
+            "usePerSessionThreads": {
+              "type": "bool",
+              "id": 9
+            },
+            "sessionInterOpThreadPool": {
+              "rule": "repeated",
+              "type": "ThreadPoolOptionProto",
+              "id": 12
+            },
+            "placementPeriod": {
+              "type": "int32",
+              "id": 3
+            },
+            "deviceFilters": {
+              "rule": "repeated",
+              "type": "string",
+              "id": 4
+            },
+            "gpuOptions": {
+              "type": "GPUOptions",
+              "id": 6
+            },
+            "allowSoftPlacement": {
+              "type": "bool",
+              "id": 7
+            },
+            "logDevicePlacement": {
+              "type": "bool",
+              "id": 8
+            },
+            "graphOptions": {
+              "type": "GraphOptions",
+              "id": 10
+            },
+            "operationTimeoutInMs": {
+              "type": "int64",
+              "id": 11
+            },
+            "rpcOptions": {
+              "type": "RPCOptions",
+              "id": 13
+            },
+            "clusterDef": {
+              "type": "ClusterDef",
+              "id": 14
+            },
+            "isolateSessionState": {
+              "type": "bool",
+              "id": 15
+            }
+          }
+        },
+        "RunOptions": {
+          "fields": {
+            "traceLevel": {
+              "type": "TraceLevel",
+              "id": 1
+            },
+            "timeoutInMs": {
+              "type": "int64",
+              "id": 2
+            },
+            "interOpThreadPool": {
+              "type": "int32",
+              "id": 3
+            },
+            "outputPartitionGraphs": {
+              "type": "bool",
+              "id": 5
+            },
+            "debugOptions": {
+              "type": "DebugOptions",
+              "id": 6
+            },
+            "reportTensorAllocationsUponOom": {
+              "type": "bool",
+              "id": 7
+            }
+          },
+          "reserved": [
+            [
+              4,
+              4
+            ]
+          ],
+          "nested": {
+            "TraceLevel": {
+              "values": {
+                "NO_TRACE": 0,
+                "SOFTWARE_TRACE": 1,
+                "HARDWARE_TRACE": 2,
+                "FULL_TRACE": 3
+              }
+            }
+          }
+        },
+        "RunMetadata": {
+          "fields": {
+            "stepStats": {
+              "type": "StepStats",
+              "id": 1
+            },
+            "costGraph": {
+              "type": "CostGraphDef",
+              "id": 2
+            },
+            "partitionGraphs": {
+              "rule": "repeated",
+              "type": "GraphDef",
+              "id": 3
+            }
+          }
+        },
+        "CallableOptions": {
+          "fields": {
+            "feed": {
+              "rule": "repeated",
+              "type": "string",
+              "id": 1
+            },
+            "fetch": {
+              "rule": "repeated",
+              "type": "string",
+              "id": 2
+            },
+            "target": {
+              "rule": "repeated",
+              "type": "string",
+              "id": 3
+            },
+            "runOptions": {
+              "type": "RunOptions",
+              "id": 4
+            }
+          }
+        },
+        "CostGraphDef": {
+          "fields": {
+            "node": {
+              "rule": "repeated",
+              "type": "Node",
+              "id": 1
+            }
+          },
+          "nested": {
+            "Node": {
+              "fields": {
+                "name": {
+                  "type": "string",
+                  "id": 1
+                },
+                "device": {
+                  "type": "string",
+                  "id": 2
+                },
+                "id": {
+                  "type": "int32",
+                  "id": 3
+                },
+                "inputInfo": {
+                  "rule": "repeated",
+                  "type": "InputInfo",
+                  "id": 4
+                },
+                "outputInfo": {
+                  "rule": "repeated",
+                  "type": "OutputInfo",
+                  "id": 5
+                },
+                "temporaryMemorySize": {
+                  "type": "int64",
+                  "id": 6
+                },
+                "persistentMemorySize": {
+                  "type": "int64",
+                  "id": 12
+                },
+                "hostTempMemorySize": {
+                  "type": "int64",
+                  "id": 10,
+                  "options": {
+                    "deprecated": true
+                  }
+                },
+                "deviceTempMemorySize": {
+                  "type": "int64",
+                  "id": 11,
+                  "options": {
+                    "deprecated": true
+                  }
+                },
+                "devicePersistentMemorySize": {
+                  "type": "int64",
+                  "id": 16,
+                  "options": {
+                    "deprecated": true
+                  }
+                },
+                "computeCost": {
+                  "type": "int64",
+                  "id": 9
+                },
+                "computeTime": {
+                  "type": "int64",
+                  "id": 14
+                },
+                "memoryTime": {
+                  "type": "int64",
+                  "id": 15
+                },
+                "isFinal": {
+                  "type": "bool",
+                  "id": 7
+                },
+                "controlInput": {
+                  "rule": "repeated",
+                  "type": "int32",
+                  "id": 8
+                }
+              },
+              "nested": {
+                "InputInfo": {
+                  "fields": {
+                    "precedingNode": {
+                      "type": "int32",
+                      "id": 1
+                    },
+                    "precedingPort": {
+                      "type": "int32",
+                      "id": 2
+                    }
+                  }
+                },
+                "OutputInfo": {
+                  "fields": {
+                    "size": {
+                      "type": "int64",
+                      "id": 1
+                    },
+                    "aliasInputPort": {
+                      "type": "int64",
+                      "id": 2
+                    },
+                    "shape": {
+                      "type": "TensorShapeProto",
+                      "id": 3
+                    },
+                    "dtype": {
+                      "type": "DataType",
+                      "id": 4
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "AllocationRecord": {
+          "fields": {
+            "allocMicros": {
+              "type": "int64",
+              "id": 1
+            },
+            "allocBytes": {
+              "type": "int64",
+              "id": 2
+            }
+          }
+        },
+        "AllocatorMemoryUsed": {
+          "fields": {
+            "allocatorName": {
+              "type": "string",
+              "id": 1
+            },
+            "totalBytes": {
+              "type": "int64",
+              "id": 2
+            },
+            "peakBytes": {
+              "type": "int64",
+              "id": 3
+            },
+            "liveBytes": {
+              "type": "int64",
+              "id": 4
+            },
+            "allocationRecords": {
+              "rule": "repeated",
+              "type": "AllocationRecord",
+              "id": 6
+            },
+            "allocatorBytesInUse": {
+              "type": "int64",
+              "id": 5
+            }
+          }
+        },
+        "NodeOutput": {
+          "fields": {
+            "slot": {
+              "type": "int32",
+              "id": 1
+            },
+            "tensorDescription": {
+              "type": "TensorDescription",
+              "id": 3
+            }
+          }
+        },
+        "MemoryStats": {
+          "fields": {
+            "tempMemorySize": {
+              "type": "int64",
+              "id": 1
+            },
+            "persistentMemorySize": {
+              "type": "int64",
+              "id": 3
+            },
+            "persistentTensorAllocIds": {
+              "rule": "repeated",
+              "type": "int64",
+              "id": 5
+            },
+            "deviceTempMemorySize": {
+              "type": "int64",
+              "id": 2,
+              "options": {
+                "deprecated": true
+              }
+            },
+            "devicePersistentMemorySize": {
+              "type": "int64",
+              "id": 4,
+              "options": {
+                "deprecated": true
+              }
+            },
+            "devicePersistentTensorAllocIds": {
+              "rule": "repeated",
+              "type": "int64",
+              "id": 6,
+              "options": {
+                "deprecated": true
+              }
+            }
+          }
+        },
+        "NodeExecStats": {
+          "fields": {
+            "nodeName": {
+              "type": "string",
+              "id": 1
+            },
+            "allStartMicros": {
+              "type": "int64",
+              "id": 2
+            },
+            "opStartRelMicros": {
+              "type": "int64",
+              "id": 3
+            },
+            "opEndRelMicros": {
+              "type": "int64",
+              "id": 4
+            },
+            "allEndRelMicros": {
+              "type": "int64",
+              "id": 5
+            },
+            "memory": {
+              "rule": "repeated",
+              "type": "AllocatorMemoryUsed",
+              "id": 6
+            },
+            "output": {
+              "rule": "repeated",
+              "type": "NodeOutput",
+              "id": 7
+            },
+            "timelineLabel": {
+              "type": "string",
+              "id": 8
+            },
+            "scheduledMicros": {
+              "type": "int64",
+              "id": 9
+            },
+            "threadId": {
+              "type": "uint32",
+              "id": 10
+            },
+            "referencedTensor": {
+              "rule": "repeated",
+              "type": "AllocationDescription",
+              "id": 11
+            },
+            "memoryStats": {
+              "type": "MemoryStats",
+              "id": 12
+            }
+          }
+        },
+        "DeviceStepStats": {
+          "fields": {
+            "device": {
+              "type": "string",
+              "id": 1
+            },
+            "nodeStats": {
+              "rule": "repeated",
+              "type": "NodeExecStats",
+              "id": 2
+            }
+          }
+        },
+        "StepStats": {
+          "fields": {
+            "devStats": {
+              "rule": "repeated",
+              "type": "DeviceStepStats",
+              "id": 1
+            }
+          }
+        },
+        "AllocationDescription": {
+          "fields": {
+            "requestedBytes": {
+              "type": "int64",
+              "id": 1
+            },
+            "allocatedBytes": {
+              "type": "int64",
+              "id": 2
+            },
+            "allocatorName": {
+              "type": "string",
+              "id": 3
+            },
+            "allocationId": {
+              "type": "int64",
+              "id": 4
+            },
+            "hasSingleReference": {
+              "type": "bool",
+              "id": 5
+            },
+            "ptr": {
+              "type": "uint64",
+              "id": 6
+            }
+          }
+        },
+        "TensorDescription": {
+          "fields": {
+            "dtype": {
+              "type": "DataType",
+              "id": 1
+            },
+            "shape": {
+              "type": "TensorShapeProto",
+              "id": 2
+            },
+            "allocationDescription": {
+              "type": "AllocationDescription",
+              "id": 4
+            }
+          }
+        },
+        "DebugTensorWatch": {
+          "fields": {
+            "nodeName": {
+              "type": "string",
+              "id": 1
+            },
+            "outputSlot": {
+              "type": "int32",
+              "id": 2
+            },
+            "debugOps": {
+              "rule": "repeated",
+              "type": "string",
+              "id": 3
+            },
+            "debugUrls": {
+              "rule": "repeated",
+              "type": "string",
+              "id": 4
+            },
+            "tolerateDebugOpCreationFailures": {
+              "type": "bool",
+              "id": 5
+            }
+          }
+        },
+        "DebugOptions": {
+          "fields": {
+            "debugTensorWatchOpts": {
+              "rule": "repeated",
+              "type": "DebugTensorWatch",
+              "id": 4
+            },
+            "globalStep": {
+              "type": "int64",
+              "id": 10
+            }
+          }
+        },
+        "DebuggedSourceFile": {
+          "fields": {
+            "host": {
+              "type": "string",
+              "id": 1
+            },
+            "filePath": {
+              "type": "string",
+              "id": 2
+            },
+            "lastModified": {
+              "type": "int64",
+              "id": 3
+            },
+            "bytes": {
+              "type": "int64",
+              "id": 4
+            },
+            "lines": {
+              "rule": "repeated",
+              "type": "string",
+              "id": 5
+            }
+          }
+        },
+        "DebuggedSourceFiles": {
+          "fields": {
+            "sourceFiles": {
+              "rule": "repeated",
+              "type": "DebuggedSourceFile",
+              "id": 1
+            }
+          }
+        },
+        "JobDef": {
+          "fields": {
+            "name": {
+              "type": "string",
+              "id": 1
+            },
+            "tasks": {
+              "keyType": "int32",
+              "type": "string",
+              "id": 2
+            }
+          }
+        },
+        "ClusterDef": {
+          "fields": {
+            "job": {
+              "rule": "repeated",
+              "type": "JobDef",
+              "id": 1
+            }
+          }
+        },
+        "AutoParallelOptions": {
+          "fields": {
+            "enable": {
+              "type": "bool",
+              "id": 1
+            },
+            "numReplicas": {
+              "type": "int32",
+              "id": 2
+            }
+          }
+        },
+        "RewriterConfig": {
+          "fields": {
+            "layoutOptimizer": {
+              "type": "Toggle",
+              "id": 1
+            },
+            "constantFolding": {
+              "type": "Toggle",
+              "id": 3
+            },
+            "arithmeticOptimization": {
+              "type": "Toggle",
+              "id": 7
+            },
+            "dependencyOptimization": {
+              "type": "Toggle",
+              "id": 8
+            },
+            "loopOptimization": {
+              "type": "Toggle",
+              "id": 9
+            },
+            "functionOptimization": {
+              "type": "Toggle",
+              "id": 10
+            },
+            "disableModelPruning": {
+              "type": "bool",
+              "id": 2
+            },
+            "memoryOptimization": {
+              "type": "MemOptType",
+              "id": 4
+            },
+            "memoryOptimizerTargetNodeNameScope": {
+              "type": "string",
+              "id": 6
+            },
+            "autoParallel": {
+              "type": "AutoParallelOptions",
+              "id": 5
+            },
+            "optimizers": {
+              "rule": "repeated",
+              "type": "string",
+              "id": 100
+            }
+          },
+          "nested": {
+            "Toggle": {
+              "values": {
+                "DEFAULT": 0,
+                "ON": 1,
+                "OFF": 2,
+                "AGGRESSIVE": 3
+              }
+            },
+            "MemOptType": {
+              "values": {
+                "DEFAULT_MEM_OPT": 0,
+                "NO_MEM_OPT": 1,
+                "MANUAL": 2,
+                "SWAPPING_HEURISTICS": 4,
+                "RECOMPUTATION_HEURISTICS": 5,
+                "SCHEDULING_HEURISTICS": 6,
+                "HEURISTICS": 3
+              }
+            }
+          }
+        },
+        "NamedTensorProto": {
+          "fields": {
+            "name": {
+              "type": "string",
+              "id": 1
+            },
+            "tensor": {
+              "type": "TensorProto",
+              "id": 2
+            }
+          }
+        }
+      }
+    }
+  }
+}

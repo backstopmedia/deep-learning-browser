@@ -1,0 +1,109 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+<script src="https://unpkg.com/deeplearn@0.5.0"></script>
+<script src="https://unpkg.com/deeplearn-squeezenet@0.2.0"></script>
+
+<video id="player" controls autoplay></video>
+<div id="chart-container">
+  <canvas id="canvas"></canvas>
+</div>
+
+<style>
+#player {
+  width: 480px;
+}
+
+#chart-container {
+  width: 480px;
+}
+</style>
+
+<script>
+const player = document.getElementById('player');
+const captureButton = document.getElementById('capture');
+
+dl.setBackend('webgl')
+
+const squeezeNet = new squeezenet.SqueezeNet();
+squeezeNet.load().then(() => {
+  // Run prediction loop
+  function step(timestamp) {
+    updatePrediction(player).then(() => {
+      window.requestAnimationFrame(step);
+    })
+  }
+  window.requestAnimationFrame(step);
+});
+
+const canvas = document.getElementById('canvas');
+const chart = createChart(canvas)
+
+function createChart(canvas) {
+  var ctx = canvas.getContext('2d');
+  Chart.defaults.global.defaultFontFamily = 'mono';
+
+  return new Chart(ctx, {
+      type: 'horizontalBar',
+      responsive: true,
+      maintainAspectRatio: false,
+      data: {
+          labels: [],
+          datasets: [{
+              label: "SqueezeNet",
+              backgroundColor: 'steelblue',
+              borderColor: 'steelblue',
+              data: [],
+          }]
+      },
+      options: {
+        tooltips: { enabled: false },
+        scales: {
+            xAxes: [{ ticks: { min: 0, max: 1 } }]
+        }
+      }
+  });
+}
+
+function updateChart(chart, labels, data) {
+  chart.data.labels = labels;
+  chart.data.datasets[0].data = data;
+  chart.update();
+}
+
+function loadImageDataFromVideo(player, width, height) {
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(player, 0, 0, canvas.width, canvas.height);
+  return ctx.getImageData(0, 0, canvas.width, canvas.height);
+}
+
+async function classify(data){
+  const pixels = dl.fromPixels(data);
+  const result = squeezeNet.predict(pixels);
+  return await squeezeNet.getTopKClasses(result, 5);
+}
+
+function updatePrediction(player) {
+  const data = loadImageDataFromVideo(player, 227, 227)
+  return classify(data).then((result) => {
+    const labels = [];
+    const data = [];
+    for (var c in result) {
+        if (result.hasOwnProperty(c)) {
+          labels.push(c.substr(0, 10).padStart(10, " "));
+          data.push(result[c]);
+        }
+    }
+    updateChart(chart, labels, data);
+  });
+}
+
+function onStream(stream) {
+  player.srcObject = stream;
+}
+
+navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+  .then(onStream);
+
+</script>

@@ -1,0 +1,95 @@
+<body>
+<script>
+
+function loadImage(url) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.src = url;
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+  });
+}
+
+function loadRgbaDataFromImage(img) {
+  const canvas = document.createElement('canvas');
+  canvas.width = img.width;
+  canvas.height = img.height;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(img, 0, 0, img.width, img.height);
+  return loadRgbaDataFromCanvas(canvas);
+}
+
+function loadRgbaDataFromCanvas(canvas) {
+  const ctx = canvas.getContext('2d');
+  const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  return new Int32Array(imgData.data);
+}
+
+function renderImage(rootElem, img) {
+  rootElem.append(img);
+  return img;
+}
+
+function renderRgbaData(rootElem, data, width, height, smooth) {
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+
+  const ctx = canvas.getContext('2d');
+  const img = ctx.getImageData(0, 0, width, height);
+  ctx.imageSmoothingEnabled = Boolean(smooth);
+
+  const vals = new Uint8ClampedArray(data);
+  img.data.set(vals);
+  ctx.putImageData(img, 0, 0);
+
+  rootElem.append(canvas);
+  return canvas;
+}
+
+function addRect(canvas, dims, color) {
+  const ctx = canvas.getContext("2d");
+  const left = dims[0];
+  const top = dims[1];
+  const width = dims[2];
+  const height = dims[3];
+
+  ctx.strokeStyle = color || 'black';
+  ctx.rect(left, top, width, height);
+  ctx.stroke();
+}
+
+function addCircle(canvas, dims, color) {
+  const ctx = canvas.getContext("2d");
+  const cx = dims[0];
+  const cy = dims[1];
+  const outerRadius = dims[2];
+  const innerRadius = dims.length > 3 ? dims[3] : 0;
+  const arc = dims.length > 4 ? dims[4] : 2 * Math.PI;
+
+  ctx.strokeStyle = color || 'black';
+  ctx.beginPath();
+  ctx.arc(cx, cy, outerRadius, innerRadius, arc);
+  ctx.stroke();
+}
+
+// async/await
+(async function(){
+  
+  const url = "data/cat.jpeg";
+  const img = await loadImage(url);
+  const data = loadRgbaDataFromImage(img);
+
+  const canvas1 = renderRgbaData(document.body, data, img.width, img.height);
+
+  addRect(canvas1, [70,20,100,100], "green");
+
+  const canvas2 = renderRgbaData(document.body, data, img.width, img.height);
+
+  addCircle(canvas2, [120,70,50], "red");
+
+}());
+
+</script>
+</body>

@@ -1,0 +1,2859 @@
+{
+  "nested": {
+    "caffe": {
+      "nested": {
+        "BlobShape": {
+          "fields": {
+            "dim": {
+              "rule": "repeated",
+              "type": "int64",
+              "id": 1
+            }
+          }
+        },
+        "BlobProto": {
+          "fields": {
+            "shape": {
+              "type": "BlobShape",
+              "id": 7
+            },
+            "data": {
+              "rule": "repeated",
+              "type": "float",
+              "id": 5
+            },
+            "diff": {
+              "rule": "repeated",
+              "type": "float",
+              "id": 6
+            },
+            "doubleData": {
+              "rule": "repeated",
+              "type": "double",
+              "id": 8
+            },
+            "doubleDiff": {
+              "rule": "repeated",
+              "type": "double",
+              "id": 9
+            },
+            "num": {
+              "type": "int32",
+              "id": 1,
+              "options": {
+                "default": 0
+              }
+            },
+            "channels": {
+              "type": "int32",
+              "id": 2,
+              "options": {
+                "default": 0
+              }
+            },
+            "height": {
+              "type": "int32",
+              "id": 3,
+              "options": {
+                "default": 0
+              }
+            },
+            "width": {
+              "type": "int32",
+              "id": 4,
+              "options": {
+                "default": 0
+              }
+            }
+          }
+        },
+        "BlobProtoVector": {
+          "fields": {
+            "blobs": {
+              "rule": "repeated",
+              "type": "BlobProto",
+              "id": 1
+            }
+          }
+        },
+        "Datum": {
+          "fields": {
+            "channels": {
+              "type": "int32",
+              "id": 1
+            },
+            "height": {
+              "type": "int32",
+              "id": 2
+            },
+            "width": {
+              "type": "int32",
+              "id": 3
+            },
+            "data": {
+              "type": "bytes",
+              "id": 4
+            },
+            "label": {
+              "type": "int32",
+              "id": 5
+            },
+            "floatData": {
+              "rule": "repeated",
+              "type": "float",
+              "id": 6,
+              "options": {
+                "packed": false
+              }
+            },
+            "encoded": {
+              "type": "bool",
+              "id": 7,
+              "options": {
+                "default": false
+              }
+            }
+          }
+        },
+        "FillerParameter": {
+          "fields": {
+            "type": {
+              "type": "string",
+              "id": 1,
+              "options": {
+                "default": "constant"
+              }
+            },
+            "value": {
+              "type": "float",
+              "id": 2,
+              "options": {
+                "default": 0
+              }
+            },
+            "min": {
+              "type": "float",
+              "id": 3,
+              "options": {
+                "default": 0
+              }
+            },
+            "max": {
+              "type": "float",
+              "id": 4,
+              "options": {
+                "default": 1
+              }
+            },
+            "mean": {
+              "type": "float",
+              "id": 5,
+              "options": {
+                "default": 0
+              }
+            },
+            "std": {
+              "type": "float",
+              "id": 6,
+              "options": {
+                "default": 1
+              }
+            },
+            "sparse": {
+              "type": "int32",
+              "id": 7,
+              "options": {
+                "default": -1
+              }
+            },
+            "varianceNorm": {
+              "type": "VarianceNorm",
+              "id": 8,
+              "options": {
+                "default": "FAN_IN"
+              }
+            }
+          },
+          "nested": {
+            "VarianceNorm": {
+              "values": {
+                "FAN_IN": 0,
+                "FAN_OUT": 1,
+                "AVERAGE": 2
+              }
+            }
+          }
+        },
+        "NetParameter": {
+          "fields": {
+            "name": {
+              "type": "string",
+              "id": 1
+            },
+            "input": {
+              "rule": "repeated",
+              "type": "string",
+              "id": 3
+            },
+            "inputShape": {
+              "rule": "repeated",
+              "type": "BlobShape",
+              "id": 8
+            },
+            "inputDim": {
+              "rule": "repeated",
+              "type": "int32",
+              "id": 4,
+              "options": {
+                "packed": false
+              }
+            },
+            "forceBackward": {
+              "type": "bool",
+              "id": 5,
+              "options": {
+                "default": false
+              }
+            },
+            "state": {
+              "type": "NetState",
+              "id": 6
+            },
+            "debugInfo": {
+              "type": "bool",
+              "id": 7,
+              "options": {
+                "default": false
+              }
+            },
+            "layer": {
+              "rule": "repeated",
+              "type": "LayerParameter",
+              "id": 100
+            },
+            "layers": {
+              "rule": "repeated",
+              "type": "V1LayerParameter",
+              "id": 2
+            }
+          }
+        },
+        "SolverParameter": {
+          "fields": {
+            "net": {
+              "type": "string",
+              "id": 24
+            },
+            "netParam": {
+              "type": "NetParameter",
+              "id": 25
+            },
+            "trainNet": {
+              "type": "string",
+              "id": 1
+            },
+            "testNet": {
+              "rule": "repeated",
+              "type": "string",
+              "id": 2
+            },
+            "trainNetParam": {
+              "type": "NetParameter",
+              "id": 21
+            },
+            "testNetParam": {
+              "rule": "repeated",
+              "type": "NetParameter",
+              "id": 22
+            },
+            "trainState": {
+              "type": "NetState",
+              "id": 26
+            },
+            "testState": {
+              "rule": "repeated",
+              "type": "NetState",
+              "id": 27
+            },
+            "testIter": {
+              "rule": "repeated",
+              "type": "int32",
+              "id": 3,
+              "options": {
+                "packed": false
+              }
+            },
+            "testInterval": {
+              "type": "int32",
+              "id": 4,
+              "options": {
+                "default": 0
+              }
+            },
+            "testComputeLoss": {
+              "type": "bool",
+              "id": 19,
+              "options": {
+                "default": false
+              }
+            },
+            "testInitialization": {
+              "type": "bool",
+              "id": 32,
+              "options": {
+                "default": true
+              }
+            },
+            "baseLr": {
+              "type": "float",
+              "id": 5
+            },
+            "display": {
+              "type": "int32",
+              "id": 6
+            },
+            "averageLoss": {
+              "type": "int32",
+              "id": 33,
+              "options": {
+                "default": 1
+              }
+            },
+            "maxIter": {
+              "type": "int32",
+              "id": 7
+            },
+            "iterSize": {
+              "type": "int32",
+              "id": 36,
+              "options": {
+                "default": 1
+              }
+            },
+            "lrPolicy": {
+              "type": "string",
+              "id": 8
+            },
+            "gamma": {
+              "type": "float",
+              "id": 9
+            },
+            "power": {
+              "type": "float",
+              "id": 10
+            },
+            "momentum": {
+              "type": "float",
+              "id": 11
+            },
+            "weightDecay": {
+              "type": "float",
+              "id": 12
+            },
+            "regularizationType": {
+              "type": "string",
+              "id": 29,
+              "options": {
+                "default": "L2"
+              }
+            },
+            "stepsize": {
+              "type": "int32",
+              "id": 13
+            },
+            "stepvalue": {
+              "rule": "repeated",
+              "type": "int32",
+              "id": 34,
+              "options": {
+                "packed": false
+              }
+            },
+            "clipGradients": {
+              "type": "float",
+              "id": 35,
+              "options": {
+                "default": -1
+              }
+            },
+            "snapshot": {
+              "type": "int32",
+              "id": 14,
+              "options": {
+                "default": 0
+              }
+            },
+            "snapshotPrefix": {
+              "type": "string",
+              "id": 15
+            },
+            "snapshotDiff": {
+              "type": "bool",
+              "id": 16,
+              "options": {
+                "default": false
+              }
+            },
+            "snapshotFormat": {
+              "type": "SnapshotFormat",
+              "id": 37,
+              "options": {
+                "default": "BINARYPROTO"
+              }
+            },
+            "solverMode": {
+              "type": "SolverMode",
+              "id": 17,
+              "options": {
+                "default": "GPU"
+              }
+            },
+            "deviceId": {
+              "type": "int32",
+              "id": 18,
+              "options": {
+                "default": 0
+              }
+            },
+            "randomSeed": {
+              "type": "int64",
+              "id": 20,
+              "options": {
+                "default": -1
+              }
+            },
+            "type": {
+              "type": "string",
+              "id": 40,
+              "options": {
+                "default": "SGD"
+              }
+            },
+            "delta": {
+              "type": "float",
+              "id": 31,
+              "options": {
+                "default": 1e-8
+              }
+            },
+            "momentum2": {
+              "type": "float",
+              "id": 39,
+              "options": {
+                "default": 0.999
+              }
+            },
+            "rmsDecay": {
+              "type": "float",
+              "id": 38,
+              "options": {
+                "default": 0.99
+              }
+            },
+            "debugInfo": {
+              "type": "bool",
+              "id": 23,
+              "options": {
+                "default": false
+              }
+            },
+            "snapshotAfterTrain": {
+              "type": "bool",
+              "id": 28,
+              "options": {
+                "default": true
+              }
+            },
+            "solverType": {
+              "type": "SolverType",
+              "id": 30,
+              "options": {
+                "default": "SGD"
+              }
+            },
+            "layerWiseReduce": {
+              "type": "bool",
+              "id": 41,
+              "options": {
+                "default": true
+              }
+            },
+            "weights": {
+              "rule": "repeated",
+              "type": "string",
+              "id": 42
+            }
+          },
+          "nested": {
+            "SnapshotFormat": {
+              "values": {
+                "HDF5": 0,
+                "BINARYPROTO": 1
+              }
+            },
+            "SolverMode": {
+              "values": {
+                "CPU": 0,
+                "GPU": 1
+              }
+            },
+            "SolverType": {
+              "values": {
+                "SGD": 0,
+                "NESTEROV": 1,
+                "ADAGRAD": 2,
+                "RMSPROP": 3,
+                "ADADELTA": 4,
+                "ADAM": 5
+              }
+            }
+          }
+        },
+        "SolverState": {
+          "fields": {
+            "iter": {
+              "type": "int32",
+              "id": 1
+            },
+            "learnedNet": {
+              "type": "string",
+              "id": 2
+            },
+            "history": {
+              "rule": "repeated",
+              "type": "BlobProto",
+              "id": 3
+            },
+            "currentStep": {
+              "type": "int32",
+              "id": 4,
+              "options": {
+                "default": 0
+              }
+            }
+          }
+        },
+        "Phase": {
+          "values": {
+            "TRAIN": 0,
+            "TEST": 1
+          }
+        },
+        "NetState": {
+          "fields": {
+            "phase": {
+              "type": "Phase",
+              "id": 1,
+              "options": {
+                "default": "TEST"
+              }
+            },
+            "level": {
+              "type": "int32",
+              "id": 2,
+              "options": {
+                "default": 0
+              }
+            },
+            "stage": {
+              "rule": "repeated",
+              "type": "string",
+              "id": 3
+            }
+          }
+        },
+        "NetStateRule": {
+          "fields": {
+            "phase": {
+              "type": "Phase",
+              "id": 1
+            },
+            "minLevel": {
+              "type": "int32",
+              "id": 2
+            },
+            "maxLevel": {
+              "type": "int32",
+              "id": 3
+            },
+            "stage": {
+              "rule": "repeated",
+              "type": "string",
+              "id": 4
+            },
+            "notStage": {
+              "rule": "repeated",
+              "type": "string",
+              "id": 5
+            }
+          }
+        },
+        "ParamSpec": {
+          "fields": {
+            "name": {
+              "type": "string",
+              "id": 1
+            },
+            "shareMode": {
+              "type": "DimCheckMode",
+              "id": 2
+            },
+            "lrMult": {
+              "type": "float",
+              "id": 3,
+              "options": {
+                "default": 1
+              }
+            },
+            "decayMult": {
+              "type": "float",
+              "id": 4,
+              "options": {
+                "default": 1
+              }
+            }
+          },
+          "nested": {
+            "DimCheckMode": {
+              "values": {
+                "STRICT": 0,
+                "PERMISSIVE": 1
+              }
+            }
+          }
+        },
+        "LayerParameter": {
+          "fields": {
+            "name": {
+              "type": "string",
+              "id": 1
+            },
+            "type": {
+              "type": "string",
+              "id": 2
+            },
+            "bottom": {
+              "rule": "repeated",
+              "type": "string",
+              "id": 3
+            },
+            "top": {
+              "rule": "repeated",
+              "type": "string",
+              "id": 4
+            },
+            "phase": {
+              "type": "Phase",
+              "id": 10
+            },
+            "lossWeight": {
+              "rule": "repeated",
+              "type": "float",
+              "id": 5,
+              "options": {
+                "packed": false
+              }
+            },
+            "param": {
+              "rule": "repeated",
+              "type": "ParamSpec",
+              "id": 6
+            },
+            "blobs": {
+              "rule": "repeated",
+              "type": "BlobProto",
+              "id": 7
+            },
+            "propagateDown": {
+              "rule": "repeated",
+              "type": "bool",
+              "id": 11,
+              "options": {
+                "packed": false
+              }
+            },
+            "include": {
+              "rule": "repeated",
+              "type": "NetStateRule",
+              "id": 8
+            },
+            "exclude": {
+              "rule": "repeated",
+              "type": "NetStateRule",
+              "id": 9
+            },
+            "transformParam": {
+              "type": "TransformationParameter",
+              "id": 100
+            },
+            "lossParam": {
+              "type": "LossParameter",
+              "id": 101
+            },
+            "accuracyParam": {
+              "type": "AccuracyParameter",
+              "id": 102
+            },
+            "argmaxParam": {
+              "type": "ArgMaxParameter",
+              "id": 103
+            },
+            "batchNormParam": {
+              "type": "BatchNormParameter",
+              "id": 139
+            },
+            "biasParam": {
+              "type": "BiasParameter",
+              "id": 141
+            },
+            "concatParam": {
+              "type": "ConcatParameter",
+              "id": 104
+            },
+            "contrastiveLossParam": {
+              "type": "ContrastiveLossParameter",
+              "id": 105
+            },
+            "convolutionParam": {
+              "type": "ConvolutionParameter",
+              "id": 106
+            },
+            "cropParam": {
+              "type": "CropParameter",
+              "id": 144
+            },
+            "dataParam": {
+              "type": "DataParameter",
+              "id": 107
+            },
+            "dropoutParam": {
+              "type": "DropoutParameter",
+              "id": 108
+            },
+            "dummyDataParam": {
+              "type": "DummyDataParameter",
+              "id": 109
+            },
+            "eltwiseParam": {
+              "type": "EltwiseParameter",
+              "id": 110
+            },
+            "eluParam": {
+              "type": "ELUParameter",
+              "id": 140
+            },
+            "embedParam": {
+              "type": "EmbedParameter",
+              "id": 137
+            },
+            "expParam": {
+              "type": "ExpParameter",
+              "id": 111
+            },
+            "flattenParam": {
+              "type": "FlattenParameter",
+              "id": 135
+            },
+            "hdf5DataParam": {
+              "type": "HDF5DataParameter",
+              "id": 112
+            },
+            "hdf5OutputParam": {
+              "type": "HDF5OutputParameter",
+              "id": 113
+            },
+            "hingeLossParam": {
+              "type": "HingeLossParameter",
+              "id": 114
+            },
+            "imageDataParam": {
+              "type": "ImageDataParameter",
+              "id": 115
+            },
+            "infogainLossParam": {
+              "type": "InfogainLossParameter",
+              "id": 116
+            },
+            "innerProductParam": {
+              "type": "InnerProductParameter",
+              "id": 117
+            },
+            "inputParam": {
+              "type": "InputParameter",
+              "id": 143
+            },
+            "logParam": {
+              "type": "LogParameter",
+              "id": 134
+            },
+            "lrnParam": {
+              "type": "LRNParameter",
+              "id": 118
+            },
+            "memoryDataParam": {
+              "type": "MemoryDataParameter",
+              "id": 119
+            },
+            "mvnParam": {
+              "type": "MVNParameter",
+              "id": 120
+            },
+            "parameterParam": {
+              "type": "ParameterParameter",
+              "id": 145
+            },
+            "poolingParam": {
+              "type": "PoolingParameter",
+              "id": 121
+            },
+            "powerParam": {
+              "type": "PowerParameter",
+              "id": 122
+            },
+            "preluParam": {
+              "type": "PReLUParameter",
+              "id": 131
+            },
+            "pythonParam": {
+              "type": "PythonParameter",
+              "id": 130
+            },
+            "recurrentParam": {
+              "type": "RecurrentParameter",
+              "id": 146
+            },
+            "reductionParam": {
+              "type": "ReductionParameter",
+              "id": 136
+            },
+            "reluParam": {
+              "type": "ReLUParameter",
+              "id": 123
+            },
+            "reshapeParam": {
+              "type": "ReshapeParameter",
+              "id": 133
+            },
+            "scaleParam": {
+              "type": "ScaleParameter",
+              "id": 142
+            },
+            "sigmoidParam": {
+              "type": "SigmoidParameter",
+              "id": 124
+            },
+            "softmaxParam": {
+              "type": "SoftmaxParameter",
+              "id": 125
+            },
+            "sppParam": {
+              "type": "SPPParameter",
+              "id": 132
+            },
+            "sliceParam": {
+              "type": "SliceParameter",
+              "id": 126
+            },
+            "swishParam": {
+              "type": "SwishParameter",
+              "id": 147
+            },
+            "tanhParam": {
+              "type": "TanHParameter",
+              "id": 127
+            },
+            "thresholdParam": {
+              "type": "ThresholdParameter",
+              "id": 128
+            },
+            "tileParam": {
+              "type": "TileParameter",
+              "id": 138
+            },
+            "windowDataParam": {
+              "type": "WindowDataParameter",
+              "id": 129
+            }
+          }
+        },
+        "TransformationParameter": {
+          "fields": {
+            "scale": {
+              "type": "float",
+              "id": 1,
+              "options": {
+                "default": 1
+              }
+            },
+            "mirror": {
+              "type": "bool",
+              "id": 2,
+              "options": {
+                "default": false
+              }
+            },
+            "cropSize": {
+              "type": "uint32",
+              "id": 3,
+              "options": {
+                "default": 0
+              }
+            },
+            "meanFile": {
+              "type": "string",
+              "id": 4
+            },
+            "meanValue": {
+              "rule": "repeated",
+              "type": "float",
+              "id": 5,
+              "options": {
+                "packed": false
+              }
+            },
+            "forceColor": {
+              "type": "bool",
+              "id": 6,
+              "options": {
+                "default": false
+              }
+            },
+            "forceGray": {
+              "type": "bool",
+              "id": 7,
+              "options": {
+                "default": false
+              }
+            }
+          }
+        },
+        "LossParameter": {
+          "fields": {
+            "ignoreLabel": {
+              "type": "int32",
+              "id": 1
+            },
+            "normalization": {
+              "type": "NormalizationMode",
+              "id": 3,
+              "options": {
+                "default": "VALID"
+              }
+            },
+            "normalize": {
+              "type": "bool",
+              "id": 2
+            }
+          },
+          "nested": {
+            "NormalizationMode": {
+              "values": {
+                "FULL": 0,
+                "VALID": 1,
+                "BATCH_SIZE": 2,
+                "NONE": 3
+              }
+            }
+          }
+        },
+        "AccuracyParameter": {
+          "fields": {
+            "topK": {
+              "type": "uint32",
+              "id": 1,
+              "options": {
+                "default": 1
+              }
+            },
+            "axis": {
+              "type": "int32",
+              "id": 2,
+              "options": {
+                "default": 1
+              }
+            },
+            "ignoreLabel": {
+              "type": "int32",
+              "id": 3
+            }
+          }
+        },
+        "ArgMaxParameter": {
+          "fields": {
+            "outMaxVal": {
+              "type": "bool",
+              "id": 1,
+              "options": {
+                "default": false
+              }
+            },
+            "topK": {
+              "type": "uint32",
+              "id": 2,
+              "options": {
+                "default": 1
+              }
+            },
+            "axis": {
+              "type": "int32",
+              "id": 3
+            }
+          }
+        },
+        "ConcatParameter": {
+          "fields": {
+            "axis": {
+              "type": "int32",
+              "id": 2,
+              "options": {
+                "default": 1
+              }
+            },
+            "concatDim": {
+              "type": "uint32",
+              "id": 1,
+              "options": {
+                "default": 1
+              }
+            }
+          }
+        },
+        "BatchNormParameter": {
+          "fields": {
+            "useGlobalStats": {
+              "type": "bool",
+              "id": 1
+            },
+            "movingAverageFraction": {
+              "type": "float",
+              "id": 2,
+              "options": {
+                "default": 0.999
+              }
+            },
+            "eps": {
+              "type": "float",
+              "id": 3,
+              "options": {
+                "default": 0.00001
+              }
+            }
+          }
+        },
+        "BiasParameter": {
+          "fields": {
+            "axis": {
+              "type": "int32",
+              "id": 1,
+              "options": {
+                "default": 1
+              }
+            },
+            "numAxes": {
+              "type": "int32",
+              "id": 2,
+              "options": {
+                "default": 1
+              }
+            },
+            "filler": {
+              "type": "FillerParameter",
+              "id": 3
+            }
+          }
+        },
+        "ContrastiveLossParameter": {
+          "fields": {
+            "margin": {
+              "type": "float",
+              "id": 1,
+              "options": {
+                "default": 1
+              }
+            },
+            "legacyVersion": {
+              "type": "bool",
+              "id": 2,
+              "options": {
+                "default": false
+              }
+            }
+          }
+        },
+        "ConvolutionParameter": {
+          "fields": {
+            "numOutput": {
+              "type": "uint32",
+              "id": 1
+            },
+            "biasTerm": {
+              "type": "bool",
+              "id": 2,
+              "options": {
+                "default": true
+              }
+            },
+            "pad": {
+              "rule": "repeated",
+              "type": "uint32",
+              "id": 3,
+              "options": {
+                "packed": false
+              }
+            },
+            "kernelSize": {
+              "rule": "repeated",
+              "type": "uint32",
+              "id": 4,
+              "options": {
+                "packed": false
+              }
+            },
+            "stride": {
+              "rule": "repeated",
+              "type": "uint32",
+              "id": 6,
+              "options": {
+                "packed": false
+              }
+            },
+            "dilation": {
+              "rule": "repeated",
+              "type": "uint32",
+              "id": 18,
+              "options": {
+                "packed": false
+              }
+            },
+            "padH": {
+              "type": "uint32",
+              "id": 9,
+              "options": {
+                "default": 0
+              }
+            },
+            "padW": {
+              "type": "uint32",
+              "id": 10,
+              "options": {
+                "default": 0
+              }
+            },
+            "kernelH": {
+              "type": "uint32",
+              "id": 11
+            },
+            "kernelW": {
+              "type": "uint32",
+              "id": 12
+            },
+            "strideH": {
+              "type": "uint32",
+              "id": 13
+            },
+            "strideW": {
+              "type": "uint32",
+              "id": 14
+            },
+            "group": {
+              "type": "uint32",
+              "id": 5,
+              "options": {
+                "default": 1
+              }
+            },
+            "weightFiller": {
+              "type": "FillerParameter",
+              "id": 7
+            },
+            "biasFiller": {
+              "type": "FillerParameter",
+              "id": 8
+            },
+            "engine": {
+              "type": "Engine",
+              "id": 15,
+              "options": {
+                "default": "DEFAULT"
+              }
+            },
+            "axis": {
+              "type": "int32",
+              "id": 16,
+              "options": {
+                "default": 1
+              }
+            },
+            "forceNdIm2col": {
+              "type": "bool",
+              "id": 17,
+              "options": {
+                "default": false
+              }
+            }
+          },
+          "nested": {
+            "Engine": {
+              "values": {
+                "DEFAULT": 0,
+                "CAFFE": 1,
+                "CUDNN": 2
+              }
+            }
+          }
+        },
+        "CropParameter": {
+          "fields": {
+            "axis": {
+              "type": "int32",
+              "id": 1,
+              "options": {
+                "default": 2
+              }
+            },
+            "offset": {
+              "rule": "repeated",
+              "type": "uint32",
+              "id": 2,
+              "options": {
+                "packed": false
+              }
+            }
+          }
+        },
+        "DataParameter": {
+          "fields": {
+            "source": {
+              "type": "string",
+              "id": 1
+            },
+            "batchSize": {
+              "type": "uint32",
+              "id": 4
+            },
+            "randSkip": {
+              "type": "uint32",
+              "id": 7,
+              "options": {
+                "default": 0
+              }
+            },
+            "backend": {
+              "type": "DB",
+              "id": 8,
+              "options": {
+                "default": "LEVELDB"
+              }
+            },
+            "scale": {
+              "type": "float",
+              "id": 2,
+              "options": {
+                "default": 1
+              }
+            },
+            "meanFile": {
+              "type": "string",
+              "id": 3
+            },
+            "cropSize": {
+              "type": "uint32",
+              "id": 5,
+              "options": {
+                "default": 0
+              }
+            },
+            "mirror": {
+              "type": "bool",
+              "id": 6,
+              "options": {
+                "default": false
+              }
+            },
+            "forceEncodedColor": {
+              "type": "bool",
+              "id": 9,
+              "options": {
+                "default": false
+              }
+            },
+            "prefetch": {
+              "type": "uint32",
+              "id": 10,
+              "options": {
+                "default": 4
+              }
+            }
+          },
+          "nested": {
+            "DB": {
+              "values": {
+                "LEVELDB": 0,
+                "LMDB": 1
+              }
+            }
+          }
+        },
+        "DropoutParameter": {
+          "fields": {
+            "dropoutRatio": {
+              "type": "float",
+              "id": 1,
+              "options": {
+                "default": 0.5
+              }
+            }
+          }
+        },
+        "DummyDataParameter": {
+          "fields": {
+            "dataFiller": {
+              "rule": "repeated",
+              "type": "FillerParameter",
+              "id": 1
+            },
+            "shape": {
+              "rule": "repeated",
+              "type": "BlobShape",
+              "id": 6
+            },
+            "num": {
+              "rule": "repeated",
+              "type": "uint32",
+              "id": 2,
+              "options": {
+                "packed": false
+              }
+            },
+            "channels": {
+              "rule": "repeated",
+              "type": "uint32",
+              "id": 3,
+              "options": {
+                "packed": false
+              }
+            },
+            "height": {
+              "rule": "repeated",
+              "type": "uint32",
+              "id": 4,
+              "options": {
+                "packed": false
+              }
+            },
+            "width": {
+              "rule": "repeated",
+              "type": "uint32",
+              "id": 5,
+              "options": {
+                "packed": false
+              }
+            }
+          }
+        },
+        "EltwiseParameter": {
+          "fields": {
+            "operation": {
+              "type": "EltwiseOp",
+              "id": 1,
+              "options": {
+                "default": "SUM"
+              }
+            },
+            "coeff": {
+              "rule": "repeated",
+              "type": "float",
+              "id": 2,
+              "options": {
+                "packed": false
+              }
+            },
+            "stableProdGrad": {
+              "type": "bool",
+              "id": 3,
+              "options": {
+                "default": true
+              }
+            }
+          },
+          "nested": {
+            "EltwiseOp": {
+              "values": {
+                "PROD": 0,
+                "SUM": 1,
+                "MAX": 2
+              }
+            }
+          }
+        },
+        "ELUParameter": {
+          "fields": {
+            "alpha": {
+              "type": "float",
+              "id": 1,
+              "options": {
+                "default": 1
+              }
+            }
+          }
+        },
+        "EmbedParameter": {
+          "fields": {
+            "numOutput": {
+              "type": "uint32",
+              "id": 1
+            },
+            "inputDim": {
+              "type": "uint32",
+              "id": 2
+            },
+            "biasTerm": {
+              "type": "bool",
+              "id": 3,
+              "options": {
+                "default": true
+              }
+            },
+            "weightFiller": {
+              "type": "FillerParameter",
+              "id": 4
+            },
+            "biasFiller": {
+              "type": "FillerParameter",
+              "id": 5
+            }
+          }
+        },
+        "ExpParameter": {
+          "fields": {
+            "base": {
+              "type": "float",
+              "id": 1,
+              "options": {
+                "default": -1
+              }
+            },
+            "scale": {
+              "type": "float",
+              "id": 2,
+              "options": {
+                "default": 1
+              }
+            },
+            "shift": {
+              "type": "float",
+              "id": 3,
+              "options": {
+                "default": 0
+              }
+            }
+          }
+        },
+        "FlattenParameter": {
+          "fields": {
+            "axis": {
+              "type": "int32",
+              "id": 1,
+              "options": {
+                "default": 1
+              }
+            },
+            "endAxis": {
+              "type": "int32",
+              "id": 2,
+              "options": {
+                "default": -1
+              }
+            }
+          }
+        },
+        "HDF5DataParameter": {
+          "fields": {
+            "source": {
+              "type": "string",
+              "id": 1
+            },
+            "batchSize": {
+              "type": "uint32",
+              "id": 2
+            },
+            "shuffle": {
+              "type": "bool",
+              "id": 3,
+              "options": {
+                "default": false
+              }
+            }
+          }
+        },
+        "HDF5OutputParameter": {
+          "fields": {
+            "fileName": {
+              "type": "string",
+              "id": 1
+            }
+          }
+        },
+        "HingeLossParameter": {
+          "fields": {
+            "norm": {
+              "type": "Norm",
+              "id": 1,
+              "options": {
+                "default": "L1"
+              }
+            }
+          },
+          "nested": {
+            "Norm": {
+              "values": {
+                "L1": 1,
+                "L2": 2
+              }
+            }
+          }
+        },
+        "ImageDataParameter": {
+          "fields": {
+            "source": {
+              "type": "string",
+              "id": 1
+            },
+            "batchSize": {
+              "type": "uint32",
+              "id": 4,
+              "options": {
+                "default": 1
+              }
+            },
+            "randSkip": {
+              "type": "uint32",
+              "id": 7,
+              "options": {
+                "default": 0
+              }
+            },
+            "shuffle": {
+              "type": "bool",
+              "id": 8,
+              "options": {
+                "default": false
+              }
+            },
+            "newHeight": {
+              "type": "uint32",
+              "id": 9,
+              "options": {
+                "default": 0
+              }
+            },
+            "newWidth": {
+              "type": "uint32",
+              "id": 10,
+              "options": {
+                "default": 0
+              }
+            },
+            "isColor": {
+              "type": "bool",
+              "id": 11,
+              "options": {
+                "default": true
+              }
+            },
+            "scale": {
+              "type": "float",
+              "id": 2,
+              "options": {
+                "default": 1
+              }
+            },
+            "meanFile": {
+              "type": "string",
+              "id": 3
+            },
+            "cropSize": {
+              "type": "uint32",
+              "id": 5,
+              "options": {
+                "default": 0
+              }
+            },
+            "mirror": {
+              "type": "bool",
+              "id": 6,
+              "options": {
+                "default": false
+              }
+            },
+            "rootFolder": {
+              "type": "string",
+              "id": 12,
+              "options": {
+                "default": ""
+              }
+            }
+          }
+        },
+        "InfogainLossParameter": {
+          "fields": {
+            "source": {
+              "type": "string",
+              "id": 1
+            },
+            "axis": {
+              "type": "int32",
+              "id": 2,
+              "options": {
+                "default": 1
+              }
+            }
+          }
+        },
+        "InnerProductParameter": {
+          "fields": {
+            "numOutput": {
+              "type": "uint32",
+              "id": 1
+            },
+            "biasTerm": {
+              "type": "bool",
+              "id": 2,
+              "options": {
+                "default": true
+              }
+            },
+            "weightFiller": {
+              "type": "FillerParameter",
+              "id": 3
+            },
+            "biasFiller": {
+              "type": "FillerParameter",
+              "id": 4
+            },
+            "axis": {
+              "type": "int32",
+              "id": 5,
+              "options": {
+                "default": 1
+              }
+            },
+            "transpose": {
+              "type": "bool",
+              "id": 6,
+              "options": {
+                "default": false
+              }
+            }
+          }
+        },
+        "InputParameter": {
+          "fields": {
+            "shape": {
+              "rule": "repeated",
+              "type": "BlobShape",
+              "id": 1
+            }
+          }
+        },
+        "LogParameter": {
+          "fields": {
+            "base": {
+              "type": "float",
+              "id": 1,
+              "options": {
+                "default": -1
+              }
+            },
+            "scale": {
+              "type": "float",
+              "id": 2,
+              "options": {
+                "default": 1
+              }
+            },
+            "shift": {
+              "type": "float",
+              "id": 3,
+              "options": {
+                "default": 0
+              }
+            }
+          }
+        },
+        "LRNParameter": {
+          "fields": {
+            "localSize": {
+              "type": "uint32",
+              "id": 1,
+              "options": {
+                "default": 5
+              }
+            },
+            "alpha": {
+              "type": "float",
+              "id": 2,
+              "options": {
+                "default": 1
+              }
+            },
+            "beta": {
+              "type": "float",
+              "id": 3,
+              "options": {
+                "default": 0.75
+              }
+            },
+            "normRegion": {
+              "type": "NormRegion",
+              "id": 4,
+              "options": {
+                "default": "ACROSS_CHANNELS"
+              }
+            },
+            "k": {
+              "type": "float",
+              "id": 5,
+              "options": {
+                "default": 1
+              }
+            },
+            "engine": {
+              "type": "Engine",
+              "id": 6,
+              "options": {
+                "default": "DEFAULT"
+              }
+            }
+          },
+          "nested": {
+            "NormRegion": {
+              "values": {
+                "ACROSS_CHANNELS": 0,
+                "WITHIN_CHANNEL": 1
+              }
+            },
+            "Engine": {
+              "values": {
+                "DEFAULT": 0,
+                "CAFFE": 1,
+                "CUDNN": 2
+              }
+            }
+          }
+        },
+        "MemoryDataParameter": {
+          "fields": {
+            "batchSize": {
+              "type": "uint32",
+              "id": 1
+            },
+            "channels": {
+              "type": "uint32",
+              "id": 2
+            },
+            "height": {
+              "type": "uint32",
+              "id": 3
+            },
+            "width": {
+              "type": "uint32",
+              "id": 4
+            }
+          }
+        },
+        "MVNParameter": {
+          "fields": {
+            "normalizeVariance": {
+              "type": "bool",
+              "id": 1,
+              "options": {
+                "default": true
+              }
+            },
+            "acrossChannels": {
+              "type": "bool",
+              "id": 2,
+              "options": {
+                "default": false
+              }
+            },
+            "eps": {
+              "type": "float",
+              "id": 3,
+              "options": {
+                "default": 1e-9
+              }
+            }
+          }
+        },
+        "ParameterParameter": {
+          "fields": {
+            "shape": {
+              "type": "BlobShape",
+              "id": 1
+            }
+          }
+        },
+        "PoolingParameter": {
+          "fields": {
+            "pool": {
+              "type": "PoolMethod",
+              "id": 1,
+              "options": {
+                "default": "MAX"
+              }
+            },
+            "pad": {
+              "type": "uint32",
+              "id": 4,
+              "options": {
+                "default": 0
+              }
+            },
+            "padH": {
+              "type": "uint32",
+              "id": 9,
+              "options": {
+                "default": 0
+              }
+            },
+            "padW": {
+              "type": "uint32",
+              "id": 10,
+              "options": {
+                "default": 0
+              }
+            },
+            "kernelSize": {
+              "type": "uint32",
+              "id": 2
+            },
+            "kernelH": {
+              "type": "uint32",
+              "id": 5
+            },
+            "kernelW": {
+              "type": "uint32",
+              "id": 6
+            },
+            "stride": {
+              "type": "uint32",
+              "id": 3,
+              "options": {
+                "default": 1
+              }
+            },
+            "strideH": {
+              "type": "uint32",
+              "id": 7
+            },
+            "strideW": {
+              "type": "uint32",
+              "id": 8
+            },
+            "engine": {
+              "type": "Engine",
+              "id": 11,
+              "options": {
+                "default": "DEFAULT"
+              }
+            },
+            "globalPooling": {
+              "type": "bool",
+              "id": 12,
+              "options": {
+                "default": false
+              }
+            }
+          },
+          "nested": {
+            "PoolMethod": {
+              "values": {
+                "MAX": 0,
+                "AVE": 1,
+                "STOCHASTIC": 2
+              }
+            },
+            "Engine": {
+              "values": {
+                "DEFAULT": 0,
+                "CAFFE": 1,
+                "CUDNN": 2
+              }
+            }
+          }
+        },
+        "PowerParameter": {
+          "fields": {
+            "power": {
+              "type": "float",
+              "id": 1,
+              "options": {
+                "default": 1
+              }
+            },
+            "scale": {
+              "type": "float",
+              "id": 2,
+              "options": {
+                "default": 1
+              }
+            },
+            "shift": {
+              "type": "float",
+              "id": 3,
+              "options": {
+                "default": 0
+              }
+            }
+          }
+        },
+        "PythonParameter": {
+          "fields": {
+            "module": {
+              "type": "string",
+              "id": 1
+            },
+            "layer": {
+              "type": "string",
+              "id": 2
+            },
+            "paramStr": {
+              "type": "string",
+              "id": 3,
+              "options": {
+                "default": ""
+              }
+            },
+            "shareInParallel": {
+              "type": "bool",
+              "id": 4,
+              "options": {
+                "default": false
+              }
+            }
+          }
+        },
+        "RecurrentParameter": {
+          "fields": {
+            "numOutput": {
+              "type": "uint32",
+              "id": 1,
+              "options": {
+                "default": 0
+              }
+            },
+            "weightFiller": {
+              "type": "FillerParameter",
+              "id": 2
+            },
+            "biasFiller": {
+              "type": "FillerParameter",
+              "id": 3
+            },
+            "debugInfo": {
+              "type": "bool",
+              "id": 4,
+              "options": {
+                "default": false
+              }
+            },
+            "exposeHidden": {
+              "type": "bool",
+              "id": 5,
+              "options": {
+                "default": false
+              }
+            }
+          }
+        },
+        "ReductionParameter": {
+          "fields": {
+            "operation": {
+              "type": "ReductionOp",
+              "id": 1,
+              "options": {
+                "default": "SUM"
+              }
+            },
+            "axis": {
+              "type": "int32",
+              "id": 2,
+              "options": {
+                "default": 0
+              }
+            },
+            "coeff": {
+              "type": "float",
+              "id": 3,
+              "options": {
+                "default": 1
+              }
+            }
+          },
+          "nested": {
+            "ReductionOp": {
+              "values": {
+                "SUM": 1,
+                "ASUM": 2,
+                "SUMSQ": 3,
+                "MEAN": 4
+              }
+            }
+          }
+        },
+        "ReLUParameter": {
+          "fields": {
+            "negativeSlope": {
+              "type": "float",
+              "id": 1,
+              "options": {
+                "default": 0
+              }
+            },
+            "engine": {
+              "type": "Engine",
+              "id": 2,
+              "options": {
+                "default": "DEFAULT"
+              }
+            }
+          },
+          "nested": {
+            "Engine": {
+              "values": {
+                "DEFAULT": 0,
+                "CAFFE": 1,
+                "CUDNN": 2
+              }
+            }
+          }
+        },
+        "ReshapeParameter": {
+          "fields": {
+            "shape": {
+              "type": "BlobShape",
+              "id": 1
+            },
+            "axis": {
+              "type": "int32",
+              "id": 2,
+              "options": {
+                "default": 0
+              }
+            },
+            "numAxes": {
+              "type": "int32",
+              "id": 3,
+              "options": {
+                "default": -1
+              }
+            }
+          }
+        },
+        "ScaleParameter": {
+          "fields": {
+            "axis": {
+              "type": "int32",
+              "id": 1,
+              "options": {
+                "default": 1
+              }
+            },
+            "numAxes": {
+              "type": "int32",
+              "id": 2,
+              "options": {
+                "default": 1
+              }
+            },
+            "filler": {
+              "type": "FillerParameter",
+              "id": 3
+            },
+            "biasTerm": {
+              "type": "bool",
+              "id": 4,
+              "options": {
+                "default": false
+              }
+            },
+            "biasFiller": {
+              "type": "FillerParameter",
+              "id": 5
+            }
+          }
+        },
+        "SigmoidParameter": {
+          "fields": {
+            "engine": {
+              "type": "Engine",
+              "id": 1,
+              "options": {
+                "default": "DEFAULT"
+              }
+            }
+          },
+          "nested": {
+            "Engine": {
+              "values": {
+                "DEFAULT": 0,
+                "CAFFE": 1,
+                "CUDNN": 2
+              }
+            }
+          }
+        },
+        "SliceParameter": {
+          "fields": {
+            "axis": {
+              "type": "int32",
+              "id": 3,
+              "options": {
+                "default": 1
+              }
+            },
+            "slicePoint": {
+              "rule": "repeated",
+              "type": "uint32",
+              "id": 2,
+              "options": {
+                "packed": false
+              }
+            },
+            "sliceDim": {
+              "type": "uint32",
+              "id": 1,
+              "options": {
+                "default": 1
+              }
+            }
+          }
+        },
+        "SoftmaxParameter": {
+          "fields": {
+            "engine": {
+              "type": "Engine",
+              "id": 1,
+              "options": {
+                "default": "DEFAULT"
+              }
+            },
+            "axis": {
+              "type": "int32",
+              "id": 2,
+              "options": {
+                "default": 1
+              }
+            }
+          },
+          "nested": {
+            "Engine": {
+              "values": {
+                "DEFAULT": 0,
+                "CAFFE": 1,
+                "CUDNN": 2
+              }
+            }
+          }
+        },
+        "SwishParameter": {
+          "fields": {
+            "beta": {
+              "type": "float",
+              "id": 1,
+              "options": {
+                "default": 1
+              }
+            }
+          }
+        },
+        "TanHParameter": {
+          "fields": {
+            "engine": {
+              "type": "Engine",
+              "id": 1,
+              "options": {
+                "default": "DEFAULT"
+              }
+            }
+          },
+          "nested": {
+            "Engine": {
+              "values": {
+                "DEFAULT": 0,
+                "CAFFE": 1,
+                "CUDNN": 2
+              }
+            }
+          }
+        },
+        "TileParameter": {
+          "fields": {
+            "axis": {
+              "type": "int32",
+              "id": 1,
+              "options": {
+                "default": 1
+              }
+            },
+            "tiles": {
+              "type": "int32",
+              "id": 2
+            }
+          }
+        },
+        "ThresholdParameter": {
+          "fields": {
+            "threshold": {
+              "type": "float",
+              "id": 1,
+              "options": {
+                "default": 0
+              }
+            }
+          }
+        },
+        "WindowDataParameter": {
+          "fields": {
+            "source": {
+              "type": "string",
+              "id": 1
+            },
+            "scale": {
+              "type": "float",
+              "id": 2,
+              "options": {
+                "default": 1
+              }
+            },
+            "meanFile": {
+              "type": "string",
+              "id": 3
+            },
+            "batchSize": {
+              "type": "uint32",
+              "id": 4
+            },
+            "cropSize": {
+              "type": "uint32",
+              "id": 5,
+              "options": {
+                "default": 0
+              }
+            },
+            "mirror": {
+              "type": "bool",
+              "id": 6,
+              "options": {
+                "default": false
+              }
+            },
+            "fgThreshold": {
+              "type": "float",
+              "id": 7,
+              "options": {
+                "default": 0.5
+              }
+            },
+            "bgThreshold": {
+              "type": "float",
+              "id": 8,
+              "options": {
+                "default": 0.5
+              }
+            },
+            "fgFraction": {
+              "type": "float",
+              "id": 9,
+              "options": {
+                "default": 0.25
+              }
+            },
+            "contextPad": {
+              "type": "uint32",
+              "id": 10,
+              "options": {
+                "default": 0
+              }
+            },
+            "cropMode": {
+              "type": "string",
+              "id": 11,
+              "options": {
+                "default": "warp"
+              }
+            },
+            "cacheImages": {
+              "type": "bool",
+              "id": 12,
+              "options": {
+                "default": false
+              }
+            },
+            "rootFolder": {
+              "type": "string",
+              "id": 13,
+              "options": {
+                "default": ""
+              }
+            }
+          }
+        },
+        "SPPParameter": {
+          "fields": {
+            "pyramidHeight": {
+              "type": "uint32",
+              "id": 1
+            },
+            "pool": {
+              "type": "PoolMethod",
+              "id": 2,
+              "options": {
+                "default": "MAX"
+              }
+            },
+            "engine": {
+              "type": "Engine",
+              "id": 6,
+              "options": {
+                "default": "DEFAULT"
+              }
+            }
+          },
+          "nested": {
+            "PoolMethod": {
+              "values": {
+                "MAX": 0,
+                "AVE": 1,
+                "STOCHASTIC": 2
+              }
+            },
+            "Engine": {
+              "values": {
+                "DEFAULT": 0,
+                "CAFFE": 1,
+                "CUDNN": 2
+              }
+            }
+          }
+        },
+        "V1LayerParameter": {
+          "fields": {
+            "bottom": {
+              "rule": "repeated",
+              "type": "string",
+              "id": 2
+            },
+            "top": {
+              "rule": "repeated",
+              "type": "string",
+              "id": 3
+            },
+            "name": {
+              "type": "string",
+              "id": 4
+            },
+            "include": {
+              "rule": "repeated",
+              "type": "NetStateRule",
+              "id": 32
+            },
+            "exclude": {
+              "rule": "repeated",
+              "type": "NetStateRule",
+              "id": 33
+            },
+            "type": {
+              "type": "LayerType",
+              "id": 5
+            },
+            "blobs": {
+              "rule": "repeated",
+              "type": "BlobProto",
+              "id": 6
+            },
+            "param": {
+              "rule": "repeated",
+              "type": "string",
+              "id": 1001
+            },
+            "blobShareMode": {
+              "rule": "repeated",
+              "type": "DimCheckMode",
+              "id": 1002,
+              "options": {
+                "packed": false
+              }
+            },
+            "blobsLr": {
+              "rule": "repeated",
+              "type": "float",
+              "id": 7,
+              "options": {
+                "packed": false
+              }
+            },
+            "weightDecay": {
+              "rule": "repeated",
+              "type": "float",
+              "id": 8,
+              "options": {
+                "packed": false
+              }
+            },
+            "lossWeight": {
+              "rule": "repeated",
+              "type": "float",
+              "id": 35,
+              "options": {
+                "packed": false
+              }
+            },
+            "accuracyParam": {
+              "type": "AccuracyParameter",
+              "id": 27
+            },
+            "argmaxParam": {
+              "type": "ArgMaxParameter",
+              "id": 23
+            },
+            "concatParam": {
+              "type": "ConcatParameter",
+              "id": 9
+            },
+            "contrastiveLossParam": {
+              "type": "ContrastiveLossParameter",
+              "id": 40
+            },
+            "convolutionParam": {
+              "type": "ConvolutionParameter",
+              "id": 10
+            },
+            "dataParam": {
+              "type": "DataParameter",
+              "id": 11
+            },
+            "dropoutParam": {
+              "type": "DropoutParameter",
+              "id": 12
+            },
+            "dummyDataParam": {
+              "type": "DummyDataParameter",
+              "id": 26
+            },
+            "eltwiseParam": {
+              "type": "EltwiseParameter",
+              "id": 24
+            },
+            "expParam": {
+              "type": "ExpParameter",
+              "id": 41
+            },
+            "hdf5DataParam": {
+              "type": "HDF5DataParameter",
+              "id": 13
+            },
+            "hdf5OutputParam": {
+              "type": "HDF5OutputParameter",
+              "id": 14
+            },
+            "hingeLossParam": {
+              "type": "HingeLossParameter",
+              "id": 29
+            },
+            "imageDataParam": {
+              "type": "ImageDataParameter",
+              "id": 15
+            },
+            "infogainLossParam": {
+              "type": "InfogainLossParameter",
+              "id": 16
+            },
+            "innerProductParam": {
+              "type": "InnerProductParameter",
+              "id": 17
+            },
+            "lrnParam": {
+              "type": "LRNParameter",
+              "id": 18
+            },
+            "memoryDataParam": {
+              "type": "MemoryDataParameter",
+              "id": 22
+            },
+            "mvnParam": {
+              "type": "MVNParameter",
+              "id": 34
+            },
+            "poolingParam": {
+              "type": "PoolingParameter",
+              "id": 19
+            },
+            "powerParam": {
+              "type": "PowerParameter",
+              "id": 21
+            },
+            "reluParam": {
+              "type": "ReLUParameter",
+              "id": 30
+            },
+            "sigmoidParam": {
+              "type": "SigmoidParameter",
+              "id": 38
+            },
+            "softmaxParam": {
+              "type": "SoftmaxParameter",
+              "id": 39
+            },
+            "sliceParam": {
+              "type": "SliceParameter",
+              "id": 31
+            },
+            "tanhParam": {
+              "type": "TanHParameter",
+              "id": 37
+            },
+            "thresholdParam": {
+              "type": "ThresholdParameter",
+              "id": 25
+            },
+            "windowDataParam": {
+              "type": "WindowDataParameter",
+              "id": 20
+            },
+            "transformParam": {
+              "type": "TransformationParameter",
+              "id": 36
+            },
+            "lossParam": {
+              "type": "LossParameter",
+              "id": 42
+            },
+            "layer": {
+              "type": "V0LayerParameter",
+              "id": 1
+            }
+          },
+          "nested": {
+            "LayerType": {
+              "values": {
+                "NONE": 0,
+                "ABSVAL": 35,
+                "ACCURACY": 1,
+                "ARGMAX": 30,
+                "BNLL": 2,
+                "CONCAT": 3,
+                "CONTRASTIVE_LOSS": 37,
+                "CONVOLUTION": 4,
+                "DATA": 5,
+                "DECONVOLUTION": 39,
+                "DROPOUT": 6,
+                "DUMMY_DATA": 32,
+                "EUCLIDEAN_LOSS": 7,
+                "ELTWISE": 25,
+                "EXP": 38,
+                "FLATTEN": 8,
+                "HDF5_DATA": 9,
+                "HDF5_OUTPUT": 10,
+                "HINGE_LOSS": 28,
+                "IM2COL": 11,
+                "IMAGE_DATA": 12,
+                "INFOGAIN_LOSS": 13,
+                "INNER_PRODUCT": 14,
+                "LRN": 15,
+                "MEMORY_DATA": 29,
+                "MULTINOMIAL_LOGISTIC_LOSS": 16,
+                "MVN": 34,
+                "POOLING": 17,
+                "POWER": 26,
+                "RELU": 18,
+                "SIGMOID": 19,
+                "SIGMOID_CROSS_ENTROPY_LOSS": 27,
+                "SILENCE": 36,
+                "SOFTMAX": 20,
+                "SOFTMAX_LOSS": 21,
+                "SPLIT": 22,
+                "SLICE": 33,
+                "TANH": 23,
+                "WINDOW_DATA": 24,
+                "THRESHOLD": 31
+              }
+            },
+            "DimCheckMode": {
+              "values": {
+                "STRICT": 0,
+                "PERMISSIVE": 1
+              }
+            }
+          }
+        },
+        "V0LayerParameter": {
+          "fields": {
+            "name": {
+              "type": "string",
+              "id": 1
+            },
+            "type": {
+              "type": "string",
+              "id": 2
+            },
+            "numOutput": {
+              "type": "uint32",
+              "id": 3
+            },
+            "biasterm": {
+              "type": "bool",
+              "id": 4,
+              "options": {
+                "default": true
+              }
+            },
+            "weightFiller": {
+              "type": "FillerParameter",
+              "id": 5
+            },
+            "biasFiller": {
+              "type": "FillerParameter",
+              "id": 6
+            },
+            "pad": {
+              "type": "uint32",
+              "id": 7,
+              "options": {
+                "default": 0
+              }
+            },
+            "kernelsize": {
+              "type": "uint32",
+              "id": 8
+            },
+            "group": {
+              "type": "uint32",
+              "id": 9,
+              "options": {
+                "default": 1
+              }
+            },
+            "stride": {
+              "type": "uint32",
+              "id": 10,
+              "options": {
+                "default": 1
+              }
+            },
+            "pool": {
+              "type": "PoolMethod",
+              "id": 11,
+              "options": {
+                "default": "MAX"
+              }
+            },
+            "dropoutRatio": {
+              "type": "float",
+              "id": 12,
+              "options": {
+                "default": 0.5
+              }
+            },
+            "localSize": {
+              "type": "uint32",
+              "id": 13,
+              "options": {
+                "default": 5
+              }
+            },
+            "alpha": {
+              "type": "float",
+              "id": 14,
+              "options": {
+                "default": 1
+              }
+            },
+            "beta": {
+              "type": "float",
+              "id": 15,
+              "options": {
+                "default": 0.75
+              }
+            },
+            "k": {
+              "type": "float",
+              "id": 22,
+              "options": {
+                "default": 1
+              }
+            },
+            "source": {
+              "type": "string",
+              "id": 16
+            },
+            "scale": {
+              "type": "float",
+              "id": 17,
+              "options": {
+                "default": 1
+              }
+            },
+            "meanfile": {
+              "type": "string",
+              "id": 18
+            },
+            "batchsize": {
+              "type": "uint32",
+              "id": 19
+            },
+            "cropsize": {
+              "type": "uint32",
+              "id": 20,
+              "options": {
+                "default": 0
+              }
+            },
+            "mirror": {
+              "type": "bool",
+              "id": 21,
+              "options": {
+                "default": false
+              }
+            },
+            "blobs": {
+              "rule": "repeated",
+              "type": "BlobProto",
+              "id": 50
+            },
+            "blobsLr": {
+              "rule": "repeated",
+              "type": "float",
+              "id": 51,
+              "options": {
+                "packed": false
+              }
+            },
+            "weightDecay": {
+              "rule": "repeated",
+              "type": "float",
+              "id": 52,
+              "options": {
+                "packed": false
+              }
+            },
+            "randSkip": {
+              "type": "uint32",
+              "id": 53,
+              "options": {
+                "default": 0
+              }
+            },
+            "detFgThreshold": {
+              "type": "float",
+              "id": 54,
+              "options": {
+                "default": 0.5
+              }
+            },
+            "detBgThreshold": {
+              "type": "float",
+              "id": 55,
+              "options": {
+                "default": 0.5
+              }
+            },
+            "detFgFraction": {
+              "type": "float",
+              "id": 56,
+              "options": {
+                "default": 0.25
+              }
+            },
+            "detContextPad": {
+              "type": "uint32",
+              "id": 58,
+              "options": {
+                "default": 0
+              }
+            },
+            "detCropMode": {
+              "type": "string",
+              "id": 59,
+              "options": {
+                "default": "warp"
+              }
+            },
+            "newNum": {
+              "type": "int32",
+              "id": 60,
+              "options": {
+                "default": 0
+              }
+            },
+            "newChannels": {
+              "type": "int32",
+              "id": 61,
+              "options": {
+                "default": 0
+              }
+            },
+            "newHeight": {
+              "type": "int32",
+              "id": 62,
+              "options": {
+                "default": 0
+              }
+            },
+            "newWidth": {
+              "type": "int32",
+              "id": 63,
+              "options": {
+                "default": 0
+              }
+            },
+            "shuffleImages": {
+              "type": "bool",
+              "id": 64,
+              "options": {
+                "default": false
+              }
+            },
+            "concatDim": {
+              "type": "uint32",
+              "id": 65,
+              "options": {
+                "default": 1
+              }
+            },
+            "hdf5OutputParam": {
+              "type": "HDF5OutputParameter",
+              "id": 1001
+            }
+          },
+          "nested": {
+            "PoolMethod": {
+              "values": {
+                "MAX": 0,
+                "AVE": 1,
+                "STOCHASTIC": 2
+              }
+            }
+          }
+        },
+        "PReLUParameter": {
+          "fields": {
+            "filler": {
+              "type": "FillerParameter",
+              "id": 1
+            },
+            "channelShared": {
+              "type": "bool",
+              "id": 2,
+              "options": {
+                "default": false
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

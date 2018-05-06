@@ -1,0 +1,21 @@
+<video id="player" controls autoplay></video>
+<button id="capture">Capture</button>
+<canvas id="canvas" width=320 height=240></canvas>
+
+<script>
+const player = document.getElementById('player');
+const canvas = document.getElementById('canvas');
+const context = canvas.getContext('2d');
+const captureButton = document.getElementById('capture');
+
+captureButton.addEventListener('click', () => {
+  context.drawImage(player, 0, 0, canvas.width, canvas.height);
+});
+
+function onStream(stream) {
+  player.srcObject = stream;
+}
+
+navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+  .then(onStream);
+</script>
