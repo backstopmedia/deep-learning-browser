@@ -1,0 +1,35 @@
+<script src="//cdn.rawgit.com/dcodeIO/protobuf.js/6.8.6/dist/protobuf.js"></script>
+
+<script>
+  async function loadBinaryDataFromUrl(url) {
+    const req = new Request(url);
+    const res = await fetch(req);
+    if (!res.ok) {
+      throw Error(res.statusText);
+    }
+    return res.arrayBuffer();
+  }
+
+  async function loadTextDataFromUrl(url) {
+    const req = new Request(url);
+    const res = await fetch(req);
+    if (!res.ok) {
+      throw Error(res.statusText);
+    }
+    return res.text();
+  }
+
+  // caffe
+  (async function(){
+
+    const bundle = await loadTextDataFromUrl('proto/caffe.json');
+    const root = protobuf.Root.fromJSON(JSON.parse(bundle));
+    const netDef = root.nested.caffe.NetParameter;
+
+    const url = "data/googlenet.caffemodel";
+    const data = await loadBinaryDataFromUrl(url);
+    const graph = netDef.decode(new Uint8Array(data));
+    console.log(graph);
+  }());
+
+</script>

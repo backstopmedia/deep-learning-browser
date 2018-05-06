@@ -1,0 +1,122 @@
+<script src="https://unpkg.com/deeplearn@0.5.1"></script>
+<body>
+<script>
+
+function loadImage(url) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.src = url;
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+  });
+}
+
+async function loadBinaryDataFromUrl(url) {
+  const req = new Request(url);
+  const res = await fetch(req);
+  if (!res.ok) {
+    throw Error(res.statusText);
+  }
+  return res.arrayBuffer();
+}
+
+function renderRGBData(rootElem, dataDljs) {
+  const height = dataDljs.shape[0];
+  const width = dataDljs.shape[1];
+  const channels = dataDljs.shape[2];
+  const data = dataDljs.getValues();
+
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+
+  const ctx = canvas.getContext('2d');
+  const img = ctx.getImageData(0, 0, width, height);
+
+  const len = width * height * 4;
+  const vals = new Uint8ClampedArray(len);
+
+  for (let x = 0; x < width; ++x) {
+    for (let y = 0; y < height; ++y) {
+      let ix0 = (y*width + x);
+      let ix1 = ix0 * 4;
+      for (let c = 0; c < channels; ++c) {
+        vals[ix1 + c] = data[ix0  * channels + c];
+      }
+      vals[ix1 + 3] = 255;
+    }
+  }
+
+  img.data.set(vals);
+  ctx.putImageData(img, 0, 0);
+
+  rootElem.append(canvas);
+  return canvas;
+}
+
+function renderData(rootElem, dataDljs) {
+  const height = dataDljs.shape[0];
+  const width = dataDljs.shape[1];
+  const data = dataDljs.getValues();
+
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+
+  const ctx = canvas.getContext('2d');
+  const img = ctx.getImageData(0, 0, width, height);
+
+  const len = width * height * 4;
+  const vals = new Uint8ClampedArray(len);
+
+  for (let x = 0; x < width; ++x) {
+    for (let y = 0; y < height; ++y) {
+      let ix0 = (y*width + x);
+      let ix1 = ix0 * 4;
+      let val = (1 - data[ix0]) * 255;
+      vals[ix1 + 0] = val;
+      vals[ix1 + 1] = val;
+      vals[ix1 + 2] = val;
+      vals[ix1 + 3] = 255;
+    }
+  }
+
+  img.data.set(vals);
+  ctx.putImageData(img, 0, 0);
+
+  rootElem.append(canvas);
+  return canvas;
+}
+
+// load and render image data
+(async function(){
+  
+  const url = "data/cat.jpeg";
+  const img = await loadImage(url);
+  const data = dl.fromPixels(img);
+
+  data.print();
+  renderRGBData(document.body, data);
+
+  const dataResized = dl.image.resizeBilinear(data, [100, 100]);
+  renderRGBData(document.body, dataResized);
+}());
+
+// load and render binary data
+(async function(){
+  
+  const size = 100;
+  const buf = await loadBinaryDataFromUrl('data/rand.bin');
+  const data = dl.tensor2d(new Float32Array(buf), [size, size]);
+
+  data.print();
+  renderData(document.body, data);
+
+  const data3d = data.expandDims(2);
+  const dataResized = dl.image.resizeBilinear(data3d, [227, 227]);
+  renderData(document.body, dataResized);
+}());
+
+</script>
+</body>
