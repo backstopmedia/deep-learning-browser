@@ -1,28 +1,27 @@
-// This script is meant to be run inside a dljs Playground at https://deeplearnjs.org/demos/playground
 const hiddenNumNeurons = 20;
 const hidden2NumNeurons = 5;
 
 const learningRate = 0.01;
-const num_iterations = 200;
+const num_iterations = 100;
 const batch_size = 20;
 
-const weights = dl.variable(dl.randomNormal([2, hiddenNumNeurons]));
-const biases = dl.variable(dl.zeros([hiddenNumNeurons]));
-const weights2 = dl.variable(dl.randomNormal([hiddenNumNeurons, hidden2NumNeurons]));
-const biases2 = dl.variable(dl.zeros([hidden2NumNeurons]));
-const outWeights = dl.variable(dl.randomNormal([hidden2NumNeurons, 1]));
-const outBias = dl.variable(dl.zeros([1]));
+const weights = tf.variable(tf.randomNormal([2, hiddenNumNeurons]));
+const biases = tf.variable(tf.zeros([hiddenNumNeurons]));
+const weights2 = tf.variable(tf.randomNormal([hiddenNumNeurons, hidden2NumNeurons]));
+const biases2 = tf.variable(tf.zeros([hidden2NumNeurons]));
+const outWeights = tf.variable(tf.randomNormal([hidden2NumNeurons, 1]));
+const outBias = tf.variable(tf.zeros([1]));
 
-const optimizer = dl.train.adam(learningRate);
+const optimizer = tf.train.adam(learningRate);
 
-const epsilon = dl.scalar(1e-7);
-const one = dl.scalar(1);
+const epsilon = tf.scalar(1e-7);
+const one = tf.scalar(1);
 
 /*
  * Given an input, have our model output a prediction
  */
 function predict(input) {
-  return dl.tidy(() => {
+  return tf.tidy(() => {
 
     const hidden = input.matMul(weights).add(biases).relu();
     const hidden2 = hidden.matMul(weights2).add(biases2).relu();
@@ -37,8 +36,8 @@ function predict(input) {
  */
 function loss(prediction, actual) {
   // Having a good error metric is key for training a machine learning model
-  return dl.tidy(() => {
-    return dl.add(
+  return tf.tidy(() => {
+    return tf.add(
       actual.mul(prediction.add(epsilon).log()),
       one.sub(actual).mul(one.sub(prediction).add(epsilon).log()))
       .mean()
@@ -56,12 +55,12 @@ async function train(numIterations, done) {
     let xs, ys, cost;
     [xs, ys] = getNRandomSamples(batch_size);
     
-    cost = dl.tidy(() => {
+    cost = tf.tidy(() => {
       cost = optimizer.minimize(() => {
-        const pred = predict(dl.tensor2d(xs));
-        const predLoss = loss(pred, dl.tensor1d(ys));
+        const pred = predict(tf.tensor2d(xs));
+        const pretfoss = loss(pred, tf.tensor1d(ys));
   
-        return predLoss;
+        return pretfoss;
       }, true);
       
       return cost;
@@ -71,7 +70,7 @@ async function train(numIterations, done) {
       await cost.data().then((data) => console.log(`Iteration: ${iter} Loss: ${data}`));
     }
 
-    await dl.nextFrame();
+    await tf.nextFrame();
   }
 
   done();
@@ -81,8 +80,8 @@ async function train(numIterations, done) {
  * This function calculates the accuracy of our model
  */
 function test(xs, ys) {
-  dl.tidy(() => {
-    const predictedYs = xs.map((x) => Math.round(predict(dl.tensor2d(x, [1, 2])).dataSync()));
+  tf.tidy(() => {
+    const predictedYs = xs.map((x) => Math.round(predict(tf.tensor2d(x, [1, 2])).dataSync()));
     
     var predicted = 0;
     for (let i = 0; i < xs.length; i++) {
@@ -142,3 +141,4 @@ train(num_iterations, () => {
       `After training:`)
   test(testX, testY);
 });
+
