@@ -1,0 +1,38 @@
+<video id="video" width="480" height="320" preload autoplay loop muted></video>
+
+<script>
+  const player = document.getElementById('video');
+  player.width = 480;
+  player.height = 320;
+
+  const faceDetector = new FaceDetector({
+    maxDetectedFaces: 10,
+    fastMode: true
+  });
+
+  // Start the webcam
+  navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+    .then(stream);
+
+  function stream(stream) {
+    if (window.FaceDetector == undefined) {
+      console.error('Face Detection not supported');
+      return;
+    }
+
+    player.srcObject = stream;
+    window.requestAnimationFrame(step);
+  }
+
+  async function step(timestamp) {
+    try {
+      const faces = await faceDetector.detect(player);
+      console.log(faces);
+    }
+    catch (e) {
+      console.error(e);
+    }
+    
+    window.requestAnimationFrame(step);
+  }
+</script>
