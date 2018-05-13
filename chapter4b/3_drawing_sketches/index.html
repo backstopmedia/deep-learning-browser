@@ -15,6 +15,7 @@
 function makeDrawable(canvas) {
   const ctx = canvas.getContext('2d');
   const fillColor = "#000";
+
   ctx.fillStyle = fillColor;
   ctx.lineWidth = 10;
   ctx.lineCap = "round";
@@ -22,6 +23,8 @@ function makeDrawable(canvas) {
 
   let isDrawing = false;
   let prevPos = null;
+  
+  const penStrokes = [];
 
   function draw(event) {
     if (isDrawing) {
@@ -39,6 +42,14 @@ function makeDrawable(canvas) {
       ctx.moveTo(prevPos[0], prevPos[1]);
       ctx.lineTo(pos[0], pos[1]);
       ctx.stroke();
+
+      // collect pen strokes
+      penStrokes.push({
+        dx: pos[0] - prevPos[0],
+        dy: pos[1] - prevPos[1],
+        touch: true,
+        lift: false,
+      });
     }
     prevPos = pos;
   }
@@ -54,20 +65,29 @@ function makeDrawable(canvas) {
     ctx.fillStyle = fillColor;
   }
 
-  canvas.onmousedown = () => isDrawing = true;
+  canvas.onmousedown = () => {
+    isDrawing = true;
+  }
   canvas.onmouseup = () => {
     isDrawing = false;
-    prevPos = null;
+    prevPos = null; 
+    penStrokes[penStrokes.length - 1].touch = false;
+    penStrokes[penStrokes.length - 1].lift = true;
   }
 
   return {
     start: () => canvas.onmousemove = draw,
     stop: () => canvas.onmousemove = null,
-    clean: () => fillCanvas("#FFF")
+    clean: () => {
+      fillCanvas("#FFF");
+      penStrokes = [];
+    },
+    data: () => penStrokes
   }
 }
 
-makeDrawable(document.getElementById('draw')).start();
+const sketch = makeDrawable(document.getElementById('draw'));
+sketch.start();
 
 </script>
 </body>
