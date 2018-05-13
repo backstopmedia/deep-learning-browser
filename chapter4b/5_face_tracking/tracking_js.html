@@ -15,10 +15,10 @@
   tracker.setEdgesDensity(0.1);
 
   tracking.track('#player', tracker, { camera: true });
-  tracker.on('track', function(event) {
+  tracker.on('track', function(event) => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(player, 0, 0, canvas.width, canvas.height);
-    event.data.forEach(function(rect) {
+    event.data.forEach((rect) => {
       ctx.strokeStyle = '#a64ceb';
       ctx.strokeRect(rect.x, rect.y, rect.width, rect.height);
       ctx.font = '11px Helvetica';
