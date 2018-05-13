@@ -15,7 +15,7 @@
   tracker.setEdgesDensity(0.1);
 
   tracking.track('#player', tracker, { camera: true });
-  tracker.on('track', function(event) => {
+  tracker.on('track', (event) => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(player, 0, 0, canvas.width, canvas.height);
     event.data.forEach((rect) => {
@@ -25,6 +25,7 @@
       ctx.fillStyle = "#fff";
       ctx.fillText('x: ' + rect.x + 'px', rect.x + rect.width + 5, rect.y + 11);
       ctx.fillText('y: ' + rect.y + 'px', rect.x + rect.width + 5, rect.y + 22);
+      // tracker.removeAllListeners();
     });
   });
 </script>
