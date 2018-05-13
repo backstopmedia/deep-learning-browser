@@ -22,7 +22,7 @@ const canvas = document.getElementById('canvas');
 const chart = createChart(canvas)
 
 function createChart(canvas) {
-  var ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext('2d');
   return new Chart(ctx, {
       type: 'bar',
       responsive: true,

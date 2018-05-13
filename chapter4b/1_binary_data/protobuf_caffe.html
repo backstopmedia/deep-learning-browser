@@ -1,6 +1,8 @@
 <script src="//cdn.rawgit.com/dcodeIO/protobuf.js/6.8.6/dist/protobuf.js"></script>
 
 <script>
+  let model;
+
   async function loadBinaryDataFromUrl(url) {
     const req = new Request(url);
     const res = await fetch(req);
@@ -26,10 +28,17 @@
     const root = protobuf.Root.fromJSON(JSON.parse(bundle));
     const netDef = root.nested.caffe.NetParameter;
 
-    const url = "data/googlenet.caffemodel";
-    const data = await loadBinaryDataFromUrl(url);
-    const graph = netDef.decode(new Uint8Array(data));
-    console.log(graph);
+    const url = "data/bvlc_googlenet.caffemodel";
+
+    try {
+      const data = await loadBinaryDataFromUrl(url);
+      const graph = netDef.decode(new Uint8Array(data));
+      model = graph;
+      console.log(graph);
+    }
+    catch (e) {
+      console.error('Download the model from `http://dl.caffe.berkeleyvision.org/bvlc_googlenet.caffemodel` and place it under `data/bvlc_googlenet.caffemodel`');
+    }
   }());
 
 </script>

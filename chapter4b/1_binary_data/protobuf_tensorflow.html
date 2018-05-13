@@ -1,6 +1,8 @@
 <script src="//cdn.rawgit.com/dcodeIO/protobuf.js/6.8.6/dist/protobuf.js"></script>
 
 <script>
+  let model;
+  
   async function loadBinaryDataFromUrl(url) {
     const req = new Request(url);
     const res = await fetch(req);
@@ -26,10 +28,16 @@
     const root = protobuf.Root.fromJSON(JSON.parse(bundle));
     const graphDef = root.nested.tensorflow.GraphDef;
 
-    const url = "data/frozen_inference_graph.pb";
-    const data = await loadBinaryDataFromUrl(url);
-    const graph = graphDef.decode(new Uint8Array(data));
-    console.log(graph);
+    try {
+      const url = "data/inception_v3_2016_08_28_frozen.pb";
+      const data = await loadBinaryDataFromUrl(url);
+      const graph = graphDef.decode(new Uint8Array(data));
+      model = graph;
+      console.log(graph);
+    }
+    catch(e) {
+      console.error('Download the model from `https://storage.googleapis.com/download.tensorflow.org/models/inception_v3_2016_08_28_frozen.pb.tar.gz` and extract it under `data/inception_v3_2016_08_28_frozen.pb`');
+    }
   }());
 
 </script>

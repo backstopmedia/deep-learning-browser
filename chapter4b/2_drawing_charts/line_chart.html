@@ -1,0 +1,14 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+
+<!-- Chart Container -->
+<canvas id="chart" width="480" height="480"></canvas>
+
+<script>
+  const ctx = document.getElementById('chart').getContext('2d');
+
+  const lineChart = new Chart(ctx, {
+    type: 'line',
+    data: data,
+    options: options
+  });
+</script>
