@@ -24,8 +24,8 @@
       data: [
         {x: 0, y: 1, r: 5},
         {x: 1, y: 5, r: 7},
-        {x: 2, y: 1, r: 4},
-        {x: 3, y: 10, r: 10},
+        {x: 2, y: 1, r: 15},
+        {x: 3, y: 10, r: 2},
         {x: 4, y: 4, r: 5}
       ],
     }]
@@ -33,7 +33,12 @@
 
   const options = {
     responsive: false,
-    legend: { display: false }
+    legend: { display: false },
+    scales: {
+      yAxes: [{
+        ticks: { beginAtZero: true }
+      }]
+    }
   };
 
   const scatterOptions = Object.assign({}, options, {

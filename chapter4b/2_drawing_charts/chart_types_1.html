@@ -35,7 +35,12 @@
 
   const options = {
     responsive: false,
-    legend: { display: false }
+    legend: { display: false },
+    scales: {
+      yAxes: [{
+        ticks: { beginAtZero: true }
+      }]
+    }
   };
 
   const lineOptions = Object.assign({}, options, {
