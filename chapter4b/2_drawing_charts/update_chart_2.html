@@ -1,0 +1,63 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+
+<!-- Chart Container -->
+<canvas id="chart" width="960" height="480"></canvas>
+
+<script>
+  const ctx = document.getElementById('chart').getContext('2d');
+
+  const lineChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: [],
+      datasets: [{
+        label: "data",
+        backgroundColor: 'rgb(224, 82, 99, 0.75)',
+        borderColor: 'rgb(224, 82, 99, 0.7)',
+        data: [],
+        fill: false
+      }]
+    },
+    options: {
+      responsive: false,
+      legend: {
+        display: false
+      },
+      title: {
+        display: true,
+        position: 'bottom',
+        text: "Update Chart (2)"
+      },
+      tooltips: {
+        enabled: false
+      },
+      animation: false,
+      scales: {
+        yAxes: [{
+          type: 'linear',
+          ticks: { min: 0, max: 1 }
+        }]
+      }
+    }
+  });
+
+
+  function step(timestamp) {
+    const idx = new Float32Array(10);
+    const labels = Array.from(idx).map((d,i) => i);
+    const data = idx.map(Math.random);
+
+    updateData(lineChart, labels, data);
+    lineChart.update();
+
+    window.requestAnimationFrame(step);
+  }
+  window.requestAnimationFrame(step);
+
+  function updateData(chart, labels, data) {
+    chart.data.labels = labels;
+    chart.data.datasets.forEach((dataset) => {
+      dataset.data = data;
+    });
+  }
+</script>
