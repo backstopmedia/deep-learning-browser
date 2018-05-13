@@ -1,4 +1,4 @@
-self.importScripts('https://rawgit.com/chaosmail/dsp.js/fix/module-browser/dsp.js');
+self.importScripts('lib/dsp.js');
 
 function spectogram(audioBuffer) {
   const fft = new FFT(audioBuffer.length, audioBuffer.sampleRate);

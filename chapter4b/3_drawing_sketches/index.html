@@ -1,20 +1,13 @@
-<body>
-<div>
-  <canvas width="480" height="320" id="draw"></canvas>
-</div>
-<div>
-  <button onClick="sketch.clean()">Clear Canvas</button>
-</div>
+<canvas width="480" height="320" id="draw"></canvas>
+<button onClick="sketch.clean()">Clear Canvas</button>
 
 <p>Draw your sketch in this box. Extract the pen strokes by running `sketch.data()` in the console.</p>
 
 <style>
-
-#draw {
-  border: 1px dashed black;
-  cursor: crosshair;
-}
-
+  #draw {
+    border: 1px dashed black;
+    cursor: crosshair;
+  }
 </style>
 
 <script>
