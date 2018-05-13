@@ -1,0 +1,64 @@
+<script src="lib/chart.min.js"></script>
+
+<style>
+  .chart-container canvas {
+    display: inline !important;
+    margin-bottom: 32px;
+  }
+</style>
+
+<!-- Chart Container -->
+<div class="chart-container">
+  <canvas id="scatter" width="480" height="240"></canvas>
+  <canvas id="bubble" width="480" height="240"></canvas>
+</div>
+
+<script>
+
+  const data = {
+    datasets: [{
+      label: "data",
+      backgroundColor: 'rgb(224, 82, 99, 0.75)',
+      borderColor: 'rgb(224, 82, 99, 0.7)',
+      fill: false,
+      data: [
+        {x: 0, y: 1, r: 5},
+        {x: 1, y: 5, r: 7},
+        {x: 2, y: 1, r: 15},
+        {x: 3, y: 10, r: 2},
+        {x: 4, y: 4, r: 5}
+      ],
+    }]
+  };
+
+  const options = {
+    responsive: false,
+    legend: { display: false },
+    scales: {
+      yAxes: [{
+        ticks: { beginAtZero: true }
+      }]
+    }
+  };
+
+  const scatterOptions = Object.assign({}, options, {
+    title: {display: true, position: 'bottom', text: "scatter"}
+  });
+  const scatterChart = new Chart(
+    document.getElementById('scatter').getContext('2d'), {
+      type: 'scatter',
+      data: data,
+      options: scatterOptions
+  });
+
+  const bubbleOptions = Object.assign({}, options, {
+    title: {display: true, position: 'bottom', text: "bubble"}
+  });
+  const bubbleChart = new Chart(
+    document.getElementById('bubble').getContext('2d'), {
+      type: 'bubble',
+      data: data,
+      options: bubbleOptions
+  });
+
+</script>

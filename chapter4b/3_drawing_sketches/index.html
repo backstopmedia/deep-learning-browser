@@ -1,26 +1,30 @@
-<body>
 <canvas width="480" height="320" id="draw"></canvas>
+<button onClick="sketch.clean()">Clear Canvas</button>
+
+<p>Draw your sketch in this box. Extract the pen strokes by running `sketch.data()` in the console.</p>
 
 <style>
-
-#draw {
-  border: 1px dashed black;
-  cursor: crosshair;
-}
-
+  #draw {
+    border: 1px dashed black;
+    cursor: crosshair;
+  }
 </style>
 
 <script>
 
 function makeDrawable(canvas) {
   const ctx = canvas.getContext('2d');
-  ctx.fillStyle = "#000";
+  const fillColor = "#000";
+
+  ctx.fillStyle = fillColor;
   ctx.lineWidth = 10;
   ctx.lineCap = "round";
   ctx.imageSmoothingEnabled = true;
 
   let isDrawing = false;
   let prevPos = null;
+  
+  const penStrokes = [];
 
   function draw(event) {
     if (isDrawing) {
@@ -38,6 +42,14 @@ function makeDrawable(canvas) {
       ctx.moveTo(prevPos[0], prevPos[1]);
       ctx.lineTo(pos[0], pos[1]);
       ctx.stroke();
+
+      // collect pen strokes
+      penStrokes.push({
+        dx: pos[0] - prevPos[0],
+        dy: pos[1] - prevPos[1],
+        touch: true,
+        lift: false,
+      });
     }
     prevPos = pos;
   }
@@ -47,19 +59,35 @@ function makeDrawable(canvas) {
     ctx.fillRect(pos[0], pos[1], size, size);
   }
 
-  canvas.onmousedown = () => isDrawing = true;
+  function fillCanvas(color) {
+    ctx.fillStyle = color;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = fillColor;
+  }
+
+  canvas.onmousedown = () => {
+    isDrawing = true;
+  }
   canvas.onmouseup = () => {
     isDrawing = false;
-    prevPos = null;
+    prevPos = null; 
+    penStrokes[penStrokes.length - 1].touch = false;
+    penStrokes[penStrokes.length - 1].lift = true;
   }
 
   return {
     start: () => canvas.onmousemove = draw,
-    stop: () => canvas.onmousemove = null
+    stop: () => canvas.onmousemove = null,
+    clean: () => {
+      fillCanvas("#FFF");
+      penStrokes = [];
+    },
+    data: () => penStrokes
   }
 }
 
-makeDrawable(document.getElementById('draw')).start();
+const sketch = makeDrawable(document.getElementById('draw'));
+sketch.start();
 
 </script>
 </body>

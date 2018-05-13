@@ -1,0 +1,73 @@
+<script src="lib/chart.min.js"></script>
+
+<style>
+  .chart-container canvas {
+    display: inline !important;
+    margin-bottom: 32px;
+  }
+</style>
+
+<!-- Chart Container -->
+<div class="chart-container">
+  <canvas id="lineChart" width="480" height="240"></canvas>
+  <canvas id="stackedLineChart" width="480" height="240"></canvas>
+</div>
+
+<script>
+ 
+  const data = {
+    labels: ["A", "B", "C", "D", "E"],
+    datasets: [
+    {
+      label: "Dataset 1",
+      backgroundColor: 'rgb(224, 82, 99, 0.75)',
+      borderColor: 'rgb(224, 82, 99, 0.7)',
+      data: [1, 5, 1, 10, 4],
+    },
+    {
+      label: "Dataset 2",
+      backgroundColor: 'rgb(82, 138, 224, 0.75)',
+      borderColor: 'rgb(82, 138, 224, 0.7)',
+      data: [2, 3, 8, 2, 6],
+    }]
+  };
+
+  const lineChart = new Chart(
+    document.getElementById('lineChart').getContext('2d'), {
+      type: 'line',
+      data: data,
+      options: {
+        responsive: false,
+        title: {
+          display: true,
+          position: 'bottom',
+          text: "Line chart with multiple datasets"
+        },
+        scales: {
+          yAxes: [{
+            ticks: { beginAtZero: true }
+          }]
+        }
+      }
+    });
+
+  const stackedLineChart = new Chart(
+    document.getElementById('stackedLineChart').getContext('2d'), {
+      type: 'line',
+      data: data,
+      options: {
+        responsive: false,
+        title: {
+          display: true,
+          position: 'bottom',
+          text: "Stacked line charts"
+        },
+        scales: {
+          yAxes: [{
+            stacked: true,
+            ticks: { beginAtZero: true }
+          }]
+        }
+      }
+    });
+</script>

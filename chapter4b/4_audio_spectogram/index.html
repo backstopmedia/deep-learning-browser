@@ -1,4 +1,4 @@
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+<script src="chart.min.js"></script>
 
 <div id="chart-container">
   <canvas id="canvas"></canvas>
@@ -6,7 +6,7 @@
 
 <style>
 #chart-container {
-  width: 480px;
+  width: 80vw;
 }
 </style>
 
@@ -22,7 +22,7 @@ const canvas = document.getElementById('canvas');
 const chart = createChart(canvas)
 
 function createChart(canvas) {
-  var ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext('2d');
   return new Chart(ctx, {
       type: 'bar',
       responsive: true,
@@ -48,7 +48,7 @@ function createChart(canvas) {
 }
 
 function updateChart(chart, data) {
-  chart.data.datasets[0].data = data;
+  chart.data.datasets[0].data = data.map(d => Math.max(d, 5e-6));
   chart.update();
 }
 

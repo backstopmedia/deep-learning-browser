@@ -1,0 +1,72 @@
+<script src="lib/chart.min.js"></script>
+
+<!-- Chart Container -->
+<canvas id="chart" width="960" height="480"></canvas>
+
+<script>
+  const ctx = document.getElementById('chart').getContext('2d');
+
+  const barChart = new Chart(ctx, {
+    type: 'horizontalBar',
+    data: {
+      labels: [],
+      datasets: [{
+        label: "data",
+        backgroundColor: 'rgb(224, 82, 99, 0.75)',
+        borderColor: 'rgb(224, 82, 99, 0.7)',
+        data: [],
+        fill: false
+      }]
+    },
+    options: {
+      responsive: false,
+      legend: {
+        display: false
+      },
+      title: {
+        display: true,
+        position: 'bottom',
+        text: "Update Chart (2)"
+      },
+      tooltips: {
+        enabled: false
+      },
+      animation: false,
+      scales: {
+        xAxes: [{
+          scaleLabel: {
+            display: true,
+            labelString: "Class Score"
+          },
+          type: 'linear',
+          ticks: { min: 0, max: 1 }
+        }],
+        yAxes: [{
+          scaleLabel: {
+            display: true,
+            labelString: "Class Label"
+          }
+        }]
+      }
+    }
+  });
+
+  function step(timestamp) {
+    const idx = new Float32Array(5);
+    const labels = ["Apple", "Banana", "Pear", "Peach", "Grape"];
+    const data = idx.map(Math.random);
+
+    updateData(barChart, labels, data);
+    barChart.update();
+
+    window.requestAnimationFrame(step);
+  }
+  window.requestAnimationFrame(step);
+
+  function updateData(chart, labels, data) {
+    chart.data.labels = labels;
+    chart.data.datasets.forEach((dataset) => {
+      dataset.data = data;
+    });
+  }
+</script>

@@ -1,0 +1,83 @@
+<script src="lib/chart.min.js"></script>
+
+<!-- Chart Container -->
+<canvas id="chart" width="960" height="480"></canvas>
+
+<script>
+  const ctx = document.getElementById('chart').getContext('2d');
+
+  const lineChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: [],
+      datasets: [{
+        label: "Dataset 1",
+        borderColor: 'rgb(224, 82, 99, 0.7)',
+        backgroundColor: 'rgb(224, 82, 99, 0.7)',
+        data: [],
+        fill: false
+      }, {
+        label: "Dataset 2",
+        borderColor: 'rgb(82, 138, 224, 0.7)',
+        backgroundColor: 'rgb(82, 138, 224, 0.7)',
+        data: [],
+        fill: false
+      }]
+    },
+    options: {
+      responsive: false,
+      animation: false,
+      tooltips: { enabled: false },
+      title: {
+        display: true,
+        position: 'bottom',
+        text: "Update Chart (1)"
+      },
+    }
+  });
+
+  let currVal0 = 0;
+  let currVal1 = 0;
+  let currEpoch = 1;
+  function randSign() {
+    return Math.sign(Math.random() - 0.5);
+  }
+
+  function step(timestamp) {
+    if (currEpoch > 10) {
+      removeDataLeft(lineChart);
+    }
+    addData(lineChart, ++currEpoch, [
+      currVal0 += Math.random() * randSign(),
+      currVal1 += Math.random() * randSign(),
+    ]);
+    console.log(lineChart.options.scales);
+    lineChart.options.scales.xAxes[0].ticks.min = Math.max(currEpoch - 10, 0);
+    lineChart.options.scales.xAxes[0].ticks.max = currEpoch;
+    lineChart.update();
+
+    window.requestAnimationFrame(step);
+  }
+  window.requestAnimationFrame(step);
+
+  function addData(chart, label, data) {
+    chart.data.labels.push(label);
+    chart.data.datasets.forEach((dataset, i) => {
+      dataset.data.push(data[i]);
+    });
+  }
+
+  function removeDataLeft(chart) {
+    chart.data.labels.shift();
+    chart.data.datasets.forEach((dataset) => {
+      dataset.data.shift();
+    });
+  }
+
+  function removeDataRight(chart) {
+    chart.data.labels.pop();
+    chart.data.datasets.forEach((dataset) => {
+      dataset.data.pop();
+    });
+  }
+</script>

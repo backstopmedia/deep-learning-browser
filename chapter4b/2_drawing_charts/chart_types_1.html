@@ -1,0 +1,128 @@
+<script src="lib/chart.min.js"></script>
+
+<style>
+  .chart-container canvas {
+    display: inline !important;
+    margin-bottom: 32px;
+  }
+</style>
+
+<!-- Chart Container -->
+<div class="chart-container">
+  <canvas id="line" width="240" height="240"></canvas>
+  <canvas id="area" width="240" height="240"></canvas>
+  <canvas id="bar" width="240" height="240"></canvas>
+  <canvas id="horizontalBar" width="240" height="240"></canvas>
+</div>
+<div class="chart-container">
+  <canvas id="radar" width="240" height="240"></canvas>
+  <canvas id="polarArea" width="240" height="240"></canvas>
+  <canvas id="pie" width="240" height="240"></canvas>
+  <canvas id="doughnut" width="240" height="240"></canvas>
+</div>
+
+<script>
+
+  const data = {
+    labels: ["A", "B", "C", "D", "E"],
+    datasets: [{
+      label: "data",
+      backgroundColor: 'rgb(224, 82, 99, 0.75)',
+      borderColor: 'rgb(224, 82, 99, 0.7)',
+      data: [1, 5, 1, 10, 4],
+    }]
+  };
+
+  const options = {
+    responsive: false,
+    legend: { display: false },
+    scales: {
+      yAxes: [{
+        ticks: { beginAtZero: true }
+      }]
+    }
+  };
+
+  const lineOptions = Object.assign({}, options, {
+    title: {display: true, position: 'bottom', text: "line (fill: false)"}
+  });
+  const lineData = JSON.parse(JSON.stringify(data));
+  lineData.datasets[0].fill = false;
+  const lineChart = new Chart(
+    document.getElementById('line').getContext('2d'), {
+      type: 'line',
+      data: lineData,
+      options: lineOptions
+  });
+
+  const areaOptions = Object.assign({}, options, {
+    title: {display: true, position: 'bottom', text: "line"}
+  });
+  const areaChart = new Chart(
+    document.getElementById('area').getContext('2d'), {
+      type: 'line',
+      data: data,
+      options: areaOptions
+  });
+
+  const barOptions = Object.assign({}, options, {
+    title: {display: true, position: 'bottom', text: "bar"}
+  });
+  const barChart = new Chart(
+    document.getElementById('bar').getContext('2d'), {
+      type: 'bar',
+      data: data,
+      options: barOptions
+  });
+
+  const horizontalBarOptions = Object.assign({}, options, {
+    title: {display: true, position: 'bottom', text: "horizontalBar"}
+  });
+  const horizontalBarChart = new Chart(
+    document.getElementById('horizontalBar').getContext('2d'), {
+      type: 'horizontalBar',
+      data: data,
+      options: horizontalBarOptions
+  });
+
+  const radarOptions = Object.assign({}, options, {
+    title: {display: true, position: 'bottom', text: "radar"}
+  });
+  const radarChart = new Chart(
+    document.getElementById('radar').getContext('2d'), {
+      type: 'radar',
+      data: data,
+      options: radarOptions
+  });
+
+  const polarAreaOptions = Object.assign({}, options, {
+    title: {display: true, position: 'bottom', text: "polarArea"}
+  });
+  const polarAreaChart = new Chart(
+    document.getElementById('polarArea').getContext('2d'), {
+      type: 'polarArea',
+      data: data,
+      options: polarAreaOptions
+  });
+
+  const pieOptions = Object.assign({}, options, {
+    title: {display: true, position: 'bottom', text: "pie"}
+  });
+  const pieChart = new Chart(
+    document.getElementById('pie').getContext('2d'), {
+      type: 'pie',
+      data: data,
+      options: pieOptions
+  });
+
+  const doughnutOptions = Object.assign({}, options, {
+    title: {display: true, position: 'bottom', text: "doughnut"}
+  });
+  const doughnutChart = new Chart(
+    document.getElementById('doughnut').getContext('2d'), {
+      type: 'doughnut',
+      data: data,
+      options: doughnutOptions
+  });
+
+</script>
