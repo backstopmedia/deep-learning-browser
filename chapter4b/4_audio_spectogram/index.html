@@ -48,7 +48,7 @@ function createChart(canvas) {
 }
 
 function updateChart(chart, data) {
-  chart.data.datasets[0].data = data;
+  chart.data.datasets[0].data = data.map(d => Math.max(d, 5e-6));
   chart.update();
 }
 
