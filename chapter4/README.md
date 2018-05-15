@@ -1,4 +1,4 @@
-# GPU acceleration with WebGL demos (Chapter 3)
+# GPU acceleration with WebGL demos (Chapter 4)
 
 
 ## Description
@@ -27,14 +27,14 @@ We improve the previous example to better use the GPU, and we run it with a larg
 
 ## Hosting
 You only need a local HTTP server to host these demonstrations.
-These demonstration are also hosted on [jeeliz.com/book/chapter3/](https://jeeliz.com) :
-* [0_webglFirstRendering](https://jeeliz.com/book/chapter3/0_webglFirstRendering/)
-* [1_mandelBrot](https://jeeliz.com/book/chapter3/1_mandelBrot/)
-* [2_renderToTexture](https://jeeliz.com/book/chapter3/2_renderToTexture/)
-* [3_RTTfloat](https://jeeliz.com/book/chapter3/3_RTTfloat/)
-* [4_WGLMatrix](https://jeeliz.com/book/chapter3/4_WGLMatrix/)
-* [5_MNIST](https://jeeliz.com/book/chapter3/5_MNIST/)
-* [6_MNISTimproved](https://jeeliz.com/book/chapter3/6_MNISTimproved/)
+These demonstration are also hosted on [jeeliz.com/book/chapter4/](https://jeeliz.com) :
+* [0_webglFirstRendering](https://jeeliz.com/book/chapter4/0_webglFirstRendering/)
+* [1_mandelBrot](https://jeeliz.com/book/chapter4/1_mandelBrot/)
+* [2_renderToTexture](https://jeeliz.com/book/chapter4/2_renderToTexture/)
+* [3_RTTfloat](https://jeeliz.com/book/chapter4/3_RTTfloat/)
+* [4_WGLMatrix](https://jeeliz.com/book/chapter4/4_WGLMatrix/)
+* [5_MNIST](https://jeeliz.com/book/chapter4/5_MNIST/)
+* [6_MNISTimproved](https://jeeliz.com/book/chapter4/6_MNISTimproved/)
 
 
 ## Troubleshootings
