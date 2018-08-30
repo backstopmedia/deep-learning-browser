@@ -1,4 +1,12 @@
-# Deep Learning in the Browser
+# Deep learning in the browser
+
+
+<p align="center">
+<img src="cover.jpg?raw=true"/>
+</p>
+
+Official repository of the book [Deep learning in the browser](https://bleedingedgepress.com/deep-learning-browser/) released in August 2018 and published by [Bleeding Edge Press](https://bleedingedgepress.com).
+
 
 ## Getting Started
 
