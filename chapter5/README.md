@@ -47,4 +47,4 @@ You can test your webgl compatibility [here](http://get.webgl.org). If it does n
 
 ## License
 
-These demos are distributed under standard MIT license. See [LICENSE.txt](LICENSE.txt) for more information.
+These demos are distributed under standard MIT license. See [LICENSE.txt](/LICENSE.txt) for more information.
