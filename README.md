@@ -2,7 +2,7 @@
 
 
 <p align="center">
-<img src="cover.jpg?raw=true" width="50%"/>
+<img src="cover.jpg?raw=true" width="33%"/>
 </p>
 
 Official repository of the book [Deep learning in the browser](https://bleedingedgepress.com/deep-learning-browser/) released in August 2018 and published by [Bleeding Edge Press](https://bleedingedgepress.com).
@@ -12,7 +12,7 @@ Content of this repository:
 * [chapter 3: Deep learning frameworks for JavaScript - Tensorflow.js](/chapter3)
 * [chapter 5: GPU acceleration with WebGL](/chapter5)
 * [chapter 6: Extracting data from the browser](/chapter6)
-* [chapter 7: : Recipes for advanced data manipulation](/chapter7)
+* [chapter 7: Recipes for advanced data manipulation](/chapter7)
 
 
 ## Getting Started
