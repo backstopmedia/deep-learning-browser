@@ -5,7 +5,7 @@
 <img src="cover.jpg?raw=true" width="33%"/>
 </p>
 
-Official repository of the book [Deep learning in the browser](https://bleedingedgepress.com/deep-learning-browser/) released in August 2018 and published by [Bleeding Edge Press](https://bleedingedgepress.com).
+Official repository of the book [Deep learning in the browser](https://bleedingedgepress.com/deep-learning-browser/) released August 2018 and published by [Bleeding Edge Press](https://bleedingedgepress.com). Here you will find all of the source code of the demos in the book.
 
 Content of this repository:
 * [chapter 1: Introduction to deep learning - activation functions](/chapter1)
