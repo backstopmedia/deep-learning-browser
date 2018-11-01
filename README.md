@@ -13,6 +13,7 @@ Content of this repository:
 * [chapter 5: GPU acceleration with WebGL](/chapter5)
 * [chapter 6: Extracting data from the browser](/chapter6)
 * [chapter 7: Recipes for advanced data manipulation](/chapter7)
+* [chapter 8: Building applications with TensorFlow.js](/chapter8)
 
 
 ## Getting Started

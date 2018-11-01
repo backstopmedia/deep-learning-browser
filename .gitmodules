@@ -1,9 +1,9 @@
-[submodule "tfjs-rock-paper-scissors"]
-	path = chapter6/tfjs-rock-paper-scissors
-	url = https://github.com/reiinakano/tfjs-rock-paper-scissors
-[submodule "tfjs-lstm-text-generation"]
-	path = chapter6/tfjs-lstm-text-generation
-	url = https://github.com/reiinakano/tfjs-lstm-text-generation
-[submodule "chapter6/tfjs-autoencoder"]
-	path = chapter6/tfjs-autoencoder
-	url = https://github.com/reiinakano/tfjs-autoencoder
+[submodule "chapter8/tfjs-lstm-text-generation"]
+	path = chapter8/tfjs-lstm-text-generation
+	url = git@github.com:reiinakano/tfjs-lstm-text-generation.git
+[submodule "chapter8/tfjs-autoencoder"]
+	path = chapter8/tfjs-autoencoder
+	url = git@github.com:reiinakano/tfjs-autoencoder.git
+[submodule "chapter8/tfjs-rock-paper-scissors"]
+	path = chapter8/tfjs-rock-paper-scissors
+	url = git@github.com:reiinakano/tfjs-rock-paper-scissors
